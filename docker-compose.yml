@@ -4,10 +4,10 @@ services:
   db:
     image: mysql:8.0
     environment:
-      MYSQL_ROOT_PASSWORD: dev
-      MYSQL_DATABASE: hannadb 
-      MYSQL_USER: dev
-      MYSQL_PASSWORD: dev
+      MYSQL_ROOT_PASSWORD: $DB_PASSWORD
+      MYSQL_DATABASE: $DB_DATABASE 
+      MYSQL_USER: $DB_USER
+      MYSQL_PASSWORD: $DB_PASSWORD
     ports:
       - 3306:3306
     volumes:
@@ -20,7 +20,7 @@ services:
     container_name: phpmyadmin
     environment:
       PMA_HOST: db
-      MYSQL_ROOT_PASSWORD: dev
+      MYSQL_ROOT_PASSWORD: $DB_PASSWORD
     ports:
       - 8080:80
     networks:
