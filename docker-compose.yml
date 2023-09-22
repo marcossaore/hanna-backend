@@ -1,27 +1,28 @@
-version: '4.1'
+version: '3'
 
 services:
   db:
-    image: postgres:16.0-alpine3.18
-    restart: always
+    image: mysql:8.0
     environment:
-      POSTGRES_PASSWORD: $DB_PASSWORD
-      POSTGRES_DB: $DB_DATABASE
-      POSTGRES_USER: $DB_USER
+      MYSQL_ROOT_PASSWORD: $DB_PASSWORD
+      MYSQL_DATABASE: $DB_DATABASE 
+      MYSQL_USER: $DB_USER
+      MYSQL_PASSWORD: $DB_PASSWORD
     ports:
-      - 5432:5432
+      - 3306:3306
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mysql_data:/var/lib/mysql
     networks:
       - hanna-web
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: $PGADMIN_EMAIL
-      PGADMIN_DEFAULT_PASSWORD: $PGADMIN_PASSWORD
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: $DB_PASSWORD
     ports:
-      - 5433:80
+      - 8080:80
     networks:
       - hanna-web
 
@@ -29,4 +30,4 @@ networks:
   hanna-web:
 
 volumes:
-  postgres_data:
+  mysql_data:

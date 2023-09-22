@@ -19,10 +19,9 @@ import { CompanyModule } from 'src/company/company.module';
         username: configService.get('database.user'),
         password: configService.get('database.password'),
         database: configService.get('database.db'),
-        type: 'postgres',
+        type: 'mysql',
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-        // if production set to false
-        synchronize: true,
+        synchronize: configService.get('environment') === 'dev' ? true : false,
       }),
       inject: [ConfigService],
     }),
