@@ -12,10 +12,10 @@ export const mockCompanyDto = ({ document = null, partnerDocument = null, phone 
 });
 
 export const mockCompanyEntity = (): any => ({
-    uuid: 'any_uuid',
-    email: 'any_email',
-    phone: 'any_number',
-    document: 'any_document',
-    partnerName: 'any_partner',
-    parterDocument: 'any_document'
+    uuid: faker.string.uuid(),
+    email: faker.internet.email(),
+    phone: faker.string.numeric({ length: 11 }),
+    document: faker.string.numeric({ length: 14 }),
+    partnerName: faker.internet.userName(),
+    parterDocument: faker.string.numeric({ length: 11 })
 })

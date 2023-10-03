@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Company } from './entities/company.entity';
 import { CreateCompanyDto } from './dto/create-company.dto';
+import { Company } from './entities/company.entity';
 
 @Injectable()
 export class CompanyService {
@@ -13,13 +13,12 @@ export class CompanyService {
   ) {}
 
   async exists(document: string): Promise<boolean>{
-    // this.companyRepository.findOneBy()
-    // return this.companyRepository.save(createCompanyDto);
-    return false;
+    const exists = await this.companyRepository.findOneBy({ document });
+    return exists ? true : false;
   }
 
 
-  create(createCompanyDto: CreateCompanyDto & {uuid: string, apiToken: string}): any{
-    // return this.companyRepository.save(createCompanyDto);
+  async create(createCompanyDto: CreateCompanyDto & {uuid: string, apiToken: string}): Promise<Company> {
+    return this.companyRepository.save(createCompanyDto);
   }
 }
