@@ -1,47 +1,37 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
-  Param,
-  Patch,
-  Delete,
-  // Patch,
-  // Param,
-  // Delete,
+  ConflictException,
 } from '@nestjs/common';
-import { CompanyService } from './company.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
-import { CompanyEntity } from './entities/company.entity';
-import { UpdateCompanyDto } from './dto/update-company.dto';
-// import { UpdateCompanyDto } from './dto/update-company.dto';
+import { Company } from './entities/company.entity';
+import { CompanyService } from './company.service';
+import { GenerateUuidService } from '../services/Uuid/generate-uuid-service';
+import { CreateDatabaseForCompanyService } from '../services/Database/create-database-for-company-service';
 
 @Controller('companies')
 export class CompanyController {
-  constructor(private readonly companyService: CompanyService) {}
+  constructor(
+    private readonly companyService: CompanyService,
+    private readonly generateUuidService: GenerateUuidService,
+    private readonly createDatabaseForCompanyService: CreateDatabaseForCompanyService
+  ) {}
 
   @Post()
-  create(@Body() createCompanyDto: CreateCompanyDto): Promise<CompanyEntity> {
-    return this.companyService.create(createCompanyDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.companyService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.companyService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCompanyDto: UpdateCompanyDto) {
-    return this.companyService.update(+id, updateCompanyDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.companyService.remove(+id);
+  async create(@Body() createCompanyDto: CreateCompanyDto): Promise<Company> {
+    const companyAlreadyExists = await this.companyService.exists(createCompanyDto.document);
+    if (companyAlreadyExists) {
+        throw new ConflictException('A empresa já está cadastrada!')
+    }
+    const uuid = this.generateUuidService.generate();
+    const apiToken = this.generateUuidService.generate();
+    const newCompany = await this.companyService.create({
+       ...createCompanyDto,
+        uuid,
+        apiToken
+    });
+    this.createDatabaseForCompanyService.create(newCompany.uuid)
+    return newCompany;
   }
 }
