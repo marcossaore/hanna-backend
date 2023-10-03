@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { mockCompanyDto, mockCompanyEntity } from './company.mock';
+import { mockCompanyDto, mockCompanyEntity } from '../mock/company.mock';
 
 import { CompanyController } from '../../src/company/company.controller';
 import { CompanyService } from '../../src/company/company.service';
@@ -108,10 +108,10 @@ describe('Controller: Company', () => {
         expect(createDatabaseForCompanyService.create).toHaveBeenCalledWith(response.uuid);
       });
 
-    // it('should returns a new Company on success', async () => {
-    //   const data = mockCompanyDto();
-    //   const response = await sutCompanyController.create(data);
-    //   expect(response).toEqual(mockCompany);
-    // });
+    it('should returns a new Company on success', async () => {
+      const data = mockCompanyDto();
+      const response = await sutCompanyController.create(data);
+      expect(response).toEqual(mockCompany);
+    });
   });
 });

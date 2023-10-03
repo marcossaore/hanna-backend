@@ -1,6 +1,6 @@
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
-import { mockCompanyDto } from '../company.mock';
+import { mockCompanyDto } from '../../mock/company.mock';
 
 import { CreateCompanyDto } from '../../../src/company/dto/create-company.dto';
 

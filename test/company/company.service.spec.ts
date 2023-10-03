@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { mockCompanyDto, mockCompanyEntity } from './company.mock';
+import { mockCompanyDto, mockCompanyEntity } from '../mock/company.mock';
 
 import { Company } from '../../src/company/entities/company.entity';
 import { CompanyService } from '../../src/company/company.service';
