@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { mockCompanyEntity, mockCreateCompanyDto } from '../mock/company.mock';
 
 import { CompanyService } from '../../src/company/company.service';
-import { GenerateUuidService } from '../../src/services/Uuid/generate-uuid-service';
-import { CreateDatabaseForCompanyService } from '../../src/services/Database/create-database-for-company-service';
+import { GenerateUuidService } from '../../src/_common/services/Uuid/generate-uuid-service';
+import { CreateDatabaseForCompanyService } from '../../src/_common/services/Database/create-database-for-company-service';
 import { CompanyController } from '../../src/company/company.controller';
 
 describe('Controller: Company', () => {

@@ -2,9 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app/app.module';
 
-import { AddRequestTimeMiddleware } from './middlewares/add-request-time-middleware';
-import { CalculateRequestTimeInterceptor } from './interceptors/calculate-request-time-interceptor';
-import { HttpExceptionFilter } from './filters/http-exception.filter';
+import { CalculateRequestTimeInterceptor } from './_common/interceptors/calculate-request-time-interceptor';
+import { HttpExceptionFilter } from './_common/filters/http-exception.filter';
+import { AddRequestTimeMiddleware } from './_common/middlewares/add-request-time-middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

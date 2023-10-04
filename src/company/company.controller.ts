@@ -9,9 +9,9 @@ import {
 } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { CreatedCompanyDto } from './dto/created-company.dto';
-import { InfoMessageInterceptor } from '../interceptors/info-message-interceptor';
-import { GenerateUuidService } from '../services/Uuid/generate-uuid-service';
-import { CreateDatabaseForCompanyService } from '../services/Database/create-database-for-company-service';
+import { InfoMessageInterceptor } from '../_common/interceptors/info-message-interceptor';
+import { GenerateUuidService } from '../_common/services/Uuid/generate-uuid-service';
+import { CreateDatabaseForCompanyService } from '../_common/services/Database/create-database-for-company-service';
 import { CompanyService } from './company.service';
 
 @Controller('companies')
