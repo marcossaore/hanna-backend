@@ -1,7 +1,7 @@
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
-import { mockCreateCompanyDto } from '../../mock/company.mock';
 import { CreateCompanyDto } from '../../../src/company/dto/create-company.dto';
+import { mockCreateCompanyDto } from '../../mock/company.mock';
 
 describe('Dto:  CreateCompany', () => {
     afterEach(() => {
@@ -19,6 +19,8 @@ describe('Dto:  CreateCompany', () => {
         expect(errors[3].constraints.isCpf).toEqual('{\"message\":\"O CPF do sócio não é valido!\",\"field\":\"partnerDocument\"}');
         expect(errors[4].constraints.isCompanyIdentifier).toEqual('{\"message\":\"A identificação única da empresa deve ser informada!\",\"field\":\"companyIdentifier\"}');
         expect(errors[5].constraints.isPhone).toEqual('{\"message\":\"O telefone do sócio deve ser informado! Ex: 31999999999\",\"field\":\"phone\"}');
+        expect(errors[6].constraints.isNotEmpty).toEqual('{\"message\":\"O email do sócio deve ser informado!\",\"field\":\"email\"}');
+        expect(errors[6].constraints.isString).toEqual('{\"message\":\"O email do sócio deve ser \\\"string\\\"!\",\"field\":\"email\"}');
         expect(errors[6].constraints.isEmail).toEqual('{\"message\":\"O email do sócio não é válido!\",\"field\":\"email\"}');
         expect(errors.length).toEqual(7);
     });

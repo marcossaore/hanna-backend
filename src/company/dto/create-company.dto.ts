@@ -1,13 +1,13 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { IsCnpj } from '../../_common/validations/cnpj.validator';
 import { IsCpf } from '../../_common/validations/cpf.validator';
-import { IsCompanyIdentifier } from '../../_common/validations/company-identifier.validator';
 import { IsPhone } from '../../_common/validations/phone.validator';
+import { IsCompanyIdentifier } from '../../_common/validations/company/company-identifier.validator';
 
 export class CreateCompanyDto {
     
-    @IsNotEmpty({message: JSON.stringify({message: 'O nome da empresa deve ser informado!', field: 'name'})})
     @IsString({message: JSON.stringify({message: 'O nome da empresa deve ser "string"!', field: 'name'})})
+    @IsNotEmpty({message: JSON.stringify({message: 'O nome da empresa deve ser informado!', field: 'name'})})
     readonly name: string;
 
     @IsCnpj({message: JSON.stringify({message: 'O CNPJ não é válido!', field: 'document'})})
@@ -26,7 +26,8 @@ export class CreateCompanyDto {
     @IsPhone({message: JSON.stringify({message: 'O telefone do sócio deve ser informado! Ex: 31999999999', field: 'phone'})})
     readonly phone: string;
 
-    @IsNotEmpty({message: JSON.stringify({message: 'O email do sócio deve ser informado!', field: 'email'})})
     @IsEmail({}, {message: JSON.stringify({message: 'O email do sócio não é válido!', field: 'email'})})
+    @IsString({message: JSON.stringify({message: 'O email do sócio deve ser "string"!', field: 'email'})})
+    @IsNotEmpty({message: JSON.stringify({message: 'O email do sócio deve ser informado!', field: 'email'})})
     readonly email: string;
 }
