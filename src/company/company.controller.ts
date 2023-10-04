@@ -3,12 +3,16 @@ import {
   Post,
   Body,
   ConflictException,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+  HttpCode,
 } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
-import { Company } from './entities/company.entity';
-import { CompanyService } from './company.service';
+import { CreatedCompanyDto } from './dto/created-company.dto';
+import { InfoMessageInterceptor } from '../interceptors/info-message-interceptor';
 import { GenerateUuidService } from '../services/Uuid/generate-uuid-service';
 import { CreateDatabaseForCompanyService } from '../services/Database/create-database-for-company-service';
+import { CompanyService } from './company.service';
 
 @Controller('companies')
 export class CompanyController {
@@ -18,11 +22,17 @@ export class CompanyController {
     private readonly createDatabaseForCompanyService: CreateDatabaseForCompanyService
   ) {}
 
+  @UseInterceptors(new InfoMessageInterceptor('Em breve você receberá um email com instruções de login!'), ClassSerializerInterceptor)
   @Post()
-  async create(@Body() createCompanyDto: CreateCompanyDto): Promise<Company> {
+  @HttpCode(202)
+  async create(@Body() createCompanyDto: CreateCompanyDto): Promise<CreatedCompanyDto> {
     const companyAlreadyExists = await this.companyService.exists(createCompanyDto.document);
     if (companyAlreadyExists) {
-        throw new ConflictException('A empresa já está cadastrada!')
+        throw new ConflictException('A empresa já está cadastrada!');
+    }
+    const companyIdentifierAlreadyExists = await this.companyService.existsIdentifier(createCompanyDto.companyIdentifier);
+    if (companyIdentifierAlreadyExists) {
+        throw new ConflictException('A identificação já está cadastrada!');
     }
     const uuid = this.generateUuidService.generate();
     const apiToken = this.generateUuidService.generate();
@@ -31,7 +41,7 @@ export class CompanyController {
         uuid,
         apiToken
     });
-    this.createDatabaseForCompanyService.create(newCompany.uuid)
-    return newCompany;
+    this.createDatabaseForCompanyService.create(newCompany.uuid);
+    return new CreatedCompanyDto(newCompany);
   }
 }

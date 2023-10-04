@@ -1,10 +1,10 @@
-import configuration from 'src/config/configuration';
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import configuration from '../config/configuration';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CompanyModule } from '../company/company.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { CompanyModule } from 'src/company/company.module';
 
 @Module({
   imports: [

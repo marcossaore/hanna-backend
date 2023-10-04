@@ -1,10 +1,8 @@
-import { Exclude } from 'class-transformer';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('company')
 export class Company {
   @PrimaryGeneratedColumn()
-  @Exclude()
   id: number;
 
   @Column({ unique: true })
@@ -23,7 +21,7 @@ export class Company {
   partnerName: string;
 
   @Column({ nullable: false })
-  parterDocument: string;
+  partnerDocument: string;
 
   @Column({ nullable: false })
   phone: string;
@@ -31,19 +29,15 @@ export class Company {
   @Column({ nullable: false })
   email: string;
 
-  @Exclude()
-  @Column()
+  @Column({ nullable: false })
   apiToken: string;
 
-  @Exclude()
-  @Column()
+  @Column({ default: null })
   db: string;
 
-  @Exclude()
-  @Column()
+  @Column({ default: null })
   dbUser: string;
 
-  @Exclude()
-  @Column()
+  @Column({ default: null })
   dbPass: string;
 }

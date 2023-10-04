@@ -26,7 +26,7 @@ export class IsCompanyIdentifierValidationConstraint implements ValidatorConstra
     }
 
     defaultMessage(args: ValidationArguments) {
-        return `A identificação única da empresa ${this.error}`;
+        return JSON.stringify({message: `A identificação única da empresa ${this.error}`, field: args.property});
     }
 }
 

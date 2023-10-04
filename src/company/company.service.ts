@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-
-import { CreateCompanyDto } from './dto/create-company.dto';
 import { Company } from './entities/company.entity';
+import { CreateCompanyToEntity } from './dto/create-company-to-entity.dto';
 
 @Injectable()
 export class CompanyService {
@@ -17,8 +16,12 @@ export class CompanyService {
     return exists ? true : false;
   }
 
+  async existsIdentifier (identifier: string): Promise<boolean> {
+    const exists = await this.companyRepository.findOneBy({ companyIdentifier: identifier });
+    return exists ? true : false;
+  }
 
-  async create(createCompanyDto: CreateCompanyDto & {uuid: string, apiToken: string}): Promise<Company> {
+  async create(createCompanyDto: CreateCompanyToEntity): Promise<Company> {
     return this.companyRepository.save(createCompanyDto);
   }
 }

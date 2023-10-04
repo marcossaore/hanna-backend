@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { mockCompanyDto, mockCompanyEntity } from '../mock/company.mock';
+import { mockCompanyEntity, mockCreateCompanyDto } from '../mock/company.mock';
 
-import { CompanyController } from '../../src/company/company.controller';
 import { CompanyService } from '../../src/company/company.service';
 import { GenerateUuidService } from '../../src/services/Uuid/generate-uuid-service';
 import { CreateDatabaseForCompanyService } from '../../src/services/Database/create-database-for-company-service';
+import { CompanyController } from '../../src/company/company.controller';
 
 describe('Controller: Company', () => {
   let sutCompanyController: CompanyController;
@@ -21,6 +21,7 @@ describe('Controller: Company', () => {
           provide: CompanyService,
           useValue: {
             exists: jest.fn().mockResolvedValue(Promise.resolve(false)),
+            existsIdentifier: jest.fn().mockResolvedValue(Promise.resolve(false)),
             create: jest.fn().mockResolvedValue(mockCompany)
           }
         },
@@ -53,21 +54,21 @@ describe('Controller: Company', () => {
   describe('CREATE', () => {
 
     it('should call CompanyService.exists with correct document', async () => {
-      const data = mockCompanyDto()
+      const data = mockCreateCompanyDto()
       await sutCompanyController.create(data);
       expect(companyService.exists).toHaveBeenCalledTimes(1);
       expect(companyService.exists).toHaveBeenCalledWith(data.document);
     });
 
     it('should throws if CompanyService.exists returns true', async () => {
-      const data = mockCompanyDto();
+      const data = mockCreateCompanyDto();
       jest.spyOn(companyService, 'exists').mockReturnValueOnce(Promise.resolve(true));
       const promise = sutCompanyController.create(data);
       await expect(promise).rejects.toThrow(new Error('A empresa já está cadastrada!'));
     });
 
     it('should throws if CompanyService.exists throws', async () => {
-      const data = mockCompanyDto();
+      const data = mockCreateCompanyDto();
       jest.spyOn(companyService, 'exists').mockImplementationOnce(async() => {
         throw new Error();
       });
@@ -75,14 +76,37 @@ describe('Controller: Company', () => {
       await expect(promise).rejects.toThrow(new Error());
     });
 
+    it('should call CompanyService.existsIdentifier with correct identifier', async () => {
+        const data = mockCreateCompanyDto()
+        await sutCompanyController.create(data);
+        expect(companyService.existsIdentifier).toHaveBeenCalledTimes(1);
+        expect(companyService.existsIdentifier).toHaveBeenCalledWith(data.companyIdentifier);
+    });
+
+    it('should throws if CompanyService.existsIdentifier returns true', async () => {
+        const data = mockCreateCompanyDto();
+        jest.spyOn(companyService, 'existsIdentifier').mockReturnValueOnce(Promise.resolve(true));
+        const promise = sutCompanyController.create(data);
+        await expect(promise).rejects.toThrow(new Error('A identificação já está cadastrada!'));
+    });
+    
+    it('should throws if CompanyService.existsIdentifier throws', async () => {
+        const data = mockCreateCompanyDto();
+        jest.spyOn(companyService, 'existsIdentifier').mockImplementationOnce(async() => {
+          throw new Error();
+        });
+        const promise = sutCompanyController.create(data);
+        await expect(promise).rejects.toThrow(new Error());
+    });
+
     it('should call GenerateUuidService.generate twice: to uuid and apiToken for company entity', async () => {
-      const data = mockCompanyDto();
+      const data = mockCreateCompanyDto();
       await sutCompanyController.create(data);
       expect(generateUuidService.generate).toHaveBeenCalledTimes(2);
     });
 
     it('should call CompanyService.create with correct values', async () => {
-      const data = mockCompanyDto();
+      const data = mockCreateCompanyDto();
       await sutCompanyController.create(data);
       expect(companyService.create).toHaveBeenCalledTimes(1);
       expect(companyService.create).toHaveBeenCalledWith({
@@ -93,7 +117,7 @@ describe('Controller: Company', () => {
     });
 
     it('should throws if CompanyService.create throws', async () => {
-      const data = mockCompanyDto();
+      const data = mockCreateCompanyDto();
       jest.spyOn(companyService, 'create').mockImplementationOnce(async() => {
           throw new Error();
       });
@@ -102,16 +126,16 @@ describe('Controller: Company', () => {
     });
 
     it('should call CreateDatabaseForCompanyService.create with correct id', async () => {
-        const data = mockCompanyDto();
+        const data = mockCreateCompanyDto();
         const response = await sutCompanyController.create(data);
         expect(createDatabaseForCompanyService.create).toHaveBeenCalledTimes(1);
         expect(createDatabaseForCompanyService.create).toHaveBeenCalledWith(response.uuid);
       });
 
     it('should returns a new Company on success', async () => {
-      const data = mockCompanyDto();
+      const data = mockCreateCompanyDto();
       const response = await sutCompanyController.create(data);
-      expect(response).toEqual(mockCompany);
+      expect(response).toEqual(mockCompany)
     });
   });
 });

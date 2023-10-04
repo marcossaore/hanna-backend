@@ -1,31 +1,33 @@
-import { IsEmail, IsNotEmpty, IsString, IsStrongPassword, Length, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsCompanyIdentifier } from '../../validations/company-identifier.validator';
+
 import { IsCnpj } from '../../validations/cnpj.validator';
 import { IsCpf } from '../../validations/cpf.validator';
 import { IsPhone } from '../../validations/phone.validator';
-import { IsCompanyIdentifier } from '../../validations/company-identifier.validator';
 
 export class CreateCompanyDto {
-    @IsNotEmpty({ message: 'O nome da empresa deve ser informado!'})
-    @IsString({ message: 'O nome da empresa deve ser "string"!' })
+    
+    @IsNotEmpty({message: JSON.stringify({message: 'O nome da empresa deve ser informado!', field: 'name'})})
+    @IsString({message: JSON.stringify({message: 'O nome da empresa deve ser "string"!', field: 'name'})})
     readonly name: string;
 
-    @IsCnpj({message: 'O CNPJ não é válido!'})
+    @IsCnpj({message: JSON.stringify({message: 'O CNPJ não é válido!', field: 'document'})})
     readonly document: string;
 
-    @IsNotEmpty({ message: 'O nome do sócio deve ser informado!'})
-    @IsString({ message: 'O nome do sócio deve ser "string"!' })
+    @IsNotEmpty({message: JSON.stringify({message: 'O nome do sócio deve ser informado!', field: 'partnerName'})})
+    @IsString({message: JSON.stringify({message: 'O nome do sócio deve ser "string"!', field: 'partnerName'})})
     readonly partnerName: string;
 
-    @IsCpf({message: 'O CPF do sócio não é valido!'})
+    @IsCpf({message: JSON.stringify({message: 'O CPF do sócio não é valido!', field: 'partnerDocument'})})
     readonly partnerDocument: string;
 
     @IsCompanyIdentifier()
     readonly companyIdentifier: string;
 
-    @IsPhone({ message: 'O telefone do sócio deve ser informado! Ex: 31999999999'})
+    @IsPhone({message: JSON.stringify({message: 'O telefone do sócio deve ser informado! Ex: 31999999999', field: 'phone'})})
     readonly phone: string;
 
-    @IsNotEmpty({ message: 'O email do sócio deve ser informado!'})
-    @IsEmail({ }, { message: 'O email do sócio não é válido!' })
+    @IsNotEmpty({message: JSON.stringify({message: 'O email do sócio deve ser informado!', field: 'email'})})
+    @IsEmail({}, {message: JSON.stringify({message: 'O email do sócio não é válido!', field: 'email'})})
     readonly email: string;
 }
