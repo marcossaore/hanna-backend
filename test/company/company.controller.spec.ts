@@ -99,6 +99,13 @@ describe('Controller: Company', () => {
         await expect(promise).rejects.toThrow(new Error());
     });
 
+    // it('should call CompanyService.existsIdentifier with correct identifier', async () => {
+    //     const data = mockCreateCompanyDto()
+    //     await sutCompanyController.create(data);
+    //     expect(companyService.existsIdentifier).toHaveBeenCalledTimes(1);
+    //     expect(companyService.existsIdentifier).toHaveBeenCalledWith(data.companyIdentifier);
+    // });
+
     it('should call GenerateUuidService.generate twice: to uuid and apiToken for company entity', async () => {
       const data = mockCreateCompanyDto();
       await sutCompanyController.create(data);

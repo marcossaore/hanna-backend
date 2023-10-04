@@ -39,5 +39,7 @@ export const mockCompanyEntity = ({ document = null, partnerDocument = null, pho
     apiToken: faker.string.uuid(),
     db: faker.company.buzzNoun(),
     dbPass: faker.string.alphanumeric({ length: 6}),
-    dbUser: faker.string.alphanumeric({ length: 6})
+    dbUser: faker.string.alphanumeric({ length: 6}),
+    createdAt: faker.date.anytime(),
+    updatedAt: faker.date.anytime()
 })
