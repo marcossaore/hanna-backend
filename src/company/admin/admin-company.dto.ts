@@ -1,7 +1,7 @@
 import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 import { IsCpf } from "../../_common/validations/cpf.validator";
 
-export class CompanyAdminDto {
+export class AdminCompanyDto {
     @IsString({message: JSON.stringify({message: 'O nome do admin deve ser do tipo "string"!', field: 'name'})})
     @IsNotEmpty({message: JSON.stringify({message: 'O nome do admin deve ser informado!', field: 'name'})})
     readonly name: string;

@@ -1,6 +1,6 @@
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
-import { CompanyAdminDto } from '../../../src/company/admin/company-admin.dto';
+import { AdminCompanyDto } from '../../../src/company/admin/admin-company.dto';
 
 describe('Dto: CompanyAdminDto', () => {
     afterEach(() => {
@@ -8,7 +8,7 @@ describe('Dto: CompanyAdminDto', () => {
     })
 
     it('should return all erros when data is no provided', async () => {
-        const validation = plainToInstance(CompanyAdminDto, { });
+        const validation = plainToInstance(AdminCompanyDto, { });
         const errors = await validate(validation);
         expect(errors[0].constraints.isNotEmpty).toEqual('{\"message\":\"O nome do admin deve ser informado!\",\"field\":\"name\"}');
         expect(errors[0].constraints.isString).toEqual('{\"message\":\"O nome do admin deve ser do tipo \\\"string\\\"!\",\"field\":\"name\"}');

@@ -1,8 +1,8 @@
 import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { ValidationError, validate } from 'class-validator';
-import { CompanyAdmin } from './company-admin';
-import { CompanyAdminDto } from './company-admin.dto';
+import { AdminCompany } from './admin-company';
+import { AdminCompanyDto } from './admin-company.dto';
 import { DefaultHttpException } from '../../_common/errors/default-http-exception';
 
 @Injectable()
@@ -10,7 +10,7 @@ export class AdminCompaniesValidator {
 
     private validationErrors: ValidationError[] = [];
 
-    async handle(admins: CompanyAdmin[]): Promise<HttpException|void> {
+    async handle(admins: AdminCompany[]): Promise<HttpException|void> {
 
         if (!admins) {
             return new DefaultHttpException(
@@ -46,7 +46,7 @@ export class AdminCompaniesValidator {
         }
 
         for (const admin of admins) {
-            const adminDto = plainToClass(CompanyAdminDto, admin);
+            const adminDto = plainToClass(AdminCompanyDto, admin);
             this.validationErrors = await validate(adminDto);
 
             const hasError = this.hasError();

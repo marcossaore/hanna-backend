@@ -3,7 +3,7 @@ import { IsCnpj } from '../../_common/validations/cnpj.validator';
 import { IsCpf } from '../../_common/validations/cpf.validator';
 import { IsPhone } from '../../_common/validations/phone.validator';
 import { IsCompanyIdentifier } from '../../_common/validations/company/company-identifier.validator';
-import { CompanyAdmin } from '../admin/company-admin';
+import { AdminCompany } from '../admin/admin-company';
 
 export class CreateCompanyDto {
     
@@ -32,5 +32,5 @@ export class CreateCompanyDto {
     @IsNotEmpty({message: JSON.stringify({message: 'O email do sócio deve ser informado!', field: 'email'})})
     readonly email: string;
 
-    readonly admins: CompanyAdmin[];
+    readonly admins: AdminCompany[];
 }
