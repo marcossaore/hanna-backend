@@ -47,7 +47,7 @@ export class CompanyController {
         uuid,
         apiToken
     });
-    this.createDatabaseForCompanyService.create(newCompany.uuid);
+    this.createDatabaseForCompanyService.create(newCompany.uuid, createCompanyDto.admins);
     return new CreatedCompanyDto(newCompany);
   }
 }
