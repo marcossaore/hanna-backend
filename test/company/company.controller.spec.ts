@@ -149,11 +149,11 @@ describe('Controller: Company', () => {
       await expect(promise).rejects.toThrow(new Error())
     });
 
-    it('should call CreateDatabaseForCompanyService.create with correct id', async () => {
+    it('should call CreateDatabaseForCompanyService.create with correct values', async () => {
         const data = mockCreateCompanyDto();
         const response = await sutCompanyController.create(data);
         expect(createDatabaseForCompanyService.create).toHaveBeenCalledTimes(1);
-        expect(createDatabaseForCompanyService.create).toHaveBeenCalledWith(response.uuid);
+        expect(createDatabaseForCompanyService.create).toHaveBeenCalledWith(response.uuid, data.admins);
       });
 
     it('should returns a new Company on success', async () => {
