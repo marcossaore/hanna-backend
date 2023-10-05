@@ -17,7 +17,7 @@ export class AdminCompaniesValidator {
                 {
                     type: (new BadRequestException).message,
                     field: 'admins',
-                    message: 'A propriedade "admins" deve ser informada'
+                    message: 'A propriedade "admins" deve ser informada!'
                 }, 
                 HttpStatus.BAD_REQUEST
             );
@@ -28,7 +28,7 @@ export class AdminCompaniesValidator {
                 {
                     type: (new BadRequestException).message,
                     field: 'admins',
-                    message: 'O campo deve ser do tipo "array"!'
+                    message: 'A propriedade deve ser do tipo "array"!'
                 }, 
                 HttpStatus.BAD_REQUEST
             );
