@@ -1,4 +1,5 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
+import { DefaultHttpException } from '../errors/default-http-exception';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -12,14 +13,16 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     let error = null;
 
-    if (Array.isArray(exceptionResponse.message)) {
+    if (exception instanceof DefaultHttpException) {
+        error = exceptionResponse;
+    } else if (Array.isArray(exceptionResponse.message)) {
         let captureErrror = (exceptionResponse as any).message[0];
 
         try {
             if (typeof captureErrror === 'string' && captureErrror.includes('{') && captureErrror.includes('}')) {
                 const parsedMessage = JSON.parse(captureErrror);
                 error = {
-                    type: exception.message,
+                    type: exceptionResponse.error,
                     field: parsedMessage.field,
                     message: parsedMessage.message
                 }
