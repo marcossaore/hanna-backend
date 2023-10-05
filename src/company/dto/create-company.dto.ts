@@ -3,6 +3,7 @@ import { IsCnpj } from '../../_common/validations/cnpj.validator';
 import { IsCpf } from '../../_common/validations/cpf.validator';
 import { IsPhone } from '../../_common/validations/phone.validator';
 import { IsCompanyIdentifier } from '../../_common/validations/company/company-identifier.validator';
+import { CompanyAdmin } from '../admin/company-admin';
 
 export class CreateCompanyDto {
     
@@ -30,4 +31,6 @@ export class CreateCompanyDto {
     @IsString({message: JSON.stringify({message: 'O email do sócio deve ser "string"!', field: 'email'})})
     @IsNotEmpty({message: JSON.stringify({message: 'O email do sócio deve ser informado!', field: 'email'})})
     readonly email: string;
+
+    readonly admins: CompanyAdmin[];
 }

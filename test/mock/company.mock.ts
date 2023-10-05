@@ -1,8 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { CreateCompanyDto } from '../../src/company/dto/create-company.dto';
-import { CreatedCompanyDto } from '../../src/company/dto/created-company.dto';
-import { CreateCompanyToEntity } from 'src/company/dto/create-company-to-entity.dto';
-import { Company } from 'src/company/entities/company.entity';
+import { CreateCompanyToEntity } from '../../src/company/dto/create-company-to-entity.dto';
+import { Company } from '../../src/company/entities/company.entity';
 
 export const mockCreateCompanyDto = ({ document = null, partnerDocument = null, phone = null, email = null, companyIdentifier = null } = {}): CreateCompanyDto => ({
     name: faker.company.name(),
@@ -11,7 +10,8 @@ export const mockCreateCompanyDto = ({ document = null, partnerDocument = null, 
     partnerDocument: partnerDocument || '02020957035', // valid cpf
     companyIdentifier: companyIdentifier || faker.string.alphanumeric({ length: 10 }),
     phone: phone || faker.string.numeric({ length: 11 }),
-    email: email || faker.internet.email()
+    email: email || faker.internet.email(),
+    admins: []
 });
 
 export const mockCreateCompanyToEntityDto = ({ document = null, partnerDocument = null, phone = null, email = null, companyIdentifier = null } = {}): CreateCompanyToEntity => ({

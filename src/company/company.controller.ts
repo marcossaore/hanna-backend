@@ -5,10 +5,11 @@ import {
   ConflictException,
   UseInterceptors,
   ClassSerializerInterceptor,
-  HttpCode,
+  HttpCode
 } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { CreatedCompanyDto } from './dto/created-company.dto';
+import { AdminCompaniesValidator } from './admin/admin-companies.validator';
 import { InfoMessageInterceptor } from '../_common/interceptors/info-message-interceptor';
 import { GenerateUuidService } from '../_common/services/Uuid/generate-uuid-service';
 import { CreateDatabaseForCompanyService } from '../_common/services/Database/create-database-for-company-service';
@@ -17,6 +18,7 @@ import { CompanyService } from './company.service';
 @Controller('companies')
 export class CompanyController {
   constructor(
+    private readonly adminCompaniesValidator: AdminCompaniesValidator,
     private readonly companyService: CompanyService,
     private readonly generateUuidService: GenerateUuidService,
     private readonly createDatabaseForCompanyService: CreateDatabaseForCompanyService
@@ -26,6 +28,10 @@ export class CompanyController {
   @Post()
   @HttpCode(202)
   async create(@Body() createCompanyDto: CreateCompanyDto): Promise<CreatedCompanyDto> {
+    const adminHasErrors = await this.adminCompaniesValidator.handle(createCompanyDto.admins);
+    if (adminHasErrors) {
+        throw adminHasErrors;
+    }
     const companyAlreadyExists = await this.companyService.exists(createCompanyDto.document);
     if (companyAlreadyExists) {
         throw new ConflictException('A empresa já está cadastrada!');
