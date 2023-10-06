@@ -7,7 +7,7 @@ import { AdminCompany as AdminCompanyInterface  } from './admin/admin-company';
 @Injectable()
 export class AdminCompanyService {
 
-  async createBulk (admins: AdminCompanyInterface[]): Promise<AdminCompany> {
-    return null;
+  async createBulk (companyId: string, admins: AdminCompanyInterface[]): Promise<boolean> {
+    return true;
   }
 }
