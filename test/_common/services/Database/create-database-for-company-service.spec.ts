@@ -1,8 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { mockAdmin, mockCompanyEntity } from '../../../mock/company.mock';
+import { mockCompanyEntity } from '../../../mock/company.mock';
 import { Company } from '../../../../src/company/entities/company.entity';
 import { CompanyService } from '../../../../src/company/company.service';
-import { AdminCompanyService } from '../../../../src/company/admin-company.service';
 import { CreateDatabaseForCompanyService } from '../../../../src/_common/services/Database/create-database-for-company-service';
 import { GenerateDbCredentialsService } from '../../../../src/_common/services/Database/generate-db-credentials.service';
 import { EmailService } from '../../../../src/_common/services/Email/email.service';
