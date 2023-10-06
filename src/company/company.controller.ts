@@ -43,7 +43,6 @@ export class CompanyController {
         throw new ConflictException('A identificação já está cadastrada!');
     }
 
-    
     const uuid = this.generateUuidService.generate();
     const apiToken = this.generateUuidService.generate();
     const newCompany = await this.companyService.create({

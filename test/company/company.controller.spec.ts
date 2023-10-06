@@ -1,20 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { HttpException } from '@nestjs/common';
 import { mockCompanyEntity, mockCreateCompanyDto } from '../mock/company.mock';
-
 import { AdminCompaniesValidator } from '../../src/company/admin/admin-companies.validator';
 import { CompanyService } from '../../src/company/company.service';
 import { GenerateUuidService } from '../../src/_common/services/Uuid/generate-uuid-service';
 import { CreateDatabaseForCompanyService } from '../../src/_common/services/Database/create-database-for-company-service';
+import { AdminCompanyService } from '../../src/company/admin-company.service';
 import { CompanyController } from '../../src/company/company.controller';
-import { HttpException } from '@nestjs/common';
 
 describe('Controller: Company', () => {
   let sutCompanyController: CompanyController;
+  let adminCompanyService: AdminCompanyService;
   let adminCompaniesValidator: AdminCompaniesValidator;
   let companyService: CompanyService;
   let generateUuidService: GenerateUuidService;
   let createDatabaseForCompanyService: CreateDatabaseForCompanyService;
-  let mockCompany = mockCompanyEntity();
+  let companyEntityMock = mockCompanyEntity();
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -27,11 +28,17 @@ describe('Controller: Company', () => {
             }
         },
         {
+            provide: AdminCompanyService,
+            useValue: {
+                createBulk: jest.fn().mockResolvedValue(Promise.resolve(false)),
+            }
+          },
+        {
           provide: CompanyService,
           useValue: {
             exists: jest.fn().mockResolvedValue(Promise.resolve(false)),
             existsIdentifier: jest.fn().mockResolvedValue(Promise.resolve(false)),
-            create: jest.fn().mockResolvedValue(mockCompany)
+            create: jest.fn().mockResolvedValue(companyEntityMock)
           }
         },
         {
@@ -51,6 +58,7 @@ describe('Controller: Company', () => {
     .compile();
 
     sutCompanyController = module.get<CompanyController>(CompanyController);
+    adminCompanyService = module.get<AdminCompanyService>(AdminCompanyService);
     adminCompaniesValidator = module.get<AdminCompaniesValidator>(AdminCompaniesValidator);
     companyService = module.get<CompanyService>(CompanyService);
     generateUuidService = module.get<GenerateUuidService>(GenerateUuidService);
@@ -149,6 +157,13 @@ describe('Controller: Company', () => {
       await expect(promise).rejects.toThrow(new Error())
     });
 
+    it('should call AdminCompanyService.createBuld with correct values', async () => {
+        const data = mockCreateCompanyDto()
+        await sutCompanyController.create(data);
+        expect(adminCompanyService.createBulk).toHaveBeenCalledTimes(1);
+        expect(adminCompanyService.createBulk).toHaveBeenCalledWith(companyEntityMock.uuid, data.admins);
+    });
+
     it('should call CreateDatabaseForCompanyService.create with correct uuid', async () => {
         const data = mockCreateCompanyDto();
         const response = await sutCompanyController.create(data);
@@ -159,7 +174,7 @@ describe('Controller: Company', () => {
     it('should returns a new Company on success', async () => {
       const data = mockCreateCompanyDto();
       const response = await sutCompanyController.create(data);
-      expect(response).toEqual(mockCompany)
+      expect(response).toEqual(companyEntityMock);
     });
   });
 });
