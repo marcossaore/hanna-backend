@@ -23,7 +23,7 @@ export class CompanyController {
     private readonly adminCompanyService: AdminCompanyService,
     private readonly companyService: CompanyService,
     private readonly generateUuidService: GenerateUuidService,
-    private readonly createDatabaseForCompanyService: CreateDatabaseForCompanyService
+    // private readonly createDatabaseForCompanyService: CreateDatabaseForCompanyService
   ) {}
 
   @UseInterceptors(new InfoMessageInterceptor('Em breve você receberá um email com instruções de login!'), ClassSerializerInterceptor)
@@ -53,7 +53,7 @@ export class CompanyController {
 
     this.adminCompanyService.createBulk(newCompany.uuid, createCompanyDto.admins);
 
-    this.createDatabaseForCompanyService.create(newCompany.uuid);
+    // this.createDatabaseForCompanyService.create(newCompany.uuid);
     return new CreatedCompanyDto(newCompany);
   }
 }

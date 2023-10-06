@@ -6,11 +6,11 @@ import { AdminCompaniesValidator } from 'src/company/admin/admin-companies.valid
 import { AdminCompanyService } from './admin-company.service';
 import { CompanyService } from './company.service';
 import { GenerateUuidService } from '../_common/services/Uuid/generate-uuid-service';
-import { CreateDatabaseForCompanyService } from '../_common/services/Database/create-database-for-company-service';
+// import { CreateDatabaseForCompanyService } from '../_common/services/Database/create-database-for-company-service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Company])],
   controllers: [CompanyController],
-  providers: [AdminCompaniesValidator, AdminCompanyService, CompanyService, GenerateUuidService, CreateDatabaseForCompanyService ],
+  providers: [AdminCompaniesValidator, AdminCompanyService, CompanyService, GenerateUuidService ],
 })
 export class CompanyModule {}
