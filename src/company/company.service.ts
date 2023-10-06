@@ -24,4 +24,8 @@ export class CompanyService {
   async create(createCompanyDto: CreateCompanyToEntity): Promise<Company> {
     return this.companyRepository.save(createCompanyDto);
   }
+
+  async findByUuid(uuid: string): Promise<Company> {
+    return null;
+  }
 }

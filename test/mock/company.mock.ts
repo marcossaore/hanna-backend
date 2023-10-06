@@ -2,6 +2,8 @@ import { faker } from '@faker-js/faker';
 import { CreateCompanyDto } from '../../src/company/dto/create-company.dto';
 import { CreateCompanyToEntity } from '../../src/company/dto/create-company-to-entity.dto';
 import { Company } from '../../src/company/entities/company.entity';
+import { AdminCompany } from '../../src/company/entities/admin-company.entity';
+import { AdminCompany as AddCompanyInterface } from '../../src/company/admin/admin-company';
 
 export const mockCreateCompanyDto = ({ document = null, partnerDocument = null, phone = null, email = null, companyIdentifier = null } = {}): CreateCompanyDto => ({
     name: faker.company.name(),
@@ -24,7 +26,7 @@ export const mockCreateCompanyToEntityDto = ({ document = null, partnerDocument 
     email: email || faker.internet.email(),
     uuid: faker.string.uuid(),
     apiToken: faker.string.uuid(),
-})
+});
 
 export const mockCompanyEntity = ({ document = null, partnerDocument = null, phone = null, email = null, companyIdentifier = null } = {}): Company => ({
     name: faker.company.name(),
@@ -42,4 +44,24 @@ export const mockCompanyEntity = ({ document = null, partnerDocument = null, pho
     dbUser: faker.string.alphanumeric({ length: 6}),
     createdAt: faker.date.anytime(),
     updatedAt: faker.date.anytime()
-})
+});
+
+export const mockAdmin = (): AddCompanyInterface => (
+    {
+        document: faker.string.alphanumeric({ length: 11 }),
+        email: faker.internet.email(),
+        name: faker.internet.userName()
+    }
+);
+
+export const mockAdminEntity = (): AdminCompany => (
+    {
+        id: faker.number.int(),
+        document: faker.string.alphanumeric({ length: 11 }),
+        email: faker.internet.email(),
+        name: faker.internet.userName(),
+        companyId: faker.string.uuid(),
+        createdAt: faker.date.anytime(),
+        updatedAt: faker.date.anytime()
+    }
+);
