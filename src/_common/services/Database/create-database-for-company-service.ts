@@ -2,10 +2,12 @@ import { CompanyService } from "../../../company/company.service";
 import { GenerateDbCredentialsService } from "./generate-db-credentials.service";
 import { CreateDatabaseService } from "./create-database.service";
 import { EmailService } from "../Email/email.service";
+import { Inject } from "@nestjs/common";
 
 export class CreateDatabaseForCompanyService {
 
     constructor(
+        @Inject(CompanyService)
         private readonly companyService: CompanyService,
         private readonly generateDbCredentialsService: GenerateDbCredentialsService,
         private readonly createDataBaseService: CreateDatabaseService,
