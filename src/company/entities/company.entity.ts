@@ -1,4 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { CompanyStatus } from '../../_common/enums/company-status.enum';
 import { AddDateColumns } from '../../_common/entity-partials/add-date-columns';
 import { AdminCompany } from './admin-company.entity';
 
@@ -42,6 +43,9 @@ export class Company extends AddDateColumns {
 
     @Column({ default: null })
     dbPass: string;
+
+    @Column({ type: 'enum', enum: CompanyStatus, default: CompanyStatus.PENDING })
+    status: CompanyStatus;
 
     @OneToMany(() => AdminCompany, (adminCompany: AdminCompany) => adminCompany.company, {
         cascade: true,
