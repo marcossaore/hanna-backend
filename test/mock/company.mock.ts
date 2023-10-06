@@ -57,7 +57,26 @@ export const mockCompanyEntity = ({ document = null, partnerDocument = null, pho
     createdAt: faker.date.anytime(),
     updatedAt: faker.date.anytime(),
     status: CompanyStatus.PENDING,
-    admins: [] as AdminCompany[]
+    admins: [
+        {
+            id: faker.number.int(),
+            name: faker.internet.userName(),
+            email: faker.internet.email(),
+            password: faker.internet.password(),
+            createdAt: faker.date.anytime(),
+            updatedAt: faker.date.anytime(),
+            company: {} as Company
+        },
+        {
+            id: faker.number.int(),
+            name: faker.internet.userName(),
+            email: faker.internet.email(),
+            password: faker.internet.password(),
+            createdAt: faker.date.anytime(),
+            updatedAt: faker.date.anytime(),
+            company: {} as Company
+        }
+    ]
 });
 
 export const mockAdmin = (): AddCompanyInterface => (
