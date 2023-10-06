@@ -8,4 +8,9 @@ export default () => ({
     password: process.env.DB_PASSWORD,
     db: process.env.DB_DATABASE,
   },
+  queue: {
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT,
+    pass: process.env.REDIS_PASS,
+  }
 });

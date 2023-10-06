@@ -1,33 +1,42 @@
 version: '3'
 
 services:
-  db:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: $DB_PASSWORD
-      MYSQL_DATABASE: $DB_DATABASE 
-      MYSQL_USER: $DB_USER
-      MYSQL_PASSWORD: $DB_PASSWORD
-    ports:
-      - 3306:3306
-    volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      - hanna-web
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin
-    environment:
-      PMA_HOST: db
-      MYSQL_ROOT_PASSWORD: $DB_PASSWORD
-    ports:
-      - 8080:80
-    networks:
-      - hanna-web
-
+    db:
+        image: mysql:8.0
+        environment:
+            MYSQL_ROOT_PASSWORD: $DB_PASSWORD
+            MYSQL_DATABASE: $DB_DATABASE 
+            MYSQL_USER: $DB_USER
+            MYSQL_PASSWORD: $DB_PASSWORD
+        ports:
+            - 3306:3306
+        volumes:
+            - mysql_data:/var/lib/mysql
+        networks:
+            - hanna-web
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: phpmyadmin
+        environment:
+            PMA_HOST: db
+            MYSQL_ROOT_PASSWORD: $DB_PASSWORD
+        ports:
+            - 8080:80
+        networks:
+            - hanna-web
+    queue:
+        image: redis:6.2-alpine
+        restart: always
+        ports:
+            - '6379:6379'
+        command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASS}
+        volumes: 
+            - queue:/data
+        networks:
+            - hanna-web
 networks:
-  hanna-web:
+    hanna-web:
 
 volumes:
-  mysql_data:
+    mysql_data:
+    queue:
