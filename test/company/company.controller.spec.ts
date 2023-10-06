@@ -5,12 +5,10 @@ import { AdminCompaniesValidator } from '../../src/company/admin/admin-companies
 import { CompanyService } from '../../src/company/company.service';
 import { GenerateUuidService } from '../../src/_common/services/Uuid/generate-uuid-service';
 // import { CreateDatabaseForCompanyService } from '../../src/_common/services/Database/create-database-for-company.service';
-import { AdminCompanyService } from '../../src/company/admin-company.service';
 import { CompanyController } from '../../src/company/company.controller';
 
 describe('Controller: Company', () => {
   let sutCompanyController: CompanyController;
-  let adminCompanyService: AdminCompanyService;
   let adminCompaniesValidator: AdminCompaniesValidator;
   let companyService: CompanyService;
   let generateUuidService: GenerateUuidService;
@@ -24,15 +22,9 @@ describe('Controller: Company', () => {
         {
             provide: AdminCompaniesValidator,
             useValue: {
-                handle: jest.fn().mockResolvedValue(Promise.resolve(null))
+                handle: jest.fn().mockResolvedValue(Promise.resolve())
             }
         },
-        {
-            provide: AdminCompanyService,
-            useValue: {
-                createBulk: jest.fn().mockResolvedValue(Promise.resolve(false)),
-            }
-          },
         {
           provide: CompanyService,
           useValue: {
@@ -58,7 +50,6 @@ describe('Controller: Company', () => {
     .compile();
 
     sutCompanyController = module.get<CompanyController>(CompanyController);
-    adminCompanyService = module.get<AdminCompanyService>(AdminCompanyService);
     adminCompaniesValidator = module.get<AdminCompaniesValidator>(AdminCompaniesValidator);
     companyService = module.get<CompanyService>(CompanyService);
     generateUuidService = module.get<GenerateUuidService>(GenerateUuidService);
@@ -154,14 +145,7 @@ describe('Controller: Company', () => {
           throw new Error();
       });
       const promise = sutCompanyController.create(data);
-      await expect(promise).rejects.toThrow(new Error())
-    });
-
-    it('should call AdminCompanyService.createBuld with correct values', async () => {
-        const data = mockCreateCompanyDto()
-        await sutCompanyController.create(data);
-        expect(adminCompanyService.createBulk).toHaveBeenCalledTimes(1);
-        expect(adminCompanyService.createBulk).toHaveBeenCalledWith(companyEntityMock.uuid, data.admins);
+      await expect(promise).rejects.toThrow(new Error());
     });
 
     // it('should call CreateDatabaseForCompanyService.create with correct uuid', async () => {

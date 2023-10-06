@@ -45,11 +45,19 @@ export class AdminCompaniesValidator {
             );
         }
 
-        for (const admin of admins) {
+        const hasDuplicatedEmail = this.hasDuplicatedEmail(admins);
+
+        if (hasDuplicatedEmail) {
+            return hasDuplicatedEmail;
+        }
+
+        for (let index = 0; index < admins.length; index++) {
+            const admin = admins[index];
+
             const adminDto = plainToClass(AdminCompanyDto, admin);
             this.validationErrors = await validate(adminDto);
 
-            const hasError = this.hasError();
+            const hasError = this.hasError(index);
 
             if (hasError) {
                 return hasError;
@@ -57,17 +65,37 @@ export class AdminCompaniesValidator {
         }
     }
 
-    private hasError () : DefaultHttpException|null {
+    private hasError (atIndex: number) : DefaultHttpException|null {
         if (this.validationErrors.length > 0) {
             for (const error of this.validationErrors) {
                 for (const key in error.constraints) {
                     const errorFound = JSON.parse(error.constraints[key]);
+                    errorFound.field = `admins[${atIndex}].${errorFound.field}`;
                     errorFound.type = (new BadRequestException).message;
                     return new DefaultHttpException(errorFound, HttpStatus.BAD_REQUEST);
                 }
             }
+
         }
 
         return null;
+    }
+
+    private hasDuplicatedEmail (admins: AdminCompany[]) : DefaultHttpException|void {
+        const filterEmail = [];
+        for (let index = 0; index < admins.length; index++) {
+            if(!filterEmail.includes(admins[index].email)) {
+                filterEmail.push(admins[index].email);
+            } else {
+                return new DefaultHttpException(
+                    {
+                        type: (new BadRequestException).message,
+                        field: `admins[${index}].email`,
+                        message: 'Não pode haver dois ou mais admins cadastrados para a empresa com o mesmo email!'
+                    }, 
+                    HttpStatus.BAD_REQUEST
+                );
+            }
+        }
     }
 }

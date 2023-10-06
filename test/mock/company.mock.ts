@@ -13,7 +13,18 @@ export const mockCreateCompanyDto = ({ document = null, partnerDocument = null, 
     companyIdentifier: companyIdentifier || faker.string.alphanumeric({ length: 10 }),
     phone: phone || faker.string.numeric({ length: 11 }),
     email: email || faker.internet.email(),
-    admins: []
+    admins: [
+        {
+            name: faker.internet.userName(),
+            email: faker.internet.email(),
+            password: faker.internet.password()
+        },
+        {
+            name: faker.internet.userName(),
+            email: faker.internet.email(),
+            password: faker.internet.password()
+        }
+    ]
 });
 
 export const mockCreateCompanyToEntityDto = ({ document = null, partnerDocument = null, phone = null, email = null, companyIdentifier = null } = {}): CreateCompanyToEntity => ({
@@ -43,12 +54,13 @@ export const mockCompanyEntity = ({ document = null, partnerDocument = null, pho
     dbPass: faker.string.alphanumeric({ length: 6}),
     dbUser: faker.string.alphanumeric({ length: 6}),
     createdAt: faker.date.anytime(),
-    updatedAt: faker.date.anytime()
+    updatedAt: faker.date.anytime(),
+    admins: [] as AdminCompany[]
 });
 
 export const mockAdmin = (): AddCompanyInterface => (
     {
-        document: faker.string.alphanumeric({ length: 11 }),
+        password: faker.string.alphanumeric({ length: 11 }),
         email: faker.internet.email(),
         name: faker.internet.userName()
     }
@@ -57,11 +69,11 @@ export const mockAdmin = (): AddCompanyInterface => (
 export const mockAdminEntity = (): AdminCompany => (
     {
         id: faker.number.int(),
-        document: faker.string.alphanumeric({ length: 11 }),
         email: faker.internet.email(),
+        password: faker.string.alphanumeric({ length: 10 }),
         name: faker.internet.userName(),
-        companyId: faker.string.uuid(),
         createdAt: faker.date.anytime(),
-        updatedAt: faker.date.anytime()
+        updatedAt: faker.date.anytime(),
+        company: {} as Company
     }
 );

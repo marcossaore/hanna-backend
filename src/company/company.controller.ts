@@ -14,13 +14,11 @@ import { InfoMessageInterceptor } from '../_common/interceptors/info-message-int
 import { GenerateUuidService } from '../_common/services/Uuid/generate-uuid-service';
 import { CreateDatabaseForCompanyService } from '../_common/services/Database/create-database-for-company-service';
 import { CompanyService } from './company.service';
-import { AdminCompanyService } from './admin-company.service';
 
 @Controller('companies')
 export class CompanyController {
   constructor(
     private readonly adminCompaniesValidator: AdminCompaniesValidator,
-    private readonly adminCompanyService: AdminCompanyService,
     private readonly companyService: CompanyService,
     private readonly generateUuidService: GenerateUuidService,
     // private readonly createDatabaseForCompanyService: CreateDatabaseForCompanyService
@@ -45,13 +43,12 @@ export class CompanyController {
 
     const uuid = this.generateUuidService.generate();
     const apiToken = this.generateUuidService.generate();
+
     const newCompany = await this.companyService.create({
         ...createCompanyDto,
         uuid,
         apiToken
     });
-
-    this.adminCompanyService.createBulk(newCompany.uuid, createCompanyDto.admins);
 
     // this.createDatabaseForCompanyService.create(newCompany.uuid);
     return new CreatedCompanyDto(newCompany);

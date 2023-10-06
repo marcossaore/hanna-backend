@@ -12,10 +12,10 @@ describe('Dto: CompanyAdminDto', () => {
         const errors = await validate(validation);
         expect(errors[0].constraints.isNotEmpty).toEqual('{\"message\":\"O nome do admin deve ser informado!\",\"field\":\"name\"}');
         expect(errors[0].constraints.isString).toEqual('{\"message\":\"O nome do admin deve ser do tipo \\\"string\\\"!\",\"field\":\"name\"}');
-        expect(errors[1].constraints.isNotEmpty).toEqual('{\"message\":\"O cpf do admin deve ser informado!\",\"field\":\"document\"}');
-        expect(errors[1].constraints.isCpf).toEqual('{\"message\":\"O CPF do admin não é valido!\",\"field\":\"document\"}');
-        expect(errors[2].constraints.isNotEmpty).toEqual('{\"message\":\"O email do admin deve ser informado!\",\"field\":\"email\"}');
-        expect(errors[2].constraints.isEmail).toEqual('{\"message\":\"O email do admin não é válido!\",\"field\":\"email\"}');
+        expect(errors[1].constraints.isNotEmpty).toEqual('{\"message\":\"O email do admin deve ser informado!\",\"field\":\"email\"}');
+        expect(errors[1].constraints.isEmail).toEqual('{\"message\":\"O email do admin não é válido!\",\"field\":\"email\"}');
+        expect(errors[2].constraints.isNotEmpty).toEqual('{\"message\":\"A senha do admin deve ser informada!\",\"field\":\"password\"}');
+        expect(errors[2].constraints.isStrongPass).toEqual('{\"message\":\"A senha precisa ter no mínimo 8 caracteres, contendo pelo menos 1 letra maíuscula, 1 letra minúscula, 1 dígito e 1 caracter especial EX:($*!@)\",\"field\":\"password\"}');
         expect(errors.length).toEqual(3);
     });
 });

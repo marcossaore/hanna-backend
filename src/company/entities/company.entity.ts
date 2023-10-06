@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { AddDateColumns } from '../../_common/entity-partials/add-date-columns';
+import { AdminCompany } from './admin-company.entity';
 
 @Entity('company')
 export class Company extends AddDateColumns {
@@ -41,4 +42,11 @@ export class Company extends AddDateColumns {
 
     @Column({ default: null })
     dbPass: string;
+
+    @OneToMany(() => AdminCompany, (adminCompany: AdminCompany) => adminCompany.company, {
+        cascade: true,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    })
+    admins: AdminCompany[];
 }

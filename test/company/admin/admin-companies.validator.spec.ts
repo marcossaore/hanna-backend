@@ -28,73 +28,91 @@ describe('Validator: AdminCompaniesValidator', () => {
     it('should return error when admins[*] is not provided', async () => {
         const executed = await sutAdminCompaniesValidator.handle([{} as any]);
         const response = (executed as DefaultHttpException).getResponse() as any;
-        expect(response).toEqual({"field": "name", "message": "O nome do admin deve ser informado!", "type": "Bad Request"});
+        expect(response).toEqual({"field": "admins[0].name", "message": "O nome do admin deve ser informado!", "type": "Bad Request"});
     });
 
-    it('should return error when admin[*].document is not provided', async () => {
+    it('should return error when admins[*].name is not provided', async () => {
         const executed = await sutAdminCompaniesValidator.handle([
             {
-                document: undefined,
-                email: 'any_email',
-                name: 'any_name'
-            }
-        ]);
-        const response = (executed as DefaultHttpException).getResponse() as any;
-        expect(response).toEqual({"field": "document", "message": "O cpf do admin deve ser informado!", "type": "Bad Request"});
-    });
-
-    it('should return error when admin[*].document is invalid', async () => {
-        const executed = await sutAdminCompaniesValidator.handle([
-            {
-                document: 'any_document',
-                email: 'any_email',
-                name: 'any_name'
-            }
-        ]);
-        const response = (executed as DefaultHttpException).getResponse() as any;
-        expect(response).toEqual({"field": "document", "message": "O CPF do admin não é valido!", "type": "Bad Request"});
-    });
-
-    it('should return error when admin[*].email is not provided', async () => {
-        const executed = await sutAdminCompaniesValidator.handle([
-            {
-                document: '04008425055',
-                email: undefined,
-                name: 'any_name'
-            }
-        ]);
-        const response = (executed as DefaultHttpException).getResponse() as any;
-        expect(response).toEqual({"field": "email", "message": "O email do admin deve ser informado!", "type": "Bad Request"});
-    });
-
-    it('should return error when admin[*].email is not valid', async () => {
-        const executed = await sutAdminCompaniesValidator.handle([
-            {
-                document: '04008425055',
-                email: 'any_email',
-                name: 'any_name'
-            }
-        ]);
-        const response = (executed as DefaultHttpException).getResponse() as any;
-        expect(response).toEqual({"field": "email", "message": "O email do admin não é válido!", "type": "Bad Request"});
-    });
-
-    it('should return error when admin[*].name is not provided', async () => {
-        const executed = await sutAdminCompaniesValidator.handle([
-            {
-                document: '04008425055',
+                password: 'any_password',
                 email: 'any_email',
                 name: undefined
             }
         ]);
         const response = (executed as DefaultHttpException).getResponse() as any;
-        expect(response).toEqual({"field": "name", "message": "O nome do admin deve ser informado!", "type": "Bad Request"});
+        expect(response).toEqual({"field": "admins[0].name", "message": "O nome do admin deve ser informado!", "type": "Bad Request"});
+    });
+
+    it('should return error when admin[*].email is not provided', async () => {
+        const executed = await sutAdminCompaniesValidator.handle([
+            {
+                password: 'any_password',
+                email: undefined,
+                name: 'any_name'
+            }
+        ]);
+        const response = (executed as DefaultHttpException).getResponse() as any;
+        expect(response).toEqual({"field": "admins[0].email", "message": "O email do admin deve ser informado!", "type": "Bad Request"});
+    });
+
+    it('should return error when admins[*].email is not valid', async () => {
+        const executed = await sutAdminCompaniesValidator.handle([
+            {
+                password: 'any_password',
+                email: 'any_email',
+                name: 'any_name'
+            }
+        ]);
+        const response = (executed as DefaultHttpException).getResponse() as any;
+        expect(response).toEqual({"field": "admins[0].email", "message": "O email do admin não é válido!", "type": "Bad Request"});
+    });
+
+    
+    it('should return error when admins have same email in their scope', async () => {
+        const executed = await sutAdminCompaniesValidator.handle([
+            {
+                password: 'Ab1*Ab1*',
+                email: 'mail@mail.com',
+                name: faker.internet.userName()
+            },
+            {
+                password: 'Ab1*Ab1*',
+                email: 'mail@mail.com',
+                name: faker.internet.userName()
+            }
+        ]);
+        const response = (executed as DefaultHttpException).getResponse() as any;
+        expect(response).toEqual({"field": "admins[1].email", "message": "Não pode haver dois ou mais admins cadastrados para a empresa com o mesmo email!", "type": "Bad Request"});
+    });
+
+    it('should return error when admins[*].password is not provided', async () => {
+        const executed = await sutAdminCompaniesValidator.handle([
+            {
+                password: undefined,
+                email: 'any_email',
+                name: 'any_name'
+            }
+        ]);
+        const response = (executed as DefaultHttpException).getResponse() as any;
+        expect(response).toEqual({"field": "admins[0].email", "message": "O email do admin não é válido!", "type": "Bad Request"});
+    });
+
+    it('should return error when admins[*].password is not valid', async () => {
+        const executed = await sutAdminCompaniesValidator.handle([
+            {
+                password: 'any_password',
+                email: 'mail@mail.com',
+                name: 'any_name'
+            }
+        ]);
+        const response = (executed as DefaultHttpException).getResponse() as any;
+        expect(response).toEqual({"field": "admins[0].password", "message": "A senha precisa ter no mínimo 8 caracteres, contendo pelo menos 1 letra maíuscula, 1 letra minúscula, 1 dígito e 1 caracter especial EX:($*!@)", "type": "Bad Request"});
     });
 
     it('should not return error when succeds', async () => {
         const executed = await sutAdminCompaniesValidator.handle([
             {
-                document: '04008425055',
+                password: 'Ab1*Ab1*',
                 email: faker.internet.email(),
                 name: faker.internet.userName()
             }

@@ -1,5 +1,5 @@
 export interface AdminCompany {
     name: string;
-    document: string;
+    password: string;
     email: string;
 }
