@@ -1,12 +1,8 @@
-import { Injectable } from "@nestjs/common";
-import { AdminCompany } from "../../../company/admin/admin-company";
-import { AdminCompanyService } from "../../../company/admin-company.service";
 import { CompanyService } from "../../../company/company.service";
 import { GenerateDbCredentialsService } from "./generate-db-credentials.service";
 import { CreateDatabaseService } from "./create-database.service";
 import { EmailService } from "../Email/email.service";
 
-@Injectable()
 export class CreateDatabaseForCompanyService {
 
     constructor(
