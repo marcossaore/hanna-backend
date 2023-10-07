@@ -18,7 +18,7 @@ export class CreateCompanyProcessor {
     @Process()
     async handleJob(job: Job) {
         const company = await this.companyService.findByUuid(job.data.uuid);
-        const credentials = this.generateDbCredentialsService.generate();
+        const credentials = this.generateDbCredentialsService.generate(company.name);
         await this.createDatabaseService.create({
             db: company.companyIdentifier,
             ...credentials

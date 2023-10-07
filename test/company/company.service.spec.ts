@@ -1,25 +1,26 @@
 import { Repository } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { mockCreateCompanyToEntityDto, mockCompanyEntity } from '../mock/company.mock';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { Company } from '../../src/company/entities/company.entity';
-
 import { CompanyService } from '../../src/company/company.service';
 
 describe('Service: Company', () => {
   let sutCompanyService: CompanyService;
   let companyRepository: Repository<Company>;
-  let mockCompany = mockCreateCompanyToEntityDto()
+  let companyEntityMock : Company;
 
   beforeEach(async () => {
+    companyEntityMock = mockCompanyEntity();
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CompanyService,
         {
           provide: getRepositoryToken(Company),
           useValue: {
-            findOneBy: jest.fn().mockResolvedValue(Promise.resolve(null)),
-            save: jest.fn().mockResolvedValue((mockCompany))
+            findOneBy: jest.fn().mockResolvedValue(companyEntityMock),
+            save: jest.fn().mockResolvedValue((companyEntityMock))
           }
         }
       ]
@@ -49,14 +50,12 @@ describe('Service: Company', () => {
     });
 
     it('should return true if RepositoryCompany.findOneBy find A company', async () => {
-        jest.spyOn(companyRepository, 'findOneBy').mockResolvedValueOnce({
-            ...mockCompanyEntity()
-        });
         const response = await sutCompanyService.exists('any_document');
         expect(response).toBe(true);
     });
 
     it('should return false if RepositoryCompany.findOneBy no find any', async () => {
+        jest.spyOn(companyRepository, 'findOneBy').mockResolvedValueOnce(null);
         const response = await sutCompanyService.exists('any_document');
         expect(response).toBe(false);
     });
@@ -78,12 +77,12 @@ describe('Service: Company', () => {
     });
 
     it('should return true if RepositoryCompany.findOneBy find A company', async () => {
-        jest.spyOn(companyRepository, 'findOneBy').mockResolvedValueOnce(mockCompanyEntity());
         const response = await sutCompanyService.existsIdentifier('any_identifier');
         expect(response).toBe(true);
     });
 
     it('should return false if RepositoryCompany.findOneBy no find any', async () => {
+        jest.spyOn(companyRepository, 'findOneBy').mockResolvedValueOnce(null);
         const response = await sutCompanyService.existsIdentifier('any_document');
         expect(response).toBe(false);
     });
@@ -109,7 +108,36 @@ describe('Service: Company', () => {
     it('should return a company when succeds', async () => {
         const data = mockCreateCompanyToEntityDto();
         const response = await sutCompanyService.create(data);
-        expect(response).toEqual(mockCompany);
+        expect(response).toEqual(companyEntityMock);
+    });
+  });
+
+  describe('FindByUuid', () => {
+    it('should call RepositoryCompany.findOneBy with correct uuid', async () => {
+        await sutCompanyService.findByUuid('any_uuid');
+        expect(companyRepository.findOneBy).toHaveBeenCalledTimes(1);
+        expect(companyRepository.findOneBy).toHaveBeenCalledWith({
+            uuid: 'any_uuid'
+        });
+    });
+
+    it('should throws if RepositoryCompany.findOneBy throws', async () => {
+        jest.spyOn(companyRepository, 'findOneBy').mockImplementationOnce(async() => {
+            throw new Error();
+        });
+        const promise = sutCompanyService.findByUuid('any_uuid');
+        await expect(promise).rejects.toThrow()
+    });
+
+    it('should return null if company not exists', async () => {
+        jest.spyOn(companyRepository, 'findOneBy').mockResolvedValueOnce(null);
+        const response = await sutCompanyService.findByUuid('any_uuid');
+        expect(response).toEqual(null);
+    });
+
+    it('should return a company when succeds', async () => {
+        const response = await sutCompanyService.findByUuid('any_uuid');
+        expect(response).toEqual(companyEntityMock);
     });
   });
 });

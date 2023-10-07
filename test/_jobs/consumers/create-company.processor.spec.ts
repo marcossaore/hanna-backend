@@ -78,6 +78,7 @@ describe('Processor: CreateCompany', () => {
     it('should call GenerateDbCredentialsService.create', async () => {
         await sutCreateCompanyProcessor.handleJob(mockJobData);
         expect(generateDbCredentialsService.generate).toHaveBeenCalledTimes(1);
+        expect(generateDbCredentialsService.generate).toHaveBeenCalledWith(companyEntityMock.name);
     });
 
     it('should call CreateDatabaseService.create', async () => {
