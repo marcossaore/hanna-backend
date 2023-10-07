@@ -26,6 +26,6 @@ export class CompanyService {
   }
 
   async findByUuid(uuid: string): Promise<Company> {
-    return null;
+    return this.companyRepository.findOneBy({ uuid });
   }
 }
