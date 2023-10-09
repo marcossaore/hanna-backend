@@ -2,16 +2,19 @@ version: '3'
 
 services:
     db:
-        image: mysql:8.0
+        image: custom_mysql
+        build: 
+            context: .docker/db
+            args:
+                DB_DATABASE: $DB_DATABASE 
+                DB_USER: $DB_USER
+                DB_PASSWORD: $DB_PASSWORD
         environment:
             MYSQL_ROOT_PASSWORD: $DB_PASSWORD
-            MYSQL_DATABASE: $DB_DATABASE 
-            MYSQL_USER: $DB_USER
-            MYSQL_PASSWORD: $DB_PASSWORD
         ports:
             - 3306:3306
-        volumes:
-            - mysql_data:/var/lib/mysql
+        command: --init-file=/docker-entrypoint-initdb.d/init.sql
+        user: "root"
         networks:
             - hanna-web
     phpmyadmin:
@@ -34,6 +37,18 @@ services:
             - queue:/data
         networks:
             - hanna-web
+    # localstack:
+    #     image: localstack/localstack
+    #     container_name: localstack
+    #     environment:
+    #     - SERVICES=secretsmanager
+    #     - DEBUG=1
+    #     - DATA_DIR=/tmp/localstack/data
+    #     - LOCALSTACK_API_KEY=${LOCALSTACK_API_KEY}
+    #     ports:
+    #     - "4566:4566"
+    #     volumes:
+    #     - ./data:/tmp/localstack/data
 networks:
     hanna-web:
 

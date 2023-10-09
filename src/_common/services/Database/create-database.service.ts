@@ -27,12 +27,12 @@ export class CreateDatabaseService {
             await connection.query(`CREATE DATABASE IF NOT EXISTS \`${credentials.db}\``);
       
             await connection.query(
-              `CREATE USER IF NOT EXISTS ?@'localhost' IDENTIFIED BY ?`,
+              `CREATE USER IF NOT EXISTS ?@'%' IDENTIFIED BY ?`,
               [credentials.dbUser, credentials.dbPass]
             );
       
             await connection.query(
-              `GRANT SELECT, INSERT, UPDATE, DELETE ON \`${credentials.db}\`.* TO ?@'localhost'`,
+              `GRANT SELECT, INSERT, UPDATE, DELETE ON \`${credentials.db}\`.* TO ?@'%'`,
               [credentials.dbUser]
             );
       
@@ -43,7 +43,7 @@ export class CreateDatabaseService {
             } catch (dbError) { }
 
             try {
-                await connection.query(`DROP USER IF EXISTS ?@'localhost'`, [credentials.dbUser]);
+                await connection.query(`DROP USER IF EXISTS ?@'%'`, [credentials.dbUser]);
             } catch (userError) {}
 
             throw error;

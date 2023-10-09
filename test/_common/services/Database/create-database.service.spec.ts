@@ -69,11 +69,11 @@ describe('Service: CreateDatabaseService', () => {
         await sutCreateDatabaseService.create(mockCredentials);
         expect(dbManageService.query).toHaveBeenCalledWith(`CREATE DATABASE IF NOT EXISTS \`${mockCredentials.db}\``);
         expect(dbManageService.query).toHaveBeenCalledWith(
-            `CREATE USER IF NOT EXISTS ?@'localhost' IDENTIFIED BY ?`,
+            `CREATE USER IF NOT EXISTS ?@'%' IDENTIFIED BY ?`,
             [mockCredentials.dbUser, mockCredentials.dbPass]
         );
         expect(dbManageService.query).toHaveBeenCalledWith(
-            `GRANT SELECT, INSERT, UPDATE, DELETE ON \`${mockCredentials.db}\`.* TO ?@'localhost'`,
+            `GRANT SELECT, INSERT, UPDATE, DELETE ON \`${mockCredentials.db}\`.* TO ?@'%'`,
             [mockCredentials.dbUser]
         );
         expect(dbManageService.query).toHaveBeenCalledWith('FLUSH PRIVILEGES');
@@ -88,7 +88,7 @@ describe('Service: CreateDatabaseService', () => {
         const promise = sutCreateDatabaseService.create(mockCredentials);
         await expect(promise).rejects.toThrow();
         expect(dbManageService.query).toHaveBeenCalledWith(`DROP DATABASE IF EXISTS \`${mockCredentials.db}\``);
-        expect(dbManageService.query).toHaveBeenCalledWith(`DROP USER IF EXISTS ?@'localhost'`, [mockCredentials.dbUser]);
+        expect(dbManageService.query).toHaveBeenCalledWith(`DROP USER IF EXISTS ?@'%'`, [mockCredentials.dbUser]);
         expect(dbManageService.query).toHaveBeenCalledTimes(3);
         expect(dbManageService.end).toHaveBeenCalledTimes(1);
     });
