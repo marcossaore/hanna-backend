@@ -14,7 +14,6 @@ services:
         ports:
             - 3306:3306
         command: --init-file=/docker-entrypoint-initdb.d/init.sql
-        user: "root"
         networks:
             - hanna-web
     phpmyadmin:
@@ -37,18 +36,22 @@ services:
             - queue:/data
         networks:
             - hanna-web
-    # localstack:
-    #     image: localstack/localstack
-    #     container_name: localstack
-    #     environment:
-    #     - SERVICES=secretsmanager
-    #     - DEBUG=1
-    #     - DATA_DIR=/tmp/localstack/data
-    #     - LOCALSTACK_API_KEY=${LOCALSTACK_API_KEY}
-    #     ports:
-    #     - "4566:4566"
-    #     volumes:
-    #     - ./data:/tmp/localstack/data
+    localstack:
+        image: localstack/localstack
+        container_name: localstack
+        environment:
+            SERVICES: secretsmanager
+            DEBUG: 1
+            DATA_DIR: /tmp/localstack/data
+            AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+            AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+            AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+        ports:
+            - "127.0.0.1:4510-4530:4510-4530"
+            - "127.0.0.1:4566:4566"
+            - "127.0.0.1:4571:4571"
+        volumes:
+            - ./data:/tmp/localstack/data
 networks:
     hanna-web:
 

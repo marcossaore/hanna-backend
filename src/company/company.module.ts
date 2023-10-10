@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bull';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CompanyController } from './company.controller';
+import { ConfigService } from '@nestjs/config';
 import { Company } from './entities/company.entity';
 import { AdminCompaniesValidator } from 'src/company/admin/admin-companies.validator';
 import { CompanyService } from './company.service';
 import { GenerateUuidService } from '../_common/services/Uuid/generate-uuid-service';
-import { ConfigService } from '@nestjs/config';
-import { CreateCompanyProcessor } from 'src/_jobs/consumers/create-company.processor';
+import { getCreateCompanyServicesProviders } from '../../src/_jobs/consumers/company-processor.providers';
 
 @Module({
     imports: [
@@ -25,6 +25,11 @@ import { CreateCompanyProcessor } from 'src/_jobs/consumers/create-company.proce
         })
     ],
     controllers: [CompanyController],
-    providers: [AdminCompaniesValidator, CompanyService, GenerateUuidService, CreateCompanyProcessor]
+    providers: [
+        AdminCompaniesValidator, 
+        CompanyService, 
+        GenerateUuidService, 
+        ...getCreateCompanyServicesProviders()
+    ]
 })
 export class CompanyModule {}
