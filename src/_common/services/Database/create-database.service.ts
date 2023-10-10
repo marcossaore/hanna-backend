@@ -1,28 +1,21 @@
-import { Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { Inject, Injectable } from "@nestjs/common";
 import { MySqlDbManagerService } from "./repository/mysql-db-manager";
-
 @Injectable()
 export class CreateDatabaseService {
 
     constructor(
-        private readonly configService: ConfigService,
+        @Inject('HOST_DB_CONFIG') private readonly hostDbConfig,
         private readonly dbManagerService: MySqlDbManagerService
     ) {}
 
     async create (credentials: {db: string, dbUser: string, dbPass: string}): Promise<void> {
-        const host = this.configService.get<string>('database.host');
-        const user = this.configService.get<string>('database.user');
-        const password = this.configService.get<string>('database.password');
-        const port = this.configService.get<number>('database.port');
-
         const connection = await this.dbManagerService.createConnection({
-            host,
-            user,
-            password,
-            port,
+            host: this.hostDbConfig.host,
+            user: this.hostDbConfig.user,
+            password: this.hostDbConfig.password,
+            port: this.hostDbConfig.port
         });
-
+        
         try {
             await connection.query(`CREATE DATABASE IF NOT EXISTS \`${credentials.db}\``);
       

@@ -5,7 +5,7 @@ export class MySqlDbManagerService implements DbManagerProtocol {
     connection: any;
 
     async createConnection ({ host, user, password, port }: { host: string, user: string, password: string, port: number }): Promise<DbManagerProtocol> {
-        this.connection =  mysql.createConnection({
+        this.connection =  await mysql.createConnection({
             host,
             user,
             password,

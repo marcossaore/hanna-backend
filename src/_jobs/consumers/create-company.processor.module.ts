@@ -21,8 +21,14 @@ import { MailService } from 'src/mail/mail.service';
         ConfigService,
         CompanyService,
         GenerateDbCredentialsService,
-        MySqlDbManagerService,
-        CreateDatabaseService,
+        {
+            inject: [ConfigService],
+            provide: CreateDatabaseService,
+            useFactory (configService: ConfigService) {
+                const hostDbConfig = configService.get('database');
+                return new CreateDatabaseService(hostDbConfig, new MySqlDbManagerService());
+            }
+        },  
         {
             inject: [ConfigService],
             provide: SecretsService,
