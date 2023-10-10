@@ -5,7 +5,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 export class MailService {
     constructor(private mailerService: MailerService) {}
 
-    async send ({to, subject, template, data }: {to: string, copyTo?: string|string[], subject: string, template: string, data?: any}): Promise<boolean> {
+    async send ({to, subject, template, data }: {to: string, subject: string, template: string, data?: any}): Promise<boolean> {
         await this.mailerService.sendMail({
           to,
           subject,
