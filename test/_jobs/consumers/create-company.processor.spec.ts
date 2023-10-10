@@ -4,8 +4,9 @@ import { mockCompanyEntity } from '../../mock/company.mock';
 import { CompanyService } from '../../../src/company/company.service';
 import { GenerateDbCredentialsService } from '../../../src/_common/services/Database/generate-db-credentials.service';
 import { CreateDatabaseService } from '../../../src/_common/services/Database/create-database.service';
-import { EmailService } from '../../../src/_common/services/Email/email.service';
 import { CreateCompanyProcessor } from '../../../src/_jobs/consumers/create-company.processor';
+import { SecretsService } from '../../../src/_common/services/Secret/secrets-service';
+import { MailService } from '../../../src/mail/mail.service';
 
 const mockJobData: any = { 
     data: { 
@@ -19,7 +20,8 @@ describe('Processor: CreateCompany', () => {
     let companyService: CompanyService;
     let generateDbCredentialsService: GenerateDbCredentialsService;
     let createDataBaseService: CreateDatabaseService;
-    let emailService: EmailService;
+    let secretsService: SecretsService;
+    let mailService: MailService;
 
     beforeEach(async () => {
         companyEntityMock = mockCompanyEntity();
@@ -49,7 +51,13 @@ describe('Processor: CreateCompany', () => {
                     }
                 },
                 {
-                    provide: EmailService,
+                    provide: SecretsService,
+                    useValue: {
+                        save: jest.fn()
+                    }
+                },
+                {
+                    provide: MailService,
                     useValue: {
                         send: jest.fn().mockResolvedValue(true)
                     }
@@ -62,7 +70,8 @@ describe('Processor: CreateCompany', () => {
         companyService = module.get<CompanyService>(CompanyService);
         generateDbCredentialsService = module.get<GenerateDbCredentialsService>(GenerateDbCredentialsService);
         createDataBaseService = module.get<CreateDatabaseService>(CreateDatabaseService);
-        emailService = module.get<EmailService>(EmailService);
+        secretsService = module.get<SecretsService>(SecretsService);
+        mailService = module.get<MailService>(MailService);
     });
 
     afterEach(() => {
@@ -75,10 +84,26 @@ describe('Processor: CreateCompany', () => {
         expect(companyService.findByUuid).toHaveBeenCalledWith('any_uuid');
     });
 
-    it('should call GenerateDbCredentialsService.create', async () => {
+    it('should throws if CompanyService.findByUuid throws', async () => {
+        jest.spyOn(companyService, 'findByUuid').mockImplementationOnce(() => {
+            throw new Error();
+        });
+        const promise = sutCreateCompanyProcessor.handleJob(mockJobData);
+        await expect(promise).rejects.toThrow();
+    });
+
+    it('should call GenerateDbCredentialsService.generate', async () => {
         await sutCreateCompanyProcessor.handleJob(mockJobData);
         expect(generateDbCredentialsService.generate).toHaveBeenCalledTimes(1);
         expect(generateDbCredentialsService.generate).toHaveBeenCalledWith(companyEntityMock.name);
+    });
+
+    it('should throws if GenerateDbCredentialsService.generate throws', async () => {
+        jest.spyOn(generateDbCredentialsService, 'generate').mockImplementationOnce(() => {
+            throw new Error();
+        });
+        const promise = sutCreateCompanyProcessor.handleJob(mockJobData);
+        await expect(promise).rejects.toThrow();
     });
 
     it('should call CreateDatabaseService.create', async () => {
@@ -91,10 +116,35 @@ describe('Processor: CreateCompany', () => {
         });
     });
 
-    it('should call EmailService.send with correct values', async () => {
+    it('should throws if CreateDatabaseService.create throws', async () => {
+        jest.spyOn(createDataBaseService, 'create').mockImplementationOnce(() => {
+            throw new Error();
+        });
+        const promise = sutCreateCompanyProcessor.handleJob(mockJobData);
+        await expect(promise).rejects.toThrow();
+    });
+
+    it('should call SecretsService.save with correct values', async () => {
         await sutCreateCompanyProcessor.handleJob(mockJobData);
-        expect(emailService.send).toHaveBeenCalledTimes(1);
-        expect(emailService.send).toHaveBeenCalledWith({
+        expect(secretsService.save).toHaveBeenCalledTimes(1);
+        expect(secretsService.save).toHaveBeenCalledWith(companyEntityMock.companyIdentifier, JSON.stringify({
+            dbUser: 'any_db_user', 
+            dbPass: 'any_db_pass'
+        }));
+    });
+
+    it('should throws if SecretsService.save throws', async () => {
+        jest.spyOn(secretsService, 'save').mockImplementationOnce(() => {
+            throw new Error();
+        });
+        const promise = sutCreateCompanyProcessor.handleJob(mockJobData);
+        await expect(promise).rejects.toThrow();
+    });
+
+    it('should call MailService.send with correct values', async () => {
+        await sutCreateCompanyProcessor.handleJob(mockJobData);
+        expect(mailService.send).toHaveBeenCalledTimes(1);
+        expect(mailService.send).toHaveBeenCalledWith({
             to: companyEntityMock.email,
             subject: 'Conta criada com sucesso!',
             template: 'company-account-create',
@@ -113,5 +163,13 @@ describe('Processor: CreateCompany', () => {
                 ]
             }
         });
+    });
+
+    it('should throws if MailService.send throws', async () => {
+        jest.spyOn(mailService, 'send').mockImplementationOnce(() => {
+            throw new Error();
+        });
+        const promise = sutCreateCompanyProcessor.handleJob(mockJobData);
+        await expect(promise).rejects.toThrow();
     });
 });
