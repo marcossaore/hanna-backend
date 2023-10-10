@@ -20,7 +20,8 @@ import configuration from '../_config/configuration';
         type: 'mysql',
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: configService.get('environment') === 'dev' ? true : false,
-        // migrations: [__dirname + '../migrations/*.js']
+        migrations: [__dirname + '/../migration/{.ts, *.js}'],
+        migrationsRun: true
       }),
       inject: [ConfigService],
     }),
