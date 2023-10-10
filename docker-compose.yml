@@ -34,8 +34,12 @@ services:
         command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASS}
         volumes: 
             - queue:/data
-        networks:
-            - hanna-web
+    mailhog:
+        image: mailhog/mailhog:latest
+        restart: always
+        ports:
+        - 1025:1025
+        - 8025:8025
     localstack:
         image: localstack/localstack
         container_name: localstack

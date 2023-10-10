@@ -19,5 +19,12 @@ export default () => ({
         region: process.env.AWS_DEFAULT_REGION || 'us-east-1',
         version: process.env.AWS_VERSION,
         endpoint: process.env.AWS_ENDPOINT || null
+    },
+    smtp: {
+        from: process.env.MAIL_FROM,
+        user: process.env.MAIL_USER,
+        host: process.env.MAIL_HOST,
+        password: process.env.MAIL_PASSWORD,
+        port: process.env.MAIL_PORT
     }
 });

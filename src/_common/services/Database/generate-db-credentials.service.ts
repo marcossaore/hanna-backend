@@ -1,5 +1,7 @@
+import { Injectable } from "@nestjs/common";
 import { generateRandomString, generateRandomInteger } from "../../../../src/_common/helpers/general";
 
+@Injectable()
 export class GenerateDbCredentialsService {
 
     private readonly intervalGenerate = {
