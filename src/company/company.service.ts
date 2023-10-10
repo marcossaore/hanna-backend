@@ -26,6 +26,6 @@ export class CompanyService {
   }
 
   async findByUuid(uuid: string): Promise<Company> {
-    return this.companyRepository.findOneBy({ uuid });
+    return this.companyRepository.findOne({ where: { uuid }, relations: ['admins'] });
   }
 }

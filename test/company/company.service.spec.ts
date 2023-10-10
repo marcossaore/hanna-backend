@@ -20,6 +20,7 @@ describe('Service: Company', () => {
           provide: getRepositoryToken(Company),
           useValue: {
             findOneBy: jest.fn().mockResolvedValue(companyEntityMock),
+            findOne: jest.fn().mockResolvedValue(companyEntityMock),
             save: jest.fn().mockResolvedValue((companyEntityMock))
           }
         }
@@ -113,16 +114,19 @@ describe('Service: Company', () => {
   });
 
   describe('FindByUuid', () => {
-    it('should call RepositoryCompany.findOneBy with correct uuid', async () => {
+    it('should call RepositoryCompany.findOne with correct values', async () => {
         await sutCompanyService.findByUuid('any_uuid');
-        expect(companyRepository.findOneBy).toHaveBeenCalledTimes(1);
-        expect(companyRepository.findOneBy).toHaveBeenCalledWith({
-            uuid: 'any_uuid'
+        expect(companyRepository.findOne).toHaveBeenCalledTimes(1);
+        expect(companyRepository.findOne).toHaveBeenCalledWith({
+            where: {
+                uuid: 'any_uuid'
+            },
+            relations: ['admins']
         });
     });
 
-    it('should throws if RepositoryCompany.findOneBy throws', async () => {
-        jest.spyOn(companyRepository, 'findOneBy').mockImplementationOnce(async() => {
+    it('should throws if RepositoryCompany.findOne throws', async () => {
+        jest.spyOn(companyRepository, 'findOne').mockImplementationOnce(async() => {
             throw new Error();
         });
         const promise = sutCompanyService.findByUuid('any_uuid');
@@ -130,7 +134,7 @@ describe('Service: Company', () => {
     });
 
     it('should return null if company not exists', async () => {
-        jest.spyOn(companyRepository, 'findOneBy').mockResolvedValueOnce(null);
+        jest.spyOn(companyRepository, 'findOne').mockResolvedValueOnce(null);
         const response = await sutCompanyService.findByUuid('any_uuid');
         expect(response).toEqual(null);
     });
