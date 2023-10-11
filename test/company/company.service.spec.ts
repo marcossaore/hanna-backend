@@ -5,6 +5,12 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Company } from '../../db/app/entities/company/company.entity';
 import { CompanyService } from '../../src/company/company.service';
 
+const mockError = () => {
+    const error = new Error('any_error');
+    error.stack = 'stack of any_error';
+    return error;
+}
+
 describe('Service: Company', () => {
   let sutCompanyService: CompanyService;
   let companyRepository: Repository<Company>;
@@ -142,6 +148,62 @@ describe('Service: Company', () => {
     it('should return a company when succeds', async () => {
         const response = await sutCompanyService.findByUuid('any_uuid');
         expect(response).toEqual(companyEntityMock);
+    });
+  });
+
+  describe('markAsProcessed', () => {
+    it('should call RepositoryCompany.findOne with correct values', async () => {
+        await sutCompanyService.markAsProcessed('any_uuid');
+        expect(companyRepository.findOne).toHaveBeenCalledTimes(1);
+        expect(companyRepository.findOne).toHaveBeenCalledWith({
+            where: {
+                uuid: 'any_uuid'
+            }
+        });
+    });
+
+    it('should throws if RepositoryCompany.findOne throws', async () => {
+        jest.spyOn(companyRepository, 'findOne').mockImplementationOnce(async() => {
+            throw new Error();
+        });
+        const promise = sutCompanyService.markAsProcessed('any_uuid');
+        await expect(promise).rejects.toThrow()
+    });
+
+    it('should call RepositoryCompany.save with correct values', async () => {
+        await sutCompanyService.markAsProcessed('any_uuid');
+        expect(companyRepository.save).toHaveBeenCalledTimes(1);
+        expect(companyRepository.save).toHaveBeenCalledWith(companyEntityMock);
+        expect(companyEntityMock.status).toBe('processed');
+    });
+  });
+
+  describe('markAsRejected', () => {
+    it('should call RepositoryCompany.findOne with correct values', async () => {
+        await sutCompanyService.markAsRejected('any_uuid', mockError());
+        expect(companyRepository.findOne).toHaveBeenCalledTimes(1);
+        expect(companyRepository.findOne).toHaveBeenCalledWith({
+            where: {
+                uuid: 'any_uuid'
+            }
+        });
+    });
+
+    it('should throws if RepositoryCompany.findOne throws', async () => {
+        jest.spyOn(companyRepository, 'findOne').mockImplementationOnce(async() => {
+            throw new Error();
+        });
+        const promise = sutCompanyService.markAsRejected('any_uuid', mockError());
+        await expect(promise).rejects.toThrow()
+    });
+
+    it('should call RepositoryCompany.save with correct values', async () => {
+        const error = mockError();
+        await sutCompanyService.markAsRejected('any_uuid', error);
+        expect(companyRepository.save).toHaveBeenCalledTimes(1);
+        expect(companyRepository.save).toHaveBeenCalledWith(companyEntityMock);
+        expect(companyEntityMock.status).toBe('rejected');
+        expect(companyEntityMock.error).toBe(error.stack);
     });
   });
 });
