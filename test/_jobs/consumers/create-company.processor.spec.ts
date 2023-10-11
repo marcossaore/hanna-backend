@@ -34,7 +34,9 @@ describe('Processor: CreateCompany', () => {
                 {
                     provide: CompanyService,
                     useValue: {
-                        findByUuid: jest.fn().mockResolvedValue(companyEntityMock)
+                        findByUuid: jest.fn().mockResolvedValue(companyEntityMock),
+                        markAsProcessed: jest.fn(),
+                        markAsRejected: jest.fn(),
                     }
                 },
                 {
@@ -199,19 +201,19 @@ describe('Processor: CreateCompany', () => {
         });
     })
 
-    // describe('onCompleted', () => {
-    //     it('should call CompanyService.markAsProcessed with correct values', () => {
-    //         sutCreateCompanyProcessor.onCompleted(mockJobData);
-    //         expect(companyService.markAsProcessed).toHaveBeenCalledTimes(1);
-    //         expect(companyService.markAsProcessed).toHaveBeenCalledWith('any_uuid');
-    //     });
-    // });
+    describe('onCompleted', () => {
+        it('should call CompanyService.markAsProcessed with correct values', () => {
+            sutCreateCompanyProcessor.onCompleted(mockJobData);
+            expect(companyService.markAsProcessed).toHaveBeenCalledTimes(1);
+            expect(companyService.markAsProcessed).toHaveBeenCalledWith('any_uuid');
+        });
+    });
 
-    // describe('onFailed', () => {
-    //     it('should call CompanyService.markAsRejected with correct values', () => {
-    //         sutCreateCompanyProcessor.onFailed(mockJobData, new Error('Some error occurs!'));
-    //         expect(companyService.markAsRejected).toHaveBeenCalledTimes(1);
-    //         expect(companyService.markAsRejected).toHaveBeenCalledWith('any_uuid', new Error('Some error occurs!'));
-    //     });
-    // })
+    describe('onFailed', () => {
+        it('should call CompanyService.markAsRejected with correct values', () => {
+            sutCreateCompanyProcessor.onFailed(mockJobData, new Error('Some error occurs!'));
+            expect(companyService.markAsRejected).toHaveBeenCalledTimes(1);
+            expect(companyService.markAsRejected).toHaveBeenCalledWith('any_uuid', new Error('Some error occurs!'));
+        });
+    })
 });

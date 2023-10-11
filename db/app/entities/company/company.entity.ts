@@ -47,4 +47,7 @@ export class Company extends AddDateColumns {
         onUpdate: 'CASCADE'
     })
     admins: AdminCompany[];
+    
+    @Column({ type: 'text', default: null, nullable: true })
+    error: string;
 }
