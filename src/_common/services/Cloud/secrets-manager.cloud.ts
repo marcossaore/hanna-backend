@@ -38,6 +38,7 @@ export class SecretsManagerCloud {
 
     async get (key: string) {
         const getSecret = new GetSecretValueCommand({ SecretId: key });
-        return await this.service.send(getSecret);
+        const { SecretString } = await this.service.send(getSecret);
+        return SecretString;
     }
 }

@@ -32,12 +32,6 @@ export class Company extends AddDateColumns {
     @Column({ nullable: false })
     email: string;
 
-    @Column({ nullable: false })
-    apiToken: string;
-
-    @Column({ default: null })
-    db: string;
-
     @Column({ default: null })
     dbUser: string;
 

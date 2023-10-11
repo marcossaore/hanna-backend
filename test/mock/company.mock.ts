@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker';
 import { CreateCompanyDto } from '../../src/company/dto/create-company.dto';
 import { CreateCompanyToEntity } from '../../src/company/dto/create-company-to-entity.dto';
-import { Company } from '../../src/company/entities/company.entity';
-import { AdminCompany } from '../../src/company/entities/admin-company.entity';
+import { Company } from '../../db/app/entities/company/company.entity';
+import { AdminCompany } from '../../db/app/entities/company/admin-company.entity';
 import { CompanyStatus } from '../../src/_common/enums/company-status.enum';
 import { AdminCompany as AddCompanyInterface } from '../../src/company/admin/admin-company';
 
@@ -50,8 +50,6 @@ export const mockCompanyEntity = ({ document = null, partnerDocument = null, pho
     email: email || faker.internet.email(),
     uuid: faker.string.uuid(),
     id: faker.number.int(),
-    apiToken: faker.string.uuid(),
-    db: faker.company.buzzNoun(),
     dbPass: faker.string.alphanumeric({ length: 6}),
     dbUser: faker.string.alphanumeric({ length: 6}),
     createdAt: faker.date.anytime(),

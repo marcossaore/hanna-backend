@@ -7,4 +7,8 @@ export class SecretsService {
     async save (key: string, data: string) {
         this.secretsManager.save(key, data);
     }
+
+    async get (key: string) {
+        return this.secretsManager.get(key);
+    }
 }

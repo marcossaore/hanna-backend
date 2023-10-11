@@ -5,6 +5,7 @@ import { CompanyService } from '../../../src/company/company.service';
 import { GenerateDbCredentialsService } from '../../_common/services/Database/generate-db-credentials.service';
 import { CreateDatabaseService } from '../../_common/services/Database/create-database.service';
 import { SecretsService } from '../../_common/services/Secret/secrets-service';
+import { MigrationsCompanyService } from '../../_common/services/Database/migrations-company.service';
 import { MailService } from '../../mail/mail.service';
 
 @Injectable()
@@ -16,7 +17,8 @@ export class CreateCompanyProcessor {
         private readonly generateDbCredentialsService: GenerateDbCredentialsService,
         private readonly createDatabaseService: CreateDatabaseService,
         private readonly secretsService: SecretsService,
-        private readonly mailService: MailService
+        private readonly migrationsCompanyService: MigrationsCompanyService,
+        private readonly mailService: MailService,
     ){}
 
     @Process()
@@ -35,6 +37,8 @@ export class CreateCompanyProcessor {
             })
         );
 
+        await this.migrationsCompanyService.run(company.companyIdentifier);
+
         this.mailService.send({
             to: company.email,
             subject: 'Conta criada com sucesso!',
@@ -50,5 +54,16 @@ export class CreateCompanyProcessor {
                 })
             }
         });
+    }
+
+    @OnQueueCompleted()
+    onCompleted(job: Job) {
+        this.companyService.markAsProcessed(job.data.uuid);
+    }
+  
+    @OnQueueFailed()
+    onFailed(job: Job, error: Error) {
+        console.log('error', error)
+        this.companyService.markAsRejected(job.data.uuid, error);
     }
 }

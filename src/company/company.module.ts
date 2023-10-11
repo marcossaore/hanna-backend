@@ -3,7 +3,7 @@ import { BullModule } from '@nestjs/bull';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CompanyController } from './company.controller';
 import { ConfigService } from '@nestjs/config';
-import { Company } from './entities/company.entity';
+import { Company } from '../../db/app/entities/company/company.entity';
 import { AdminCompaniesValidator } from 'src/company/admin/admin-companies.validator';
 import { CompanyService } from './company.service';
 import { GenerateUuidService } from '../_common/services/Uuid/generate-uuid-service';
