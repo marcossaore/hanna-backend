@@ -63,7 +63,6 @@ export class CreateCompanyProcessor {
   
     @OnQueueFailed()
     onFailed(job: Job, error: Error) {
-        console.log('error', error)
         this.companyService.markAsRejected(job.data.uuid, error);
     }
 }

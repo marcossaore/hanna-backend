@@ -32,12 +32,6 @@ export class Company extends AddDateColumns {
     @Column({ nullable: false })
     email: string;
 
-    @Column({ default: null })
-    dbUser: string;
-
-    @Column({ default: null })
-    dbPass: string;
-
     @Column({ type: 'enum', enum: CompanyStatus, default: CompanyStatus.PENDING })
     status: CompanyStatus;
 
@@ -49,5 +43,5 @@ export class Company extends AddDateColumns {
     admins: AdminCompany[];
     
     @Column({ type: 'text', default: null, nullable: true })
-    error: string;
+    error?: string;
 }

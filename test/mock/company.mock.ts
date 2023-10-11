@@ -50,8 +50,6 @@ export const mockCompanyEntity = ({ document = null, partnerDocument = null, pho
     email: email || faker.internet.email(),
     uuid: faker.string.uuid(),
     id: faker.number.int(),
-    dbPass: faker.string.alphanumeric({ length: 6}),
-    dbUser: faker.string.alphanumeric({ length: 6}),
     createdAt: faker.date.anytime(),
     updatedAt: faker.date.anytime(),
     status: CompanyStatus.PENDING,

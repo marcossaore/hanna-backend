@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Company } from '../../db/app/entities/company/company.entity';
+import { CompanyStatus } from '../_common/enums/company-status.enum';
 import { CreateCompanyToEntity } from './dto/create-company-to-entity.dto';
 
 @Injectable()
@@ -29,11 +30,16 @@ export class CompanyService {
     return this.companyRepository.findOne({ where: { uuid }, relations: ['admins'] });
   }
 
-  async markAsProcessed(uuid: string): Promise<Company> {
-    return null;
+  async markAsProcessed(uuid: string): Promise<void> {
+    const company = await this.companyRepository.findOne({ where: { uuid }});
+    company.status = CompanyStatus.PROCESSED;
+    this.companyRepository.save(company);
   }
 
-  async markAsRejected(uuid: string, error: Error): Promise<Company> {
-    return null;
+  async markAsRejected(uuid: string, error: Error): Promise<void> {
+    const company = await this.companyRepository.findOne({ where: { uuid }});
+    company.status = CompanyStatus.REJECTED;
+    company.error = error.stack;
+    this.companyRepository.save(company);
   }
 }
