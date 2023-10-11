@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import companiesMigrations from "db/companies/companies.migrations";
+import companiesMigrations from "../../../../db/companies/companies.migrations";
 import { createConnection } from "typeorm";
 
 @Injectable()
