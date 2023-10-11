@@ -23,37 +23,42 @@ export class CreateCompanyProcessor {
 
     @Process()
     async handleJob(job: Job) {
-        const company = await this.companyService.findByUuid(job.data.uuid);
-        const credentials = this.generateDbCredentialsService.generate(company.name);
-        await this.createDatabaseService.create({
-            db: company.companyIdentifier,
-            ...credentials
-        });
 
-        this.secretsService.save(
-            company.companyIdentifier,    
-            JSON.stringify({
+        try {            
+            const company = await this.companyService.findByUuid(job.data.uuid);
+            const credentials = this.generateDbCredentialsService.generate(company.name);
+            await this.createDatabaseService.create({
+                db: company.companyIdentifier,
                 ...credentials
-            })
-        );
-
-        await this.migrationsCompanyService.run(company.companyIdentifier);
-
-        this.mailService.send({
-            to: company.email,
-            subject: 'Conta criada com sucesso!',
-            template: 'company-account-create',
-            data: {
-                name: company.name,
-                document: company.document,
-                admins: company.admins.map(( { name, email} ) => {
-                    return {
-                        name,
-                        email
-                    }
+            });
+    
+            await this.secretsService.save(
+                company.companyIdentifier,    
+                JSON.stringify({
+                    ...credentials
                 })
-            }
-        });
+            );
+    
+            await this.migrationsCompanyService.run(company.companyIdentifier);
+    
+            await this.mailService.send({
+                to: company.email,
+                subject: 'Conta criada com sucesso!',
+                template: 'company-account-create',
+                data: {
+                    name: company.name,
+                    document: company.document,
+                    admins: company.admins.map(( { name, email} ) => {
+                        return {
+                            name,
+                            email
+                        }
+                    })
+                }
+            });
+        } catch (error) {
+           throw error; 
+        }
     }
 
     @OnQueueCompleted()
