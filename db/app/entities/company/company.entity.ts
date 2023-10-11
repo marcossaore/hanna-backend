@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { CompanyStatus } from '../../_common/enums/company-status.enum';
-import { AddDateColumns } from '../../_common/entity-partials/add-date-columns';
+import { CompanyStatus } from '../../../../src/_common/enums/company-status.enum';
+import { AddDateColumns } from '../../../partials/add-date-columns';
 import { AdminCompany } from './admin-company.entity';
 
 @Entity('company')

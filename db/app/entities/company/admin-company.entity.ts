@@ -1,5 +1,5 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
-import { AddDateColumns } from '../../_common/entity-partials/add-date-columns';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { AddDateColumns } from '../../../partials/add-date-columns';
 import { Company } from './company.entity';
 
 @Entity('admin_company')

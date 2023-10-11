@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Company } from './entities/company.entity';
+import { Company } from '../../db/app/entities/company/company.entity';
 import { CreateCompanyToEntity } from './dto/create-company-to-entity.dto';
 
 @Injectable()
@@ -27,5 +27,13 @@ export class CompanyService {
 
   async findByUuid(uuid: string): Promise<Company> {
     return this.companyRepository.findOne({ where: { uuid }, relations: ['admins'] });
+  }
+
+  async markAsProcessed(uuid: string): Promise<Company> {
+    return null;
+  }
+
+  async markAsRejected(uuid: string, error: Error): Promise<Company> {
+    return null;
   }
 }
