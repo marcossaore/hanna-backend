@@ -3,14 +3,12 @@ import { HttpException } from '@nestjs/common';
 import { Queue } from 'bull';
 import { BullModule, getQueueToken } from '@nestjs/bull';
 import { mockCompanyEntity, mockCreateCompanyDto } from '../mock/company.mock';
-import { AdminCompaniesValidator } from '../../src/company/admin/admin-companies.validator';
 import { CompanyService } from '../../src/company/company.service';
 import { GenerateUuidService } from '../../src/_common/services/Uuid/generate-uuid-service';
 import { CompanyController } from '../../src/company/company.controller';
 
 describe('Controller: Company', () => {
   let sutCompanyController: CompanyController;
-  let adminCompaniesValidator: AdminCompaniesValidator;
   let companyService: CompanyService;
   let generateUuidService: GenerateUuidService;
   let createCompanyQueue: Queue;
@@ -25,12 +23,6 @@ describe('Controller: Company', () => {
         ],
         controllers: [CompanyController],
         providers: [
-            {
-                provide: AdminCompaniesValidator,
-                useValue: {
-                    handle: jest.fn().mockResolvedValue(Promise.resolve())
-                }
-            },
             {
             provide: CompanyService,
                 useValue: {
@@ -54,7 +46,6 @@ describe('Controller: Company', () => {
     .compile();
 
     sutCompanyController = module.get<CompanyController>(CompanyController);
-    adminCompaniesValidator = module.get<AdminCompaniesValidator>(AdminCompaniesValidator);
     companyService = module.get<CompanyService>(CompanyService);
     generateUuidService = module.get<GenerateUuidService>(GenerateUuidService);
     createCompanyQueue = module.get<Queue>(getQueueToken('create-company'));
@@ -65,20 +56,6 @@ describe('Controller: Company', () => {
   })
 
   describe('CREATE', () => {
-
-    it('should call AdminCompaniesValidator.handle with correct values', async () => {
-        const data = mockCreateCompanyDto()
-        await sutCompanyController.create(data);
-        expect(adminCompaniesValidator.handle).toHaveBeenCalledTimes(1);
-        expect(adminCompaniesValidator.handle).toHaveBeenCalledWith(data.admins);
-    });
-  
-    it('should throws if AdminCompaniesValidator.handle return errors', async () => {
-        const data = mockCreateCompanyDto();
-        jest.spyOn(adminCompaniesValidator, 'handle').mockResolvedValueOnce(Promise.resolve(new HttpException('some_exception', 1)));
-        const promise = sutCompanyController.create(data);
-        await expect(promise).rejects.toThrow(new Error('some_exception'));
-    });
   
     it('should call CompanyService.exists with correct document', async () => {
       const data = mockCreateCompanyDto()

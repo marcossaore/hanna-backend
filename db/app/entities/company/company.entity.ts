@@ -1,7 +1,6 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { CompanyStatus } from '../../../../src/_common/enums/company-status.enum';
 import { AddDateColumns } from '../../../partials/add-date-columns';
-import { AdminCompany } from './admin-company.entity';
 
 @Entity('company')
 export class Company extends AddDateColumns {
@@ -35,13 +34,6 @@ export class Company extends AddDateColumns {
     @Column({ type: 'enum', enum: CompanyStatus, default: CompanyStatus.PENDING })
     status: CompanyStatus;
 
-    @OneToMany(() => AdminCompany, (adminCompany: AdminCompany) => adminCompany.company, {
-        cascade: true,
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
-    })
-    admins: AdminCompany[];
-    
     @Column({ type: 'text', default: null, nullable: true })
     error?: string;
 }

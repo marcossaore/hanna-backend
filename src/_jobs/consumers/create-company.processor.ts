@@ -48,12 +48,8 @@ export class CreateCompanyProcessor {
                 data: {
                     name: company.name,
                     document: company.document,
-                    admins: company.admins.map(( { name, email} ) => {
-                        return {
-                            name,
-                            email
-                        }
-                    })
+                    partnerName: company.partnerName,
+                    email: company.email
                 }
             });
         } catch (error) {

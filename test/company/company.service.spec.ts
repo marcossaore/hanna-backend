@@ -126,8 +126,7 @@ describe('Service: Company', () => {
         expect(companyRepository.findOne).toHaveBeenCalledWith({
             where: {
                 uuid: 'any_uuid'
-            },
-            relations: ['admins']
+            }
         });
     });
 

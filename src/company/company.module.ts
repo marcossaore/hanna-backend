@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CompanyController } from './company.controller';
 import { ConfigService } from '@nestjs/config';
 import { Company } from '../../db/app/entities/company/company.entity';
-import { AdminCompaniesValidator } from 'src/company/admin/admin-companies.validator';
 import { CompanyService } from './company.service';
 import { GenerateUuidService } from '../_common/services/Uuid/generate-uuid-service';
 import { CreateCompanyProcessorModule } from 'src/_jobs/consumers/create-company.processor.module';
@@ -27,7 +26,6 @@ import { CreateCompanyProcessorModule } from 'src/_jobs/consumers/create-company
     ],
     controllers: [CompanyController],
     providers: [
-        AdminCompaniesValidator, 
         CompanyService, 
         GenerateUuidService
     ]

@@ -178,16 +178,8 @@ describe('Processor: CreateCompany', () => {
                 data: {
                     name: companyEntityMock.name,
                     document: companyEntityMock.document,
-                    admins : [
-                        {
-                            name: companyEntityMock.admins[0].name,
-                            email: companyEntityMock.admins[0].email
-                        },
-                        {
-                            name: companyEntityMock.admins[1].name,
-                            email: companyEntityMock.admins[1].email
-                        }
-                    ]
+                    partnerName: companyEntityMock.partnerName,
+                    email: companyEntityMock.email
                 }
             });
         });
