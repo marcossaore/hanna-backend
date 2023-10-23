@@ -9,17 +9,24 @@ export class CalculateRequestTimeInterceptor implements NestInterceptor {
     const request = ctx.getRequest();
     const response = ctx.getResponse();
     return next.handle().pipe(map(data => { 
+        if (data instanceof(Array)) {
+            data = [
+                ...data
+            ]
+        }else {
+            data = {
+                ...data
+            }
+        }
         const result = {
             requestTime: `${Date.now() - request.requestTime}ms`,
             message: undefined,
             status: true,
             statusCode: response.statusCode,
-            data: {
-                ...data
-            }
+            data
         };
 
-        if (result.data.infoMessage) {
+        if (result?.data?.infoMessage) {
             result.message = result.data.infoMessage;
             result.data.infoMessage = undefined;
         }
