@@ -7,6 +7,8 @@ import { CreateDatabaseService } from '../../_common/services/Database/create-da
 import { SecretsService } from '../../_common/services/Secret/secrets-service';
 import { MigrationsCompanyService } from '../../_common/services/Database/migrations-company.service';
 import { MailService } from '../../mail/mail.service';
+import { ActionServiceSeed } from '../../../db/companies/seeds/action.service.seed';
+import { ModuleServiceSeed } from '../../../db/companies/seeds/module.service.seed';
 
 @Injectable()
 @Processor('create-company')
@@ -18,6 +20,8 @@ export class CreateCompanyProcessor {
         private readonly createDatabaseService: CreateDatabaseService,
         private readonly secretsService: SecretsService,
         private readonly migrationsCompanyService: MigrationsCompanyService,
+        private readonly actionServiceSeed: ActionServiceSeed,
+        private readonly moduleServiceSeed: ModuleServiceSeed,
         private readonly mailService: MailService,
     ){}
 
@@ -40,6 +44,9 @@ export class CreateCompanyProcessor {
             );
     
             await this.migrationsCompanyService.run(company.companyIdentifier);
+
+            await this.actionServiceSeed.seed(company.companyIdentifier);
+            await this.moduleServiceSeed.seed(company.companyIdentifier);
     
             await this.mailService.send({
                 to: company.email,

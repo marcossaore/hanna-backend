@@ -21,12 +21,12 @@ export class MigrationsCompanyService {
             migrationsRun: true
         });
 
-         try {
+        try {
             await connection.runMigrations();
-          } catch (error) {
+        } catch (error) {
             throw error;
-          } finally {
+        } finally {
             await connection.close();
-          }
+        }
     }
 }

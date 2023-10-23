@@ -8,6 +8,8 @@ import { CreateCompanyProcessor } from '../../../src/_jobs/consumers/create-comp
 import { SecretsService } from '../../../src/_common/services/Secret/secrets-service';
 import { MigrationsCompanyService } from '../../../src/_common/services/Database/migrations-company.service';
 import { MailService } from '../../../src/mail/mail.service';
+import { ActionServiceSeed } from '../../../db/companies/seeds/action.service.seed';
+import { ModuleServiceSeed } from '../../../db/companies/seeds/module.service.seed';
 
 const mockJobData: any = { 
     data: { 
@@ -22,6 +24,8 @@ describe('Processor: CreateCompany', () => {
     let generateDbCredentialsService: GenerateDbCredentialsService;
     let createDataBaseService: CreateDatabaseService;
     let secretsService: SecretsService;
+    let actionServiceSeed: ActionServiceSeed;
+    let moduleServiceSeed: ModuleServiceSeed;
     let mailService: MailService;
     let migrationsCompanyService: MigrationsCompanyService;
 
@@ -67,6 +71,18 @@ describe('Processor: CreateCompany', () => {
                     }
                 },
                 {
+                    provide: ActionServiceSeed,
+                    useValue: {
+                        seed: jest.fn()
+                    }
+                },
+                {
+                    provide: ModuleServiceSeed,
+                    useValue: {
+                        seed: jest.fn()
+                    }
+                },
+                {
                     provide: MailService,
                     useValue: {
                         send: jest.fn().mockResolvedValue(true)
@@ -81,6 +97,8 @@ describe('Processor: CreateCompany', () => {
         generateDbCredentialsService = module.get<GenerateDbCredentialsService>(GenerateDbCredentialsService);
         createDataBaseService = module.get<CreateDatabaseService>(CreateDatabaseService);
         secretsService = module.get<SecretsService>(SecretsService);
+        actionServiceSeed = module.get<ActionServiceSeed>(ActionServiceSeed);
+        moduleServiceSeed = module.get<ModuleServiceSeed>(ModuleServiceSeed);
         mailService = module.get<MailService>(MailService);
         migrationsCompanyService = module.get<MigrationsCompanyService>(MigrationsCompanyService);
     });
@@ -167,7 +185,34 @@ describe('Processor: CreateCompany', () => {
             await expect(promise).rejects.toThrow();
         });
 
-    
+        it('should call ActionServiceSeed.seed with correct database name', async () => {
+            await sutCreateCompanyProcessor.handleJob(mockJobData);
+            expect(actionServiceSeed.seed).toHaveBeenCalledTimes(1);
+            expect(actionServiceSeed.seed).toHaveBeenCalledWith(companyEntityMock.companyIdentifier);
+        });
+
+        it('should throws if ActionServiceSeed.seed throws', async () => {
+            jest.spyOn(actionServiceSeed, 'seed').mockImplementationOnce(() => {
+                throw new Error();
+            });
+            const promise = sutCreateCompanyProcessor.handleJob(mockJobData);
+            await expect(promise).rejects.toThrow();
+        });
+
+        it('should call ModuleServiceSeed.seed with correct database name', async () => {
+            await sutCreateCompanyProcessor.handleJob(mockJobData);
+            expect(moduleServiceSeed.seed).toHaveBeenCalledTimes(1);
+            expect(moduleServiceSeed.seed).toHaveBeenCalledWith(companyEntityMock.companyIdentifier);
+        });
+
+        it('should throws if ModuleServiceSeed.seed throws', async () => {
+            jest.spyOn(moduleServiceSeed, 'seed').mockImplementationOnce(() => {
+                throw new Error();
+            });
+            const promise = sutCreateCompanyProcessor.handleJob(mockJobData);
+            await expect(promise).rejects.toThrow();
+        });
+
         it('should call MailService.send with correct values', async () => {
             await sutCreateCompanyProcessor.handleJob(mockJobData);
             expect(mailService.send).toHaveBeenCalledTimes(1);
