@@ -15,6 +15,8 @@ import { MigrationsCompanyService } from '../../_common/services/Database/migrat
 import { ActionServiceSeed } from '../../../db/companies/seeds/action.service.seed';
 import { ModuleServiceSeed } from '../../../db/companies/seeds/module.service.seed';
 import { ActionModule } from '../../../db/companies/entities/module/action-module.entity';
+import { AddFirstUserAsAdminService } from '../../_common/services/Database/add-first-user-as-admin.service';
+import { GenerateUuidService } from '../../_common/services/Uuid/generate-uuid-service';
 
 @Module({
     imports: [
@@ -70,6 +72,15 @@ import { ActionModule } from '../../../db/companies/entities/module/action-modul
             useFactory (configService: ConfigService) {
                 const databaseOptions = configService.get('database');
                 return new ModuleServiceSeed(databaseOptions);
+            }
+        },
+        GenerateUuidService,
+        {
+            inject: [ConfigService],
+            provide: AddFirstUserAsAdminService,
+            useFactory (configService: ConfigService) {
+                const databaseOptions = configService.get('database');
+                return new AddFirstUserAsAdminService(databaseOptions);
             }
         },
         MailService,

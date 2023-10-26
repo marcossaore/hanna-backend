@@ -1,4 +1,4 @@
-import { Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { AddDateColumns } from '../../../partials/add-date-columns';
 import { Module } from '../module/module.entity';
 import { User } from './user.entity';
@@ -13,7 +13,11 @@ export class UserPermission extends AddDateColumns {
     @ManyToOne(() => User, (user: User) => user.permissions)
     user: User;
 
-    @ManyToOne(() => Module, (module: Module) => module.id)
+    @ManyToOne(() => Module, (module: Module) => module.id, {
+        cascade: true,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    })
     module: Module;
 
     @ManyToMany(() => ActionModule, (action: ActionModule) => action.id, {

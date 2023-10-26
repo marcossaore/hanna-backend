@@ -8,7 +8,6 @@ export class MigrationsCompanyService {
 
     async run (databaseName: string) {
         const connection = await createConnection({
-            logging: true,
             migrationsTransactionMode: 'all',
             type: 'mysql',
             host: this.dbConfig.host,

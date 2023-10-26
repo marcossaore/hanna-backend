@@ -1,13 +1,13 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class Init1698094465192 implements MigrationInterface {
-    name = 'Init1698094465192'
+export class Init1698283899376 implements MigrationInterface {
+    name = 'Init1698283899376'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`CREATE TABLE \`option_module\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`name\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
-        await queryRunner.query(`CREATE TABLE \`module\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`name\` varchar(255) NOT NULL, \`parentId\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
-        await queryRunner.query(`CREATE TABLE \`action_module\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`name\` varchar(255) NOT NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
-        await queryRunner.query(`CREATE TABLE \`user\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`uuid\` varchar(255) NOT NULL, \`name\` varchar(255) NOT NULL, \`email\` varchar(255) NOT NULL, \`phone\` varchar(255) NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`option_module\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`name\` varchar(255) NOT NULL, UNIQUE INDEX \`IDX_5bf19b1f43cf4f22f480c61e01\` (\`name\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`module\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`name\` varchar(255) NOT NULL, \`parentId\` int NULL, UNIQUE INDEX \`IDX_620a549dbcb1fff62ea85695ca\` (\`name\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`action_module\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`name\` varchar(255) NOT NULL, UNIQUE INDEX \`IDX_4a069e90199bc86c60f37039a4\` (\`name\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`user\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`uuid\` varchar(255) NOT NULL, \`name\` varchar(255) NOT NULL, \`email\` varchar(255) NOT NULL, \`phone\` varchar(255) NULL, UNIQUE INDEX \`IDX_a95e949168be7b7ece1a2382fe\` (\`uuid\`), UNIQUE INDEX \`IDX_e12875dfb3b1d92d7d7c5377e2\` (\`email\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`user_permission\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`userId\` int NULL, \`moduleId\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`module_actions\` (\`moduleId\` int NOT NULL, \`action\` int NOT NULL, INDEX \`IDX_7f84769243b71b6455da85750a\` (\`moduleId\`), INDEX \`IDX_70a583a6b8315fca11a3ebcc20\` (\`action\`), PRIMARY KEY (\`moduleId\`, \`action\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`module_options\` (\`moduleId\` int NOT NULL, \`option\` int NOT NULL, INDEX \`IDX_7fc95ecd93b319db7c9759877a\` (\`moduleId\`), INDEX \`IDX_80c3253eb1450bf2315d7e7350\` (\`option\`), PRIMARY KEY (\`moduleId\`, \`option\`)) ENGINE=InnoDB`);
@@ -16,7 +16,7 @@ export class Init1698094465192 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE \`module_closure\` (\`id_ancestor\` int NOT NULL, \`id_descendant\` int NOT NULL, INDEX \`IDX_e59b47eb805b4e8c294d25df7d\` (\`id_ancestor\`), INDEX \`IDX_b62efd465e71f13a8d8a828984\` (\`id_descendant\`), PRIMARY KEY (\`id_ancestor\`, \`id_descendant\`)) ENGINE=InnoDB`);
         await queryRunner.query(`ALTER TABLE \`module\` ADD CONSTRAINT \`FK_3477e0c46c6a35a23b16792f002\` FOREIGN KEY (\`parentId\`) REFERENCES \`module\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`user_permission\` ADD CONSTRAINT \`FK_deb59c09715314aed1866e18a81\` FOREIGN KEY (\`userId\`) REFERENCES \`user\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE \`user_permission\` ADD CONSTRAINT \`FK_8387da744c918249f2a7b449067\` FOREIGN KEY (\`moduleId\`) REFERENCES \`module\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`user_permission\` ADD CONSTRAINT \`FK_8387da744c918249f2a7b449067\` FOREIGN KEY (\`moduleId\`) REFERENCES \`module\`(\`id\`) ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE \`module_actions\` ADD CONSTRAINT \`FK_7f84769243b71b6455da85750a3\` FOREIGN KEY (\`moduleId\`) REFERENCES \`module\`(\`id\`) ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE \`module_actions\` ADD CONSTRAINT \`FK_70a583a6b8315fca11a3ebcc208\` FOREIGN KEY (\`action\`) REFERENCES \`action_module\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`module_options\` ADD CONSTRAINT \`FK_7fc95ecd93b319db7c9759877a8\` FOREIGN KEY (\`moduleId\`) REFERENCES \`module\`(\`id\`) ON DELETE CASCADE ON UPDATE CASCADE`);
@@ -59,9 +59,14 @@ export class Init1698094465192 implements MigrationInterface {
         await queryRunner.query(`DROP INDEX \`IDX_7f84769243b71b6455da85750a\` ON \`module_actions\``);
         await queryRunner.query(`DROP TABLE \`module_actions\``);
         await queryRunner.query(`DROP TABLE \`user_permission\``);
+        await queryRunner.query(`DROP INDEX \`IDX_e12875dfb3b1d92d7d7c5377e2\` ON \`user\``);
+        await queryRunner.query(`DROP INDEX \`IDX_a95e949168be7b7ece1a2382fe\` ON \`user\``);
         await queryRunner.query(`DROP TABLE \`user\``);
+        await queryRunner.query(`DROP INDEX \`IDX_4a069e90199bc86c60f37039a4\` ON \`action_module\``);
         await queryRunner.query(`DROP TABLE \`action_module\``);
+        await queryRunner.query(`DROP INDEX \`IDX_620a549dbcb1fff62ea85695ca\` ON \`module\``);
         await queryRunner.query(`DROP TABLE \`module\``);
+        await queryRunner.query(`DROP INDEX \`IDX_5bf19b1f43cf4f22f480c61e01\` ON \`option_module\``);
         await queryRunner.query(`DROP TABLE \`option_module\``);
     }
 

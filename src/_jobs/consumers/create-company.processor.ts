@@ -6,9 +6,11 @@ import { GenerateDbCredentialsService } from '../../_common/services/Database/ge
 import { CreateDatabaseService } from '../../_common/services/Database/create-database.service';
 import { SecretsService } from '../../_common/services/Secret/secrets-service';
 import { MigrationsCompanyService } from '../../_common/services/Database/migrations-company.service';
+import { AddFirstUserAsAdminService } from '../../_common/services/Database/add-first-user-as-admin.service';
 import { MailService } from '../../mail/mail.service';
 import { ActionServiceSeed } from '../../../db/companies/seeds/action.service.seed';
 import { ModuleServiceSeed } from '../../../db/companies/seeds/module.service.seed';
+import { GenerateUuidService } from '../../_common/services/Uuid/generate-uuid-service';
 
 @Injectable()
 @Processor('create-company')
@@ -22,6 +24,8 @@ export class CreateCompanyProcessor {
         private readonly migrationsCompanyService: MigrationsCompanyService,
         private readonly actionServiceSeed: ActionServiceSeed,
         private readonly moduleServiceSeed: ModuleServiceSeed,
+        private readonly addFirstUserAsAdminService: AddFirstUserAsAdminService,
+        private readonly generateUuidService: GenerateUuidService,
         private readonly mailService: MailService,
     ){}
 
@@ -47,6 +51,15 @@ export class CreateCompanyProcessor {
 
             await this.actionServiceSeed.seed(company.companyIdentifier);
             await this.moduleServiceSeed.seed(company.companyIdentifier);
+
+            const uuid = this.generateUuidService.generate();
+
+            await this.addFirstUserAsAdminService.add(company.companyIdentifier, {
+                uuid,
+                name: company.partnerName,
+                email: company.email,
+                phone: company.phone
+            });
     
             await this.mailService.send({
                 to: company.email,
