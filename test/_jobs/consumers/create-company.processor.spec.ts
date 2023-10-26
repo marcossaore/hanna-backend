@@ -10,6 +10,8 @@ import { MigrationsCompanyService } from '../../../src/_common/services/Database
 import { MailService } from '../../../src/mail/mail.service';
 import { ActionServiceSeed } from '../../../db/companies/seeds/action.service.seed';
 import { ModuleServiceSeed } from '../../../db/companies/seeds/module.service.seed';
+import { GenerateUuidService } from '../../../src/_common/services/Uuid/generate-uuid-service';
+import { AddFirstUserAsAdminService } from '../../../src/_common/services/Database/add-first-user-as-admin.service';
 
 const mockJobData: any = { 
     data: { 
@@ -27,6 +29,8 @@ describe('Processor: CreateCompany', () => {
     let actionServiceSeed: ActionServiceSeed;
     let moduleServiceSeed: ModuleServiceSeed;
     let mailService: MailService;
+    let generateUuidService: GenerateUuidService;
+    let addFirstUserAsAdminService: AddFirstUserAsAdminService;
     let migrationsCompanyService: MigrationsCompanyService;
 
     beforeEach(async () => {
@@ -83,6 +87,18 @@ describe('Processor: CreateCompany', () => {
                     }
                 },
                 {
+                    provide: GenerateUuidService,
+                    useValue: {
+                        generate: jest.fn().mockReturnValue('any_uuid')
+                    }
+                },
+                {
+                    provide: AddFirstUserAsAdminService,
+                    useValue: {
+                        add: jest.fn()
+                    }
+                },
+                {
                     provide: MailService,
                     useValue: {
                         send: jest.fn().mockResolvedValue(true)
@@ -99,6 +115,8 @@ describe('Processor: CreateCompany', () => {
         secretsService = module.get<SecretsService>(SecretsService);
         actionServiceSeed = module.get<ActionServiceSeed>(ActionServiceSeed);
         moduleServiceSeed = module.get<ModuleServiceSeed>(ModuleServiceSeed);
+        generateUuidService = module.get<GenerateUuidService>(GenerateUuidService);
+        addFirstUserAsAdminService = module.get<AddFirstUserAsAdminService>(AddFirstUserAsAdminService);
         mailService = module.get<MailService>(MailService);
         migrationsCompanyService = module.get<MigrationsCompanyService>(MigrationsCompanyService);
     });
@@ -212,6 +230,42 @@ describe('Processor: CreateCompany', () => {
             const promise = sutCreateCompanyProcessor.handleJob(mockJobData);
             await expect(promise).rejects.toThrow();
         });
+
+        it('should call GenerateUuidService.generate', async () => {
+            await sutCreateCompanyProcessor.handleJob(mockJobData);
+            expect(generateUuidService.generate).toHaveBeenCalledTimes(1);
+        });
+        
+        it('should throws if GenerateUuidService.seed throws', async () => {
+            jest.spyOn(generateUuidService, 'generate').mockImplementationOnce(() => {
+                throw new Error();
+            });
+            const promise = sutCreateCompanyProcessor.handleJob(mockJobData);
+            await expect(promise).rejects.toThrow();
+        });
+
+        it('should call AddFirstUserAsAdminService.add', async () => {
+            await sutCreateCompanyProcessor.handleJob(mockJobData);
+            expect(addFirstUserAsAdminService.add).toHaveBeenCalledTimes(1);
+            expect(addFirstUserAsAdminService.add).toHaveBeenCalledWith(
+                companyEntityMock.companyIdentifier, 
+                {
+                    uuid: 'any_uuid',
+                    name: companyEntityMock.partnerName,
+                    email: companyEntityMock.email,
+                    phone: companyEntityMock.phone
+                }
+            );
+        });
+
+        it('should throws if AddFirstUserAsAdminService.add throws', async () => {
+            jest.spyOn(addFirstUserAsAdminService, 'add').mockImplementationOnce(() => {
+                throw new Error();
+            });
+            const promise = sutCreateCompanyProcessor.handleJob(mockJobData);
+            await expect(promise).rejects.toThrow();
+        });
+
 
         it('should call MailService.send with correct values', async () => {
             await sutCreateCompanyProcessor.handleJob(mockJobData);
