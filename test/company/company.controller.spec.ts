@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HttpException } from '@nestjs/common';
 import { Queue } from 'bull';
 import { BullModule, getQueueToken } from '@nestjs/bull';
 import { mockCompanyEntity, mockCreateCompanyDto } from '../mock/company.mock';
@@ -106,7 +105,7 @@ describe('Controller: Company', () => {
     it('should call GenerateUuidService.generate twice: to uuid and apiToken for company entity', async () => {
       const data = mockCreateCompanyDto();
       await sutCompanyController.create(data);
-      expect(generateUuidService.generate).toHaveBeenCalledTimes(2);
+      expect(generateUuidService.generate).toHaveBeenCalledTimes(1);
     });
 
     it('should call CompanyService.create with correct values', async () => {
@@ -115,7 +114,6 @@ describe('Controller: Company', () => {
       expect(companyService.create).toHaveBeenCalledTimes(1);
       expect(companyService.create).toHaveBeenCalledWith({
         ...data,
-        apiToken: 'any_uuid',
         uuid: 'any_uuid'
       });
     });

@@ -37,12 +37,10 @@ export class CompanyController {
     }
 
     const uuid = this.generateUuidService.generate();
-    const apiToken = this.generateUuidService.generate();
 
     const newCompany = await this.companyService.create({
         ...createCompanyDto,
-        uuid,
-        apiToken
+        uuid
     });
 
     try {

@@ -22,8 +22,7 @@ export const mockCreateCompanyToEntityDto = ({ document = null, partnerDocument 
     companyIdentifier: companyIdentifier || faker.string.alphanumeric({ length: 10 }),
     phone: phone || faker.string.numeric({ length: 11 }),
     email: email || faker.internet.email(),
-    uuid: faker.string.uuid(),
-    apiToken: faker.string.uuid(),
+    uuid: faker.string.uuid()
 });
 
 export const mockCompanyEntity = ({ document = null, partnerDocument = null, phone = null, email = null, companyIdentifier = null } = {}): Company => ({
