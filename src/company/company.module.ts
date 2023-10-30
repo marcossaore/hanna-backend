@@ -15,10 +15,11 @@ import { CreateCompanyProcessorModule } from 'src/_jobs/consumers/create-company
             name: 'create-company',
             inject: [ConfigService],
             useFactory: async (configService: ConfigService) => ({
-              redis: {
+              redis: {             
                 host: configService.get('queue.host'),
                 port: configService.get('queue.port'),
-                password: configService.get('queue.pass')
+                password: configService.get('queue.pass'),
+                username: configService.get('queue.user')
               },
             }),
         }),
