@@ -1,0 +1,62 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "Hanna Api",
+    "dateExported": "2023-10-31T22:10:37.235Z",
+    "version": "1.1",
+    "folders": [
+        {
+            "_id": "6d73d93d-823c-4d17-a682-90a10953f5a1",
+            "name": "Companies",
+            "containerId": "",
+            "created": "2023-10-31T21:57:01.520Z",
+            "sortNum": 10000
+        },
+        {
+            "_id": "0a632617-312d-485f-88af-3132f3be0718",
+            "name": "Auth",
+            "containerId": "",
+            "created": "2023-10-31T22:00:03.742Z",
+            "sortNum": 20000
+        }
+    ],
+    "requests": [
+        {
+            "_id": "9091c16b-62a2-41ce-8cf9-36742212225a",
+            "colId": "f761033c-62d2-4880-be0d-14121b4e8851",
+            "containerId": "6d73d93d-823c-4d17-a682-90a10953f5a1",
+            "name": "Create Company",
+            "url": "http://localhost:3000/companies",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2023-10-31T21:52:19.617Z",
+            "modified": "2023-10-31T21:52:19.617Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Super Pet\",\n  \"document\": \"48225712000135\",\n  \"partnerName\": \"Maicon Antunes Prado\",\n  \"partnerDocument\": \"78563020030\",\n  \"companyIdentifier\": \"superpet\",\n  \"phone\": \"31984536721\",\n  \"email\": \"marcos@test.com\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "a3f6ad03-dccb-49df-b5e9-ca2905af246e",
+            "colId": "f761033c-62d2-4880-be0d-14121b4e8851",
+            "containerId": "0a632617-312d-485f-88af-3132f3be0718",
+            "name": "Auth",
+            "url": "http://localhost:3000/auth/login",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2023-10-31T21:58:36.401Z",
+            "modified": "2023-10-31T21:58:36.401Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"email\": \"john@test.com\",\n  \"password\": \"changeme\"\n}",
+                "form": []
+            },
+            "tests": []
+        }
+    ]
+}
