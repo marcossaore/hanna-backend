@@ -1,6 +1,8 @@
-import { Column, PrimaryGeneratedColumn } from "typeorm";
+import { AddDateColumns } from "../../../../db/partials/add-date-columns";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-export class Customer {
+@Entity('customer')
+export class Customer extends AddDateColumns {
     @PrimaryGeneratedColumn()
     id: number;
 

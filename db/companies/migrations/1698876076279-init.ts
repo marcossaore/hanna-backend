@@ -1,9 +1,10 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class Init1698283899376 implements MigrationInterface {
-    name = 'Init1698283899376'
+export class Init1698876076279 implements MigrationInterface {
+    name = 'Init1698876076279'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`CREATE TABLE \`customer\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`name\` varchar(255) NOT NULL, \`uuid\` varchar(255) NOT NULL, \`phone\` varchar(255) NOT NULL, \`email\` varchar(255) NULL, \`street\` varchar(255) NOT NULL, \`number\` varchar(255) NOT NULL, \`complement\` varchar(255) NOT NULL, \`neighborhood\` varchar(255) NOT NULL, \`city\` varchar(255) NOT NULL, \`state\` varchar(255) NOT NULL, \`country\` varchar(255) NOT NULL, UNIQUE INDEX \`IDX_ac1455877a69957f7466d5dc78\` (\`name\`), UNIQUE INDEX \`IDX_19468a0ccfcf3e76cbb7789cb7\` (\`uuid\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`option_module\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`name\` varchar(255) NOT NULL, UNIQUE INDEX \`IDX_5bf19b1f43cf4f22f480c61e01\` (\`name\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`module\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`name\` varchar(255) NOT NULL, \`parentId\` int NULL, UNIQUE INDEX \`IDX_620a549dbcb1fff62ea85695ca\` (\`name\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`action_module\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`name\` varchar(255) NOT NULL, UNIQUE INDEX \`IDX_4a069e90199bc86c60f37039a4\` (\`name\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
@@ -68,6 +69,9 @@ export class Init1698283899376 implements MigrationInterface {
         await queryRunner.query(`DROP TABLE \`module\``);
         await queryRunner.query(`DROP INDEX \`IDX_5bf19b1f43cf4f22f480c61e01\` ON \`option_module\``);
         await queryRunner.query(`DROP TABLE \`option_module\``);
+        await queryRunner.query(`DROP INDEX \`IDX_19468a0ccfcf3e76cbb7789cb7\` ON \`customer\``);
+        await queryRunner.query(`DROP INDEX \`IDX_ac1455877a69957f7466d5dc78\` ON \`customer\``);
+        await queryRunner.query(`DROP TABLE \`customer\``);
     }
 
 }
