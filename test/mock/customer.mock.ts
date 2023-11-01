@@ -1,9 +1,10 @@
 import { faker } from "@faker-js/faker";
 import { CreateCustomerDto } from "../../src/customer/dto/create-customer.dto";
+import { Customer } from "../../db/companies/entities/customer/customer.entity";
 
-export const mockCreateCustomerWithAddressDto = ({ complement = null } = {}): CreateCustomerDto => ({
+export const mockCreateCustomerWithAddressDto = ({ complement = null, email = null } = {}): CreateCustomerDto => ({
     name: faker.company.name(),
-    email: faker.internet.email(),
+    email: email || faker.internet.email(),
     phone: faker.string.numeric({ length: 11 }),
     address: {
         street: faker.location.streetAddress(),
@@ -15,3 +16,28 @@ export const mockCreateCustomerWithAddressDto = ({ complement = null } = {}): Cr
         complement
     }
 });
+
+export const mockCustomerEntity = ({ email = null, complement = null } = {}): Customer => {
+    const customer: Customer = {
+        id: faker.number.int(),
+        uuid: faker.string.uuid(),
+        name: faker.company.name(),
+        phone: faker.phone.number(),
+        street: faker.location.streetAddress(),
+        neighborhood: faker.location.secondaryAddress(),
+        number: faker.string.numeric(),
+        city: faker.location.city(),
+        country: faker.location.state(),
+        state: faker.location.country()
+    }
+
+    if (email) {
+        customer.email = email;
+    }
+
+    if (complement) {
+        customer.complement = complement;
+    }
+
+    return customer;
+}
