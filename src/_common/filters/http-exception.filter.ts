@@ -17,10 +17,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
         error = exceptionResponse;
     } else if (Array.isArray(exceptionResponse.message)) {
         let captureErrror = (exceptionResponse as any).message[0];
-
         try {
             if (typeof captureErrror === 'string' && captureErrror.includes('{') && captureErrror.includes('}')) {
-                const parsedMessage = JSON.parse(captureErrror);
+                const parsedMessage = JSON.parse(captureErrror.match(/{(.*?)}/g)[0] || null);
                 error = {
                     type: exceptionResponse.error,
                     field: parsedMessage.field,
