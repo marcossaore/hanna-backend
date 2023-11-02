@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CustomerService } from '../../src/customer/customer.service';
 import { mockCreateCustomerToEntityWithAddressDto, mockCustomerEntity } from '../mock/customer.mock';
 
+const pageOptions = { limit: 1, page: 1};
+
 describe('CustomerService', () => {
     let sutCustomerService: CustomerService;
     let customerRepository: any;
@@ -22,6 +24,7 @@ describe('CustomerService', () => {
         }).compile();
         sutCustomerService = module.get<CustomerService>(CustomerService);
         customerRepository = (sutCustomerService as any).companyRepository = {
+            find: jest.fn().mockResolvedValue([customerMock, customerMock]),
             findOneBy: jest.fn().mockResolvedValue(customerMock),
             save: jest.fn().mockResolvedValue(customerMock),
         };
@@ -103,6 +106,41 @@ describe('CustomerService', () => {
         it('should return a customer on success', async () => {
             const response = await sutCustomerService.create(customerToEntityMock);
             expect(response).toEqual(customerMock);
+        });
+    });
+
+    describe('findAll', () => {
+        it('should call CustomerRepository.find with correct values', async () => {
+            await sutCustomerService.findAll(pageOptions);
+            expect(customerRepository.find).toHaveBeenCalledWith(
+                {
+                    take: pageOptions.limit,
+                    skip: pageOptions.page - 1,
+                    order: {
+                        createdAt: 'DESC'
+                    }
+                }
+            );
+            expect(customerRepository.find).toHaveBeenCalledTimes(1);
+        });
+
+        it('should throws if CustomerRepository.find throws', async () => {
+            jest.spyOn(customerRepository, 'find').mockImplementationOnce(async() => {
+                throw new Error();
+            });
+            const promise = sutCustomerService.findAll(pageOptions);
+            await expect(promise).rejects.toThrow()
+        });
+
+        it('should return array if do not have any customer', async () => {
+            jest.spyOn(customerRepository, 'find').mockResolvedValueOnce(Promise.resolve([]));
+            const response = await sutCustomerService.findAll(pageOptions);
+            expect(response).toEqual([]);
+        });
+
+        it('should return customers on success', async () => {
+            const response = await sutCustomerService.findAll(pageOptions);
+            expect(response.length).toEqual(2);
         });
     });
 });
