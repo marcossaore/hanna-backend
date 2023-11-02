@@ -1,37 +1,35 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Customer } from '../../db/companies/entities/customer/customer.entity';
 import { CustomerService } from '../../src/customer/customer.service';
 import { mockCreateCustomerToEntityWithAddressDto, mockCustomerEntity } from '../mock/customer.mock';
 
 describe('CustomerService', () => {
     let sutCustomerService: CustomerService;
-    let customerRepository: Repository<Customer>;
+    let customerRepository: any;
     let customerToEntityMock = mockCreateCustomerToEntityWithAddressDto();
     let customerMock = mockCustomerEntity();
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-        providers: [
-            CustomerService,
-            {
-                provide: getRepositoryToken(Customer),
-                useValue: {
-                    findOneBy: jest.fn().mockResolvedValue(customerMock),
-                    save: jest.fn().mockResolvedValue(customerMock),
-                }
-            }
-        ],
+            providers: [
+                {
+                    provide: 'CONNECTION',
+                    useValue: {
+                        getRepository: () => jest.fn()
+                    }
+                },
+                CustomerService
+            ],
         }).compile();
-
         sutCustomerService = module.get<CustomerService>(CustomerService);
-        customerRepository = module.get<Repository<Customer>>(getRepositoryToken(Customer));
+        customerRepository = (sutCustomerService as any).companyRepository = {
+            findOneBy: jest.fn().mockResolvedValue(customerMock),
+            save: jest.fn().mockResolvedValue(customerMock),
+        };
     });
 
     afterEach(() => {
         jest.clearAllMocks();
-    })
+    });
 
     describe('findByPhone', () => {
         it('should call CustomerRepository.findOneBy with correct phone', async () => {
@@ -56,6 +54,33 @@ describe('CustomerService', () => {
 
         it('should return a customer on success', async () => {
             const response = await sutCustomerService.findByPhone('any_phone');
+            expect(response).toEqual(customerMock);
+        });
+    });
+
+    describe('findByEmail', () => {
+        it('should call CustomerRepository.findOneBy with correct email', async () => {
+            await sutCustomerService.findByEmail('any_email');
+            expect(customerRepository.findOneBy).toHaveBeenCalledWith({email: 'any_email'});
+            expect(customerRepository.findOneBy).toHaveBeenCalledTimes(1);
+        });
+
+        it('should throws if CustomerRepository.findOneBy throws', async () => {
+            jest.spyOn(customerRepository, 'findOneBy').mockImplementationOnce(async() => {
+                throw new Error();
+            });
+            const promise = sutCustomerService.findByPhone('any_email');
+            await expect(promise).rejects.toThrow()
+        });
+
+        it('should return null if email doesnt exists', async () => {
+            jest.spyOn(customerRepository, 'findOneBy').mockResolvedValueOnce(Promise.resolve(null));
+            const response = await sutCustomerService.findByPhone('any_email');
+            expect(response).toEqual(null);
+        });
+
+        it('should return a customer on success', async () => {
+            const response = await sutCustomerService.findByEmail('any_email');
             expect(response).toEqual(customerMock);
         });
     });

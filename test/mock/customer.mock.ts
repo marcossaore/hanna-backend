@@ -34,7 +34,9 @@ export const mockCustomerEntity = ({ email = null, complement = null } = {}): Cu
         number: faker.string.numeric(),
         city: faker.location.city(),
         country: faker.location.state(),
-        state: faker.location.country()
+        state: faker.location.country(),
+        createdAt: faker.date.anytime(),
+        updatedAt: faker.date.anytime()
     }
 
     if (email) {

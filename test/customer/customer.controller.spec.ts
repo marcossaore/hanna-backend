@@ -13,22 +13,29 @@ describe('CustomerController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [CustomerController],
-      providers: [
-        {
-            provide: GenerateUuidService,
-            useValue: {
-                generate: jest.fn().mockReturnValue('any_uuid')
+        controllers: [CustomerController],
+        providers: [
+            {
+                provide: 'CONNECTION',
+                useValue: {
+                    getRepository: jest.fn()
+                }
+            },
+            {
+                provide: GenerateUuidService,
+                useValue: {
+                    generate: jest.fn().mockReturnValue('any_uuid')
+                }
+            },
+            {
+                provide: CustomerService,
+                useValue: {
+                    findByPhone: jest.fn().mockResolvedValue(Promise.resolve(null)),
+                    findByEmail: jest.fn().mockResolvedValue(Promise.resolve(null)),
+                    create: jest.fn().mockResolvedValue(customerEntityMock)
+                }
             }
-        },
-        {
-            provide: CustomerService,
-            useValue: {
-                findByPhone: jest.fn().mockResolvedValue(Promise.resolve(null)),
-                create: jest.fn().mockResolvedValue(customerEntityMock)
-            }
-        }
-    ],
+        ]
     }).compile();
 
     sutCustomerController = module.get<CustomerController>(CustomerController);
@@ -66,6 +73,40 @@ describe('CustomerController', () => {
             await expect(promise).rejects.toThrow(new Error());
         });
 
+        it('should not call CustomerService.findByEmail when email is not provided', async () => {
+            const data = mockCreateCustomerWithAddressDto();
+            await sutCustomerController.create({
+                ...data,
+                email: null
+            });
+            expect(customerService.findByEmail).toHaveBeenCalledTimes(0);
+        });
+
+        it('should call CustomerService.findByEmail with correct value when email is provided', async () => {
+            const data = mockCreateCustomerWithAddressDto( { email: 'any_email' });
+            await sutCustomerController.create(data);
+            expect(customerService.findByEmail).toHaveBeenCalledWith(data.email);
+            expect(customerService.findByEmail).toHaveBeenCalledTimes(1);
+        });
+
+        it('should throws if CustomerService.findByEmail returns a customer', async () => {
+            const data = mockCreateCustomerWithAddressDto();
+            jest.spyOn(customerService, 'findByEmail').mockReturnValueOnce(Promise.resolve(
+                {}  as Customer
+            ));
+            const promise = sutCustomerController.create(data);
+            await expect(promise).rejects.toThrow(new Error('O cliente já está cadastrado!'));
+        });
+
+        it('should throws if CustomerService.findByEmail throws', async () => {
+            const data = mockCreateCustomerWithAddressDto();
+            jest.spyOn(customerService, 'findByEmail').mockImplementationOnce(() => {
+                throw new Error();
+            });
+            const promise = sutCustomerController.create(data);
+            await expect(promise).rejects.toThrow(new Error());
+        });
+
         it('should call GenerateUuidService.generate', async () => {
             const data = mockCreateCustomerWithAddressDto();
             await sutCustomerController.create(data);
@@ -84,8 +125,10 @@ describe('CustomerController', () => {
         it('should call CustomerService.create with correct values', async () => {
             const data = mockCreateCustomerWithAddressDto();
             await sutCustomerController.create(data);
+            const { address, ...allData } = data;
             expect(customerService.create).toHaveBeenCalledWith({
-                ...data,
+                ...allData,
+                ...address,
                 uuid: 'any_uuid'
             });
             expect(customerService.create).toHaveBeenCalledTimes(1);
@@ -94,14 +137,13 @@ describe('CustomerController', () => {
         it('should call CustomerService.create with correct values: including email and complement', async () => {
             const data = mockCreateCustomerWithAddressDto({ email: 'any_email', complement: 'any_complement'});
             await sutCustomerController.create(data);
+            const { address, ...allData } = data;
             expect(customerService.create).toHaveBeenCalledWith({
-                ...data,
+                ...allData,
+                ...address,
                 email: 'any_email',
                 uuid: 'any_uuid',
-                address: {
-                    ...data.address,
-                    complement: 'any_complement'
-                },
+                complement: 'any_complement'
             });
             expect(customerService.create).toHaveBeenCalledTimes(1);
         });
