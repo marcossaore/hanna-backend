@@ -12,13 +12,23 @@ export class CustomerController {
 
   @Post()
   async create(@Body() createCustomerDto: CreateCustomerDto) {
-    const existsCustomer = await this.customerService.findByPhone(createCustomerDto.phone);
+    let existsCustomer = await this.customerService.findByPhone(createCustomerDto.phone);
     if (existsCustomer) {
         throw new ConflictException('O cliente já está cadastrado!');
     }
+
+    if (createCustomerDto.email) {
+        existsCustomer = await this.customerService.findByEmail(createCustomerDto.email);
+        if (existsCustomer) {
+            throw new ConflictException('O cliente já está cadastrado!');
+        }
+    }
+
     const uuid = this.generateUuidService.generate();
+    const { address, ...data } = createCustomerDto;
     return this.customerService.create({
-        ...createCustomerDto,
+        ...data,
+        ...address,
         uuid
     });
   }

@@ -5,17 +5,17 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 export class Customer extends AddDateColumns {
     @PrimaryGeneratedColumn()
     id: number;
-
-    @Column({ unique: true })
-    name: string;
-
+    
     @Column({ unique: true })
     uuid: string;
 
     @Column({ nullable: false })
+    name: string;
+
+    @Column({ nullable: false, unique: true })
     phone: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, unique: true })
     email?: string;
 
     @Column({ nullable: false })
@@ -24,7 +24,7 @@ export class Customer extends AddDateColumns {
     @Column({ nullable: false })
     number: string;
 
-    @Column({ nullable: false })
+    @Column({ nullable: true })
     complement?: string;
 
     @Column({ nullable: false })

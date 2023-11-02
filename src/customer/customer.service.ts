@@ -1,20 +1,26 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Customer } from '../../db/companies/entities/customer/customer.entity';
 import { CreateCustomerToEntity } from './dto/create-customer-to-entity.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 
 @Injectable()
 export class CustomerService {
 
+    private readonly companyRepository: Repository<Customer>
+
     constructor(
-        @InjectRepository(Customer)
-        private readonly companyRepository: Repository<Customer>
-    ) {}
+        @Inject('CONNECTION') private readonly connection: Connection
+    ) {
+        this.companyRepository = this.connection.getRepository(Customer)
+    }
 
     async findByPhone(phone: string): Promise<Customer> {
         return this.companyRepository.findOneBy({ phone });
     } 
+
+    async findByEmail(email: string): Promise<Customer> {
+        return this.companyRepository.findOneBy({ email });
+    }
 
     async create(createCustomerDto: CreateCustomerToEntity) {
         return this.companyRepository.save(createCustomerDto);
