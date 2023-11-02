@@ -10,8 +10,8 @@ import { TenantModule } from './tenant.module';
             isGlobal: true,
             load: [configuration],
         }),
-        AppModule,
-        TenantModule
+        AppModule, // => /api/app/**
+        TenantModule // => /api/**
     ]
 })
 export class InitModule {} 

@@ -14,8 +14,9 @@ import { CreatedCompanyDto } from './dto/created-company.dto';
 import { InfoMessageInterceptor } from '../_common/interceptors/info-message-interceptor';
 import { GenerateUuidService } from '../_common/services/Uuid/generate-uuid-service';
 import { CompanyService } from './company.service';
+import { configAppPrefix } from '../app/application.prefixes';
 
-@Controller('companies')
+@Controller(`${configAppPrefix}/companies`)
 export class CompanyController {
   constructor(
       private readonly companyService: CompanyService,

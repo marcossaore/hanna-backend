@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import configuration from '../_config/configuration';
 import { CompanyModule } from '../company/company.module';
 import appMigrations from '../../db/app/app.migrations'
-import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
@@ -36,8 +35,7 @@ import { AuthModule } from 'src/auth/auth.module';
         },
         inject: [ConfigService],
     }),
-    CompanyModule,
-    AuthModule
+    CompanyModule
   ],
 })
 export class AppModule {} 
