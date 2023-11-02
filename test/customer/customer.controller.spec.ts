@@ -30,6 +30,12 @@ describe('CustomerController', () => {
             {
                 provide: CustomerService,
                 useValue: {
+                    findAll: jest.fn().mockResolvedValue(Promise.resolve(
+                        [
+                            mockCustomerEntity(),
+                            mockCustomerEntity()
+                        ],
+                    )),
                     findByPhone: jest.fn().mockResolvedValue(Promise.resolve(null)),
                     findByEmail: jest.fn().mockResolvedValue(Promise.resolve(null)),
                     create: jest.fn().mockResolvedValue(customerEntityMock)
@@ -161,6 +167,26 @@ describe('CustomerController', () => {
             const data = mockCreateCustomerWithAddressDto();
             const response = await sutCustomerController.create(data);
             expect(response).toEqual(customerEntityMock);
+        });
+    });
+
+    describe('FINDALL', () => {
+        it('should call CustomerService.findAll', async () => {
+            await sutCustomerController.findAll();;
+            expect(customerService.findAll).toHaveBeenCalledTimes(1);
+        });
+
+        it('should throws if CustomerService.findAll throws', async () => {
+            jest.spyOn(customerService, 'findAll').mockImplementationOnce(() => {
+                throw new Error();
+            });
+            const promise = sutCustomerController.findAll();
+            await expect(promise).rejects.toThrow(new Error());
+        });
+
+        it('should return customers when succeds', async () => {
+            const response = await sutCustomerController.findAll();
+            expect(response.length).toEqual(2);
         });
     });
 });
