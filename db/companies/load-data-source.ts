@@ -1,10 +1,7 @@
-require('dotenv').config();
-import env from '../../src/_config/configuration';
 import { join } from 'path';
 import { DataSource } from 'typeorm';
-const { environment } = env();
 
-export const load = ({ host, port, user, password, db}): DataSource => {
+export const load = ({ user, password, db, host, port}): DataSource => {
     try {        
         return new DataSource({
             migrationsTransactionMode: 'all',
@@ -14,9 +11,7 @@ export const load = ({ host, port, user, password, db}): DataSource => {
             username: user,
             password: password,
             database: db,
-            entities: [join(__dirname, './**/*.entity{.ts,.js}')],
-            migrations: [join(__dirname, './migrations/*{.ts,.js}')],
-            synchronize: environment === 'dev' ? true : false
+            entities: [join(__dirname, './**/*.entity{.ts,.js}')]
         });
     } catch (error) {
         return null
