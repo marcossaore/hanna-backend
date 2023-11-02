@@ -22,13 +22,20 @@ export class CustomerService {
         return this.companyRepository.findOneBy({ email });
     }
 
-    async create(createCustomerDto: CreateCustomerToEntity) {
+    async create(createCustomerDto: CreateCustomerToEntity): Promise<Customer> {
         return this.companyRepository.save(createCustomerDto);
     }
 
-    // findAll() {
-    //     return `This action returns all customer`;
-    // }
+    async findAll({ limit, page }: { limit: number, page: number }) : Promise<Customer[]> {
+        const skip = (page - 1) * limit;
+        return this.companyRepository.find({
+            take: limit,
+            skip,
+            order: {
+                createdAt: 'DESC'
+            }
+        });
+    }
 
     // findOne(id: number) {
     //     return `This action returns a #${id} customer`;

@@ -1,9 +1,10 @@
-import { Controller, Post, Body, ConflictException } from '@nestjs/common';
+import { Controller, Post, Body, ConflictException, Get, Query, Param } from '@nestjs/common';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { GenerateUuidService } from '../_common/services/Uuid/generate-uuid-service';
 import { CustomerService } from './customer.service';
+import { appPrefix } from '../app/application.prefixes';
 
-@Controller('customers')
+@Controller(`${appPrefix}/customers`)
 export class CustomerController {
   constructor(
     private readonly generateUuidService: GenerateUuidService,
@@ -33,10 +34,13 @@ export class CustomerController {
     });
   }
 
-//   @Get()
-//   findAll() {
-//     return this.customerService.findAll();
-//   }
+  @Get()
+  async findAll(@Query('limit') limit: number = 10, @Query('page') page: number = 1) {
+    return this.customerService.findAll({
+        limit,
+        page
+    });
+  }
 
 //   @Get(':id')
 //   findOne(@Param('id') id: string) {
