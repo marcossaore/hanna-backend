@@ -23,7 +23,7 @@ export const TenantProvider: Provider = {
     scope: Scope.REQUEST,
     useFactory: async (request: Request, configService: ConfigService) => {
         try {
-            const tenantName = 'buxapp' // request?.tenant?.identifier;
+            const tenantName = request?.tenant?.identifier;
             if (!tenantName) {
                 throw null;
             }
