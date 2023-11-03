@@ -171,4 +171,34 @@ describe('CustomerService', () => {
             expect(response).toEqual(customerMock);
         });
     });
+
+    describe('removeByUuid', () => {
+        it('should call CustomerRepository.findOneBy with correct values', async () => {
+            await sutCustomerService.removeByUuid('any_uuid');
+            expect(customerRepository.findOneBy).toHaveBeenCalledWith({ uuid: 'any_uuid' });
+            expect(customerRepository.findOneBy).toHaveBeenCalledTimes(1);
+        });
+
+        it('should throws if CustomerRepository.findOneBy throws', async () => {
+            jest.spyOn(customerRepository, 'findOneBy').mockImplementationOnce(async() => {
+                throw new Error();
+            });
+            const promise = sutCustomerService.removeByUuid('any_uuid');
+            await expect(promise).rejects.toThrow()
+        });
+
+        it('should call CustomerRepository.save with correct deletedAt', async () => {
+            const data = mockCustomerEntity()
+            jest.spyOn(customerRepository, 'findOneBy').mockResolvedValueOnce(Promise.resolve(data))
+            expect(data.deletedAt).toBe(null)
+            const response = await sutCustomerService.removeByUuid('any_uuid');
+            expect(customerRepository.save).toHaveBeenCalledTimes(1);
+            expect(response.deletedAt).toBeTruthy()
+        });
+
+        it('should return a customer on success', async () => {
+            const response = await sutCustomerService.removeByUuid('any_uuid');
+            expect(response).toEqual(customerMock);
+        });
+    });
 });
