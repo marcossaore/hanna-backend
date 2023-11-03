@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "Hanna Api",
-    "dateExported": "2023-11-03T00:50:19.074Z",
+    "dateExported": "2023-11-03T04:20:03.642Z",
     "version": "1.1",
     "folders": [
         {
@@ -36,12 +36,12 @@
             "method": "POST",
             "sortNum": 10000,
             "created": "2023-10-31T22:12:02.052Z",
-            "modified": "2023-11-02T23:36:07.129Z",
+            "modified": "2023-11-03T03:37:59.210Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"name\": \"Grazi Pet\",\n  \"document\": \"76974716000151\",\n  \"partnerName\": \"Grazielle Chaves\",\n  \"partnerDocument\": \"64761332093\",\n  \"companyIdentifier\": \"grazipet2\",\n  \"phone\": \"31984536721\",\n  \"email\": \"test@test.com\"\n}",
+                "raw": "{\n  \"name\": \"Grazi Pet\",\n  \"document\": \"76974716000151\",\n  \"partnerName\": \"Grazielle Chaves\",\n  \"partnerDocument\": \"64761332093\",\n  \"companyIdentifier\": \"grazipet\",\n  \"phone\": \"31984536721\",\n  \"email\": \"test@test.com\"\n}",
                 "form": []
             },
             "tests": []
@@ -74,12 +74,12 @@
             "method": "POST",
             "sortNum": 10000,
             "created": "2023-11-01T17:22:43.647Z",
-            "modified": "2023-11-02T23:38:21.527Z",
+            "modified": "2023-11-03T03:25:23.356Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"name\": \"Maria Rita\",\n  \"phone\": \"31984536728\",\n  \"address\": {\n    \"street\": \"rua Julio kominscki Anício\",\n    \"number\": \"45\",\n    \"neighborhood\": \"Belo Novo Vale\",\n    \"city\": \"Belo Horizonte\",\n    \"state\": \"MG\",\n    \"country\": \"Brasil\"\n  }\n}",
+                "raw": "{\n  \"name\": \"Mário Jorge Santos\",\n  \"phone\": \"31962738512\",\n  \"address\": {\n    \"street\": \"rua Julio kominscki Anício\",\n    \"number\": \"45\",\n    \"neighborhood\": \"Belo Novo Vale\",\n    \"city\": \"Belo Horizonte\",\n    \"state\": \"MG\",\n    \"country\": \"Brasil\"\n  }\n}",
                 "form": []
             },
             "tests": []
@@ -89,11 +89,11 @@
             "colId": "32514b1a-cb4f-4691-b222-3bcc645204ad",
             "containerId": "9c7e2c28-6e20-4dc0-b250-4a9e09486bce",
             "name": "Get All ",
-            "url": "http://localhost:3000/api/customers?limit=1&page=2",
+            "url": "http://localhost:3000/api/customers?limit=1&page=1",
             "method": "GET",
             "sortNum": 20000,
             "created": "2023-11-02T23:38:36.582Z",
-            "modified": "2023-11-02T23:42:16.751Z",
+            "modified": "2023-11-03T03:47:20.826Z",
             "headers": [],
             "params": [
                 {
@@ -103,7 +103,7 @@
                 },
                 {
                     "name": "page",
-                    "value": "2",
+                    "value": "1",
                     "isPath": false
                 }
             ],
@@ -119,11 +119,11 @@
             "colId": "32514b1a-cb4f-4691-b222-3bcc645204ad",
             "containerId": "9c7e2c28-6e20-4dc0-b250-4a9e09486bce",
             "name": "Get One",
-            "url": "http://localhost:3000/api/customers/01HE8WMYMPYDPWGBAJXHMFZDE3",
+            "url": "http://localhost:3000/api/customers/01HE9MERTV011MYD20RR0P8E34",
             "method": "GET",
             "sortNum": 25000,
             "created": "2023-11-03T00:00:40.967Z",
-            "modified": "2023-11-03T00:23:05.276Z",
+            "modified": "2023-11-03T03:45:48.475Z",
             "headers": [],
             "params": [],
             "body": {
@@ -138,11 +138,11 @@
             "colId": "32514b1a-cb4f-4691-b222-3bcc645204ad",
             "containerId": "9c7e2c28-6e20-4dc0-b250-4a9e09486bce",
             "name": "Update",
-            "url": "http://localhost:3000/api/customers/01HE8YXBP01G03VSA78ZXW7856",
+            "url": "http://localhost:3000/api/customers/01HE9MERTV011MYD20RR0P8E34",
             "method": "PATCH",
             "sortNum": 30000,
             "created": "2023-11-02T23:42:45.583Z",
-            "modified": "2023-11-03T00:33:17.906Z",
+            "modified": "2023-11-03T03:45:55.305Z",
             "headers": [],
             "params": [],
             "body": {
@@ -150,6 +150,20 @@
                 "raw": "{\n  \"name\": \"Maria Rita de Souza\",\n  \"phone\": \"31984536728\"\n}",
                 "form": []
             },
+            "tests": []
+        },
+        {
+            "_id": "83670675-d295-463f-8490-a10754c289a0",
+            "colId": "32514b1a-cb4f-4691-b222-3bcc645204ad",
+            "containerId": "9c7e2c28-6e20-4dc0-b250-4a9e09486bce",
+            "name": "Delete",
+            "url": "http://localhost:3000/api/customers/01HE9MERTV011MYD20RR0P8E34",
+            "method": "DELETE",
+            "sortNum": 40000,
+            "created": "2023-11-03T03:44:24.461Z",
+            "modified": "2023-11-03T03:44:57.338Z",
+            "headers": [],
+            "params": [],
             "tests": []
         }
     ]
