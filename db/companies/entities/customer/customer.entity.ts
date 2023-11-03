@@ -1,5 +1,5 @@
 import { AddDateColumns } from "../../../../db/partials/add-date-columns";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('customer')
 export class Customer extends AddDateColumns {
@@ -38,5 +38,8 @@ export class Customer extends AddDateColumns {
 
     @Column({ nullable: false })
     country: string;
+
+    @DeleteDateColumn({ type: 'timestamp', default: null, nullable: true })
+    deletedAt: Date;
 }
 
