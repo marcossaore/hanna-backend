@@ -30,6 +30,7 @@ describe('CustomerController', () => {
             {
                 provide: CustomerService,
                 useValue: {
+                    findOne: jest.fn().mockResolvedValue(customerEntityMock),
                     findAll: jest.fn().mockResolvedValue(Promise.resolve(
                         [
                             mockCustomerEntity(),
@@ -187,6 +188,33 @@ describe('CustomerController', () => {
         it('should return customers when succeds', async () => {
             const response = await sutCustomerController.findAll();
             expect(response.length).toEqual(2);
+        });
+    });
+
+    describe('FINDONE', () => {
+        it('should call CustomerService.findOne with correct value', async () => {
+            await sutCustomerController.findOne('any_id');
+            expect(customerService.findOne).toHaveBeenCalledWith('any_id');
+            expect(customerService.findOne).toHaveBeenCalledTimes(1);
+        });
+
+        it('should throws if CustomerService.findOne returns null', async () => {
+            jest.spyOn(customerService, 'findOne').mockResolvedValueOnce(Promise.resolve(null));
+            const promise = sutCustomerController.findOne('any_id');
+            await expect(promise).rejects.toThrow(new Error('Cliente não encontrado!'));
+        });
+
+        it('should throws if CustomerService.findOne throws', async () => {
+            jest.spyOn(customerService, 'findOne').mockImplementationOnce(() => {
+                throw new Error();
+            });
+            const promise = sutCustomerController.findOne('any_id');
+            await expect(promise).rejects.toThrow(new Error());
+        });
+
+        it('should return a customer when succeds', async () => {
+            const response = await sutCustomerController.findOne('any_id');
+            expect(response).toEqual(customerEntityMock);
         });
     });
 });
