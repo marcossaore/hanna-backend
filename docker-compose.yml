@@ -30,7 +30,6 @@ services:
             - hanna-web
     memorydb:
         image: redis:6.2-alpine
-        restart: always
         ports:
             - '6379:6379'
         command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASS}
@@ -38,7 +37,6 @@ services:
             - queue:/data
     mailhog:
         image: mailhog/mailhog:latest
-        restart: always
         ports:
         - 1025:1025
         - 8025:8025
@@ -56,9 +54,6 @@ services:
             - "127.0.0.1:4510-4530:4510-4530"
             - "127.0.0.1:4566:4566"
             - "127.0.0.1:4571:4571"
-        volumes:
-            - ./data/localstack:/opt/data
-            - ./data/localstack/config:/opt/localstack/config
 networks:
     hanna-web:
 
