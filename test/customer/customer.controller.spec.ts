@@ -40,7 +40,8 @@ describe('CustomerController', () => {
                     findByPhone: jest.fn().mockResolvedValue(Promise.resolve(null)),
                     findByEmail: jest.fn().mockResolvedValue(Promise.resolve(null)),
                     create: jest.fn().mockResolvedValue(customerEntityMock),
-                    save: jest.fn()
+                    save: jest.fn(),
+                    removeByUuid: jest.fn().mockResolvedValue(customerEntityMock)
                 }
             }
         ]
@@ -55,7 +56,7 @@ describe('CustomerController', () => {
     jest.clearAllMocks();
   })
 
-    describe('CREATE', () => {
+    describe('create', () => {
         it('should call CustomerService.findByPhone with correct value', async () => {
             const data = mockCreateCustomerWithAddressDto();
             await sutCustomerController.create(data);
@@ -172,7 +173,7 @@ describe('CustomerController', () => {
         });
     });
 
-    describe('FINDALL', () => {
+    describe('findAll', () => {
         it('should call CustomerService.findAll', async () => {
             await sutCustomerController.findAll();;
             expect(customerService.findAll).toHaveBeenCalledTimes(1);
@@ -192,7 +193,7 @@ describe('CustomerController', () => {
         });
     });
 
-    describe('FINDBYUUID', () => {
+    describe('findByUuid', () => {
         it('should call CustomerService.findByUuid with correct value', async () => {
             await sutCustomerController.findByUuid('any_uuid');
             expect(customerService.findByUuid).toHaveBeenCalledWith('any_uuid');
@@ -219,7 +220,7 @@ describe('CustomerController', () => {
         });
     });
 
-    describe('UPDATEBYUUID', () => {
+    describe('updateByUuid', () => {
         it('should call CustomerService.findByUuid with correct value', async () => {
             const data = mockCreateCustomerWithAddressDto();
             await sutCustomerController.updateByUuid('any_uuid', data);
@@ -258,6 +259,47 @@ describe('CustomerController', () => {
 
         it('should return a customer when succeds', async () => {
             const response = await sutCustomerController.findByUuid('any_uuid');
+            expect(response).toEqual(customerEntityMock);
+        });
+    });
+
+    describe('removeByUuid', () => {
+        it('should call CustomerService.findByUuid with correct value', async () => {
+            await sutCustomerController.removeByUuid('any_uuid');
+            expect(customerService.findByUuid).toHaveBeenCalledWith('any_uuid');
+            expect(customerService.findByUuid).toHaveBeenCalledTimes(1);
+        });
+
+        it('should throws if CustomerService.findByUuid returns null', async () => {
+            jest.spyOn(customerService, 'findByUuid').mockResolvedValueOnce(Promise.resolve(null));
+            const promise = sutCustomerController.removeByUuid('any_uuid');
+            await expect(promise).rejects.toThrow(new Error('Cliente não encontrado!'));
+        });
+
+        it('should throws if CustomerService.findByUuid throws', async () => {
+            jest.spyOn(customerService, 'findByUuid').mockImplementationOnce(() => {
+                throw new Error();
+            });
+            const promise = sutCustomerController.removeByUuid('any_uuid');
+            await expect(promise).rejects.toThrow(new Error());
+        });
+
+        it('should call CustomerService.removeByUuid with correct values', async () => {
+            await sutCustomerController.removeByUuid('any_uuid');
+            expect(customerService.removeByUuid).toHaveBeenCalledWith('any_uuid');
+            expect(customerService.findByUuid).toHaveBeenCalledTimes(1);
+        });
+
+        it('should throws if CustomerService.removeByUuid throws', async () => {
+            jest.spyOn(customerService, 'removeByUuid').mockImplementationOnce(() => {
+                throw new Error();
+            });
+            const promise = sutCustomerController.removeByUuid('any_uuid');
+            await expect(promise).rejects.toThrow(new Error());
+        });
+
+        it('should return a customer when succeds', async () => {
+            const response = await sutCustomerController.removeByUuid('any_uuid');
             expect(response).toEqual(customerEntityMock);
         });
     });

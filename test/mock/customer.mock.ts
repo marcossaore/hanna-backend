@@ -36,7 +36,8 @@ export const mockCustomerEntity = ({ email = null, complement = null } = {}): Cu
         country: faker.location.state(),
         state: faker.location.country(),
         createdAt: faker.date.anytime(),
-        updatedAt: faker.date.anytime()
+        updatedAt: faker.date.anytime(),
+        deletedAt: null
     }
 
     if (email) {
