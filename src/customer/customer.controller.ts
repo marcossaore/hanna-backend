@@ -1,8 +1,9 @@
-import { Controller, Post, Body, ConflictException, Get, Query, Param, NotFoundException } from '@nestjs/common';
+import { Controller, Post, Body, ConflictException, Get, Query, Param, NotFoundException, Patch } from '@nestjs/common';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { GenerateUuidService } from '../_common/services/Uuid/generate-uuid-service';
 import { CustomerService } from './customer.service';
 import { appPrefix } from '../app/application.prefixes';
+import { UpdateCustomerDto } from './dto/update-customer.dto';
 
 @Controller(`${appPrefix}/customers`)
 export class CustomerController {
@@ -51,10 +52,26 @@ export class CustomerController {
     return customer;
   }
 
-//   @Patch(':id')
-//   update(@Param('id') id: string, @Body() updateCustomerDto: UpdateCustomerDto) {
-//     return this.customerService.update(+id, updateCustomerDto);
-//   }
+  @Patch(':id')
+  async updateByUuid(@Param('id') id: string, @Body() updateCustomerDto: UpdateCustomerDto) {
+    const customer = await this.customerService.findByUuid(id);
+    if (!customer) {
+        throw new NotFoundException('Cliente não encontrado!');
+    }
+    const {address, ...data} = updateCustomerDto;
+    
+    let joinData = {
+        ...data
+    };
+
+    if (address) {
+        joinData = {
+            ...joinData,
+            ...address
+        } 
+    }
+    return this.customerService.save(Object.assign(customer, joinData));
+  }
 
 //   @Delete(':id')
 //   remove(@Param('id') id: string) {

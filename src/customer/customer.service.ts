@@ -2,33 +2,34 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Customer } from '../../db/companies/entities/customer/customer.entity';
 import { CreateCustomerToEntity } from './dto/create-customer-to-entity.dto';
 import { Connection, Repository } from 'typeorm';
+import { UpdateCustomerDto } from './dto/update-customer.dto';
 
 @Injectable()
 export class CustomerService {
 
-    private readonly companyRepository: Repository<Customer>
+    private readonly customerRepository: Repository<Customer>
 
     constructor(
         @Inject('CONNECTION') private readonly connection: Connection
     ) {
-        this.companyRepository = this.connection.getRepository(Customer)
+        this.customerRepository = this.connection.getRepository(Customer)
     }
 
     async findByPhone(phone: string): Promise<Customer> {
-        return this.companyRepository.findOneBy({ phone });
+        return this.customerRepository.findOneBy({ phone });
     } 
 
     async findByEmail(email: string): Promise<Customer> {
-        return this.companyRepository.findOneBy({ email });
+        return this.customerRepository.findOneBy({ email });
     }
 
     async create(createCustomerDto: CreateCustomerToEntity): Promise<Customer> {
-        return this.companyRepository.save(createCustomerDto);
+        return this.customerRepository.save(createCustomerDto);
     }
 
     async findAll({ limit, page }: { limit: number, page: number }) : Promise<Customer[]> {
         const skip = (page - 1) * limit;
-        return this.companyRepository.find({
+        return this.customerRepository.find({
             take: limit,
             skip,
             order: {
@@ -38,12 +39,12 @@ export class CustomerService {
     }
 
     async findByUuid(id: string): Promise<Customer> {
-        return this.companyRepository.findOneBy({ uuid: id });
+        return this.customerRepository.findOneBy({ uuid: id });
     }
 
-    // update(id: number, updateCustomerDto: UpdateCustomerDto) {
-    //     return `This action updates a #${id} customer`;
-    // }
+    async save(updateCustomerDto: UpdateCustomerDto) {
+        return this.customerRepository.save(updateCustomerDto);
+    }
 
     // remove(id: number) {
     //     return `This action removes a #${id} customer`;
