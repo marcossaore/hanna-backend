@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import configuration from '../_config/configuration';
 import { CompanyModule } from '../company/company.module';
-import appMigrations from '../../db/app/app.migrations'
+import appMigrations from '../../db/app/app.migrations';
 
 @Module({
   imports: [

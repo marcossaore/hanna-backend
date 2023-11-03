@@ -6,7 +6,6 @@
         "assets": [
             { "include": "mail/templates/**/*", "watchAssets": true, "outDir": "dist/src" }
         ],
-
         "watchAssets": true
     },
     "deleteOutDir": true
