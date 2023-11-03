@@ -1,59 +1,153 @@
 {
     "client": "Thunder Client",
     "collectionName": "Hanna Api",
-    "dateExported": "2023-10-31T22:10:37.235Z",
+    "dateExported": "2023-11-03T00:50:19.074Z",
     "version": "1.1",
     "folders": [
         {
-            "_id": "6d73d93d-823c-4d17-a682-90a10953f5a1",
+            "_id": "98b2a78a-aa32-4fe8-8641-34bf4b1ee0c8",
             "name": "Companies",
             "containerId": "",
-            "created": "2023-10-31T21:57:01.520Z",
+            "created": "2023-10-31T22:12:02.051Z",
             "sortNum": 10000
         },
         {
-            "_id": "0a632617-312d-485f-88af-3132f3be0718",
+            "_id": "9c7e2c28-6e20-4dc0-b250-4a9e09486bce",
+            "name": "Customers",
+            "containerId": "",
+            "created": "2023-11-01T17:22:43.647Z",
+            "sortNum": 15000
+        },
+        {
+            "_id": "8a8a9536-dacd-4ba3-844c-868f97b71ea9",
             "name": "Auth",
             "containerId": "",
-            "created": "2023-10-31T22:00:03.742Z",
+            "created": "2023-10-31T22:12:02.053Z",
             "sortNum": 20000
         }
     ],
     "requests": [
         {
-            "_id": "9091c16b-62a2-41ce-8cf9-36742212225a",
-            "colId": "f761033c-62d2-4880-be0d-14121b4e8851",
-            "containerId": "6d73d93d-823c-4d17-a682-90a10953f5a1",
+            "_id": "ef542338-b9a7-4528-bba8-5b19bd5b9d0d",
+            "colId": "32514b1a-cb4f-4691-b222-3bcc645204ad",
+            "containerId": "98b2a78a-aa32-4fe8-8641-34bf4b1ee0c8",
             "name": "Create Company",
-            "url": "http://localhost:3000/companies",
+            "url": "http://localhost:3000/api/app/companies",
             "method": "POST",
             "sortNum": 10000,
-            "created": "2023-10-31T21:52:19.617Z",
-            "modified": "2023-10-31T21:52:19.617Z",
+            "created": "2023-10-31T22:12:02.052Z",
+            "modified": "2023-11-02T23:36:07.129Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"name\": \"Super Pet\",\n  \"document\": \"48225712000135\",\n  \"partnerName\": \"Maicon Antunes Prado\",\n  \"partnerDocument\": \"78563020030\",\n  \"companyIdentifier\": \"superpet\",\n  \"phone\": \"31984536721\",\n  \"email\": \"marcos@test.com\"\n}",
+                "raw": "{\n  \"name\": \"Grazi Pet\",\n  \"document\": \"76974716000151\",\n  \"partnerName\": \"Grazielle Chaves\",\n  \"partnerDocument\": \"64761332093\",\n  \"companyIdentifier\": \"grazipet2\",\n  \"phone\": \"31984536721\",\n  \"email\": \"test@test.com\"\n}",
                 "form": []
             },
             "tests": []
         },
         {
-            "_id": "a3f6ad03-dccb-49df-b5e9-ca2905af246e",
-            "colId": "f761033c-62d2-4880-be0d-14121b4e8851",
-            "containerId": "0a632617-312d-485f-88af-3132f3be0718",
+            "_id": "922f96f0-859b-47c2-b23e-3fb0988cb13f",
+            "colId": "32514b1a-cb4f-4691-b222-3bcc645204ad",
+            "containerId": "8a8a9536-dacd-4ba3-844c-868f97b71ea9",
             "name": "Auth",
             "url": "http://localhost:3000/auth/login",
             "method": "POST",
             "sortNum": 10000,
-            "created": "2023-10-31T21:58:36.401Z",
-            "modified": "2023-10-31T21:58:36.401Z",
+            "created": "2023-10-31T22:12:02.053Z",
+            "modified": "2023-10-31T22:12:02.053Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
                 "raw": "{\n  \"email\": \"john@test.com\",\n  \"password\": \"changeme\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "7b4d9bfc-9ce9-4b24-8b56-e6a862ee4f3a",
+            "colId": "32514b1a-cb4f-4691-b222-3bcc645204ad",
+            "containerId": "9c7e2c28-6e20-4dc0-b250-4a9e09486bce",
+            "name": "Create",
+            "url": "http://localhost:3000/api/customers",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2023-11-01T17:22:43.647Z",
+            "modified": "2023-11-02T23:38:21.527Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Maria Rita\",\n  \"phone\": \"31984536728\",\n  \"address\": {\n    \"street\": \"rua Julio kominscki Anício\",\n    \"number\": \"45\",\n    \"neighborhood\": \"Belo Novo Vale\",\n    \"city\": \"Belo Horizonte\",\n    \"state\": \"MG\",\n    \"country\": \"Brasil\"\n  }\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "8080b19f-6945-41c3-bfb4-f7275562b26f",
+            "colId": "32514b1a-cb4f-4691-b222-3bcc645204ad",
+            "containerId": "9c7e2c28-6e20-4dc0-b250-4a9e09486bce",
+            "name": "Get All ",
+            "url": "http://localhost:3000/api/customers?limit=1&page=2",
+            "method": "GET",
+            "sortNum": 20000,
+            "created": "2023-11-02T23:38:36.582Z",
+            "modified": "2023-11-02T23:42:16.751Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "limit",
+                    "value": "1",
+                    "isPath": false
+                },
+                {
+                    "name": "page",
+                    "value": "2",
+                    "isPath": false
+                }
+            ],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Maria Rita\",\n  \"phone\": \"31984536728\",\n  \"address\": {\n    \"street\": \"rua Julio kominscki Anício\",\n    \"number\": \"45\",\n    \"neighborhood\": \"Belo Novo Vale\",\n    \"city\": \"Belo Horizonte\",\n    \"state\": \"MG\",\n    \"country\": \"Brasil\"\n  }\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "4798a6c3-bb5e-4e41-a686-9e039c71a9bc",
+            "colId": "32514b1a-cb4f-4691-b222-3bcc645204ad",
+            "containerId": "9c7e2c28-6e20-4dc0-b250-4a9e09486bce",
+            "name": "Get One",
+            "url": "http://localhost:3000/api/customers/01HE8WMYMPYDPWGBAJXHMFZDE3",
+            "method": "GET",
+            "sortNum": 25000,
+            "created": "2023-11-03T00:00:40.967Z",
+            "modified": "2023-11-03T00:23:05.276Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Maria Rita\",\n  \"phone\": \"31984536728\",\n  \"address\": {\n    \"street\": \"rua Julio kominscki Anício\",\n    \"number\": \"45\",\n    \"neighborhood\": \"Belo Novo Vale\",\n    \"city\": \"Belo Horizonte\",\n    \"state\": \"MG\",\n    \"country\": \"Brasil\"\n  }\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "1dcbfb13-04bc-43c0-a353-c48de88c2ac7",
+            "colId": "32514b1a-cb4f-4691-b222-3bcc645204ad",
+            "containerId": "9c7e2c28-6e20-4dc0-b250-4a9e09486bce",
+            "name": "Update",
+            "url": "http://localhost:3000/api/customers/01HE8YXBP01G03VSA78ZXW7856",
+            "method": "PATCH",
+            "sortNum": 30000,
+            "created": "2023-11-02T23:42:45.583Z",
+            "modified": "2023-11-03T00:33:17.906Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Maria Rita de Souza\",\n  \"phone\": \"31984536728\"\n}",
                 "form": []
             },
             "tests": []
