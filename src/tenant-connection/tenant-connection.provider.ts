@@ -23,12 +23,14 @@ export const TenantProvider: Provider = {
     scope: Scope.REQUEST,
     useFactory: async (request: Request, configService: ConfigService) => {
         try {
-            const tenantName = request?.tenant?.identifier;
+            const tenantName = 'buxapp' // request?.tenant?.identifier;
             if (!tenantName) {
                 throw null;
             }
             const secretService = getSecretService(configService);
             const credentials = JSON.parse(await secretService.get(tenantName));
+
+            console.log('credentials ', credentials)
             const datasource = load({
                 host: configService.get('database').host,
                 port: configService.get('database').port,
