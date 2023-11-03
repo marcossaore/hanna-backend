@@ -143,4 +143,31 @@ describe('CustomerService', () => {
             expect(response.length).toEqual(2);
         });
     });
+
+    describe('findByUuid', () => {
+        it('should call CustomerRepository.findOneBy with correct values', async () => {
+            await sutCustomerService.findByUuid('any_uuid');
+            expect(customerRepository.findOneBy).toHaveBeenCalledWith({ uuid: 'any_uuid' });
+            expect(customerRepository.findOneBy).toHaveBeenCalledTimes(1);
+        });
+
+        it('should throws if CustomerRepository.findOneBy throws', async () => {
+            jest.spyOn(customerRepository, 'findOneBy').mockImplementationOnce(async() => {
+                throw new Error();
+            });
+            const promise = sutCustomerService.findByUuid('any_uuid');
+            await expect(promise).rejects.toThrow()
+        });
+
+        it('should return null if customer not exists', async () => {
+            jest.spyOn(customerRepository, 'findOneBy').mockResolvedValueOnce(Promise.resolve(null));
+            const response = await sutCustomerService.findByUuid('any_uuid');
+            expect(response).toEqual(null);
+        });
+
+        it('should return a customer on success', async () => {
+            const response = await sutCustomerService.findByUuid('any_uuid');
+            expect(response).toEqual(customerMock);
+        });
+    });
 });
