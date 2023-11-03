@@ -39,7 +39,8 @@ describe('CustomerController', () => {
                     )),
                     findByPhone: jest.fn().mockResolvedValue(Promise.resolve(null)),
                     findByEmail: jest.fn().mockResolvedValue(Promise.resolve(null)),
-                    create: jest.fn().mockResolvedValue(customerEntityMock)
+                    create: jest.fn().mockResolvedValue(customerEntityMock),
+                    save: jest.fn()
                 }
             }
         ]
@@ -191,7 +192,7 @@ describe('CustomerController', () => {
         });
     });
 
-    describe('FINDONE', () => {
+    describe('FINDBYUUID', () => {
         it('should call CustomerService.findByUuid with correct value', async () => {
             await sutCustomerController.findByUuid('any_uuid');
             expect(customerService.findByUuid).toHaveBeenCalledWith('any_uuid');
@@ -209,6 +210,49 @@ describe('CustomerController', () => {
                 throw new Error();
             });
             const promise = sutCustomerController.findByUuid('any_uuid');
+            await expect(promise).rejects.toThrow(new Error());
+        });
+
+        it('should return a customer when succeds', async () => {
+            const response = await sutCustomerController.findByUuid('any_uuid');
+            expect(response).toEqual(customerEntityMock);
+        });
+    });
+
+    describe('UPDATEBYUUID', () => {
+        it('should call CustomerService.findByUuid with correct value', async () => {
+            const data = mockCreateCustomerWithAddressDto();
+            await sutCustomerController.updateByUuid('any_uuid', data);
+            expect(customerService.findByUuid).toHaveBeenCalledWith('any_uuid');
+            expect(customerService.findByUuid).toHaveBeenCalledTimes(1);
+        });
+
+        it('should throws if CustomerService.findByUuid returns null', async () => {
+            jest.spyOn(customerService, 'findByUuid').mockResolvedValueOnce(Promise.resolve(null));
+            const promise = sutCustomerController.findByUuid('any_uuid');
+            await expect(promise).rejects.toThrow(new Error('Cliente não encontrado!'));
+        });
+
+        it('should throws if CustomerService.findByUuid throws', async () => {
+            jest.spyOn(customerService, 'findByUuid').mockImplementationOnce(() => {
+                throw new Error();
+            });
+            const promise = sutCustomerController.findByUuid('any_uuid');
+            await expect(promise).rejects.toThrow(new Error());
+        });
+
+        it('should call CustomerService.save with correct values', async () => {
+            const data = mockCreateCustomerWithAddressDto();
+            await sutCustomerController.updateByUuid('any_uuid', data);
+            expect(customerService.findByUuid).toHaveBeenCalledTimes(1);
+        });
+
+        it('should throws if CustomerService.save throws', async () => {
+            const data = mockCreateCustomerWithAddressDto();
+            jest.spyOn(customerService, 'save').mockImplementationOnce(() => {
+                throw new Error();
+            });
+            const promise = sutCustomerController.updateByUuid('any_uuid', data);
             await expect(promise).rejects.toThrow(new Error());
         });
 
