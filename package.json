@@ -43,6 +43,7 @@
     "express-session": "^1.17.3",
     "handlebars": "^4.7.8",
     "mysql2": "^3.6.1",
+    "nestjs-command": "^3.1.4",
     "nodemailer": "^6.9.6",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
@@ -50,7 +51,8 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.17",
-    "ulid": "^2.3.0"
+    "ulid": "^2.3.0",
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.1.0",
