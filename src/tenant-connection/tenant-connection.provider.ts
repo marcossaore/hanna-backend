@@ -29,8 +29,7 @@ export const TenantProvider: Provider = {
             }
             const secretService = getSecretService(configService);
             const credentials = JSON.parse(await secretService.get(tenantName));
-
-            console.log('credentials ', credentials)
+            
             const datasource = load({
                 host: configService.get('database').host,
                 port: configService.get('database').port,
