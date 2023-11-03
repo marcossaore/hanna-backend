@@ -1,4 +1,4 @@
-import { Controller, Post, Body, ConflictException, Get, Query, Param } from '@nestjs/common';
+import { Controller, Post, Body, ConflictException, Get, Query, Param, NotFoundException } from '@nestjs/common';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { GenerateUuidService } from '../_common/services/Uuid/generate-uuid-service';
 import { CustomerService } from './customer.service';
@@ -42,10 +42,14 @@ export class CustomerController {
     });
   }
 
-//   @Get(':id')
-//   findOne(@Param('id') id: string) {
-//     return this.customerService.findOne(+id);
-//   }
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    const customer = await this.customerService.findOne(id);
+    if (!customer) {
+        throw new NotFoundException('Cliente não encontrado!');
+    }
+    return customer;
+  }
 
 //   @Patch(':id')
 //   update(@Param('id') id: string, @Body() updateCustomerDto: UpdateCustomerDto) {

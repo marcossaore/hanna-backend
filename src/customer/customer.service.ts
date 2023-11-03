@@ -37,9 +37,9 @@ export class CustomerService {
         });
     }
 
-    // findOne(id: number) {
-    //     return `This action returns a #${id} customer`;
-    // }
+    async findOne(id: string): Promise<Customer> {
+        return this.companyRepository.findOneBy({ uuid: id });
+    }
 
     // update(id: number, updateCustomerDto: UpdateCustomerDto) {
     //     return `This action updates a #${id} customer`;
