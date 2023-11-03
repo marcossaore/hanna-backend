@@ -30,7 +30,7 @@ describe('CustomerController', () => {
             {
                 provide: CustomerService,
                 useValue: {
-                    findOne: jest.fn().mockResolvedValue(customerEntityMock),
+                    findByUuid: jest.fn().mockResolvedValue(customerEntityMock),
                     findAll: jest.fn().mockResolvedValue(Promise.resolve(
                         [
                             mockCustomerEntity(),
@@ -192,28 +192,28 @@ describe('CustomerController', () => {
     });
 
     describe('FINDONE', () => {
-        it('should call CustomerService.findOne with correct value', async () => {
-            await sutCustomerController.findOne('any_id');
-            expect(customerService.findOne).toHaveBeenCalledWith('any_id');
-            expect(customerService.findOne).toHaveBeenCalledTimes(1);
+        it('should call CustomerService.findByUuid with correct value', async () => {
+            await sutCustomerController.findByUuid('any_uuid');
+            expect(customerService.findByUuid).toHaveBeenCalledWith('any_uuid');
+            expect(customerService.findByUuid).toHaveBeenCalledTimes(1);
         });
 
-        it('should throws if CustomerService.findOne returns null', async () => {
-            jest.spyOn(customerService, 'findOne').mockResolvedValueOnce(Promise.resolve(null));
-            const promise = sutCustomerController.findOne('any_id');
+        it('should throws if CustomerService.findByUuid returns null', async () => {
+            jest.spyOn(customerService, 'findByUuid').mockResolvedValueOnce(Promise.resolve(null));
+            const promise = sutCustomerController.findByUuid('any_uuid');
             await expect(promise).rejects.toThrow(new Error('Cliente não encontrado!'));
         });
 
-        it('should throws if CustomerService.findOne throws', async () => {
-            jest.spyOn(customerService, 'findOne').mockImplementationOnce(() => {
+        it('should throws if CustomerService.findByUuid throws', async () => {
+            jest.spyOn(customerService, 'findByUuid').mockImplementationOnce(() => {
                 throw new Error();
             });
-            const promise = sutCustomerController.findOne('any_id');
+            const promise = sutCustomerController.findByUuid('any_uuid');
             await expect(promise).rejects.toThrow(new Error());
         });
 
         it('should return a customer when succeds', async () => {
-            const response = await sutCustomerController.findOne('any_id');
+            const response = await sutCustomerController.findByUuid('any_uuid');
             expect(response).toEqual(customerEntityMock);
         });
     });

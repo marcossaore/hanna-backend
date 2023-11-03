@@ -43,8 +43,8 @@ export class CustomerController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const customer = await this.customerService.findOne(id);
+  async findByUuid(@Param('id') id: string) {
+    const customer = await this.customerService.findByUuid(id);
     if (!customer) {
         throw new NotFoundException('Cliente não encontrado!');
     }

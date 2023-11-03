@@ -37,7 +37,7 @@ export class CustomerService {
         });
     }
 
-    async findOne(id: string): Promise<Customer> {
+    async findByUuid(id: string): Promise<Customer> {
         return this.companyRepository.findOneBy({ uuid: id });
     }
 
