@@ -22,9 +22,7 @@ export class SessionModule implements NestModule  {
 
     configure(consumer: MiddlewareConsumer) {
         consumer.apply(
-            this.sessionManager.getSession(),
-            this.sessionManager.getPassport()?.session(),
-            this.sessionManager.getPassport()?.initialize()
+            this.sessionManager.getSession()
         ).forRoutes('*');
     }
 }

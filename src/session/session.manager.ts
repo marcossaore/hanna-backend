@@ -1,8 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
+import * as session from 'express-session';
 import { createClient } from 'redis';
 import RedisStore from 'connect-redis';
-import * as session from 'express-session';
-import * as passport from 'passport';
 
 @Injectable()
 export class SessionManager {
@@ -31,9 +30,5 @@ export class SessionManager {
             saveUninitialized: false,
             cookie: { maxAge: 360000, secure: true }
         });
-    }
-
-    getPassport(): any {
-        return passport;
     }
 }
