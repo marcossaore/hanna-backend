@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { DataSource } from 'typeorm';
 
-export const load = ({ user, password, db, host, port}): DataSource => {
+export const load = ({ user, password, db, host, port}: {user: string, password: string, db: string, host: string, port: number}): DataSource => {
     try {        
         return new DataSource({
             migrationsTransactionMode: 'all',
