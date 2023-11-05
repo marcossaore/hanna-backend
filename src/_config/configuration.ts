@@ -22,6 +22,7 @@ export default () => ({
         secret: process.env.SESSION_SECRET,
         maxAge: (1 * 12) * (60000 * 60),
         prefix: process.env.SESSION_PREFIX,
+        secure: process.env.SESSION_SECURE === 'yes' ? true : false
     },
     aws: {
         key: process.env.AWS_ACCESS_KEY_ID,
