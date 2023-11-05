@@ -1,7 +1,11 @@
 declare namespace Express {
     export interface Request {
-       tenant?: {
-            identifier: string
+       session?: {
+            auth?: {
+                tenant?: {
+                    identifier: string
+                }
+            }
        }
     }
  }
