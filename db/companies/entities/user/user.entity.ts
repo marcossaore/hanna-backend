@@ -13,6 +13,9 @@ export class User extends AddDateColumns {
     @Column({ nullable: false })
     name: string;
 
+    @Column({ nullable: true })
+    password: string;
+
     @Column({ nullable: false, unique: true })
     email: string;
 

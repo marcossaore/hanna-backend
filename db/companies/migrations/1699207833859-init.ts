@@ -1,14 +1,14 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class Init1698982788394 implements MigrationInterface {
-    name = 'Init1698982788394'
+export class Init1699207833859 implements MigrationInterface {
+    name = 'Init1699207833859'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`CREATE TABLE \`action_module\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`name\` varchar(255) NOT NULL, UNIQUE INDEX \`IDX_4a069e90199bc86c60f37039a4\` (\`name\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`customer\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`uuid\` varchar(255) NOT NULL, \`name\` varchar(255) NOT NULL, \`phone\` varchar(255) NOT NULL, \`email\` varchar(255) NULL, \`street\` varchar(255) NOT NULL, \`number\` varchar(255) NOT NULL, \`complement\` varchar(255) NULL, \`neighborhood\` varchar(255) NOT NULL, \`city\` varchar(255) NOT NULL, \`state\` varchar(255) NOT NULL, \`country\` varchar(255) NOT NULL, \`deletedAt\` timestamp(6) NULL, UNIQUE INDEX \`IDX_19468a0ccfcf3e76cbb7789cb7\` (\`uuid\`), UNIQUE INDEX \`IDX_03846b4bae9df80f19c76005a8\` (\`phone\`), UNIQUE INDEX \`IDX_fdb2f3ad8115da4c7718109a6e\` (\`email\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`option_module\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`name\` varchar(255) NOT NULL, UNIQUE INDEX \`IDX_5bf19b1f43cf4f22f480c61e01\` (\`name\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`module\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`name\` varchar(255) NOT NULL, \`parentId\` int NULL, UNIQUE INDEX \`IDX_620a549dbcb1fff62ea85695ca\` (\`name\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
-        await queryRunner.query(`CREATE TABLE \`customer\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`uuid\` varchar(255) NOT NULL, \`name\` varchar(255) NOT NULL, \`phone\` varchar(255) NOT NULL, \`email\` varchar(255) NULL, \`street\` varchar(255) NOT NULL, \`number\` varchar(255) NOT NULL, \`complement\` varchar(255) NULL, \`neighborhood\` varchar(255) NOT NULL, \`city\` varchar(255) NOT NULL, \`state\` varchar(255) NOT NULL, \`country\` varchar(255) NOT NULL, \`deletedAt\` timestamp(6) NULL, UNIQUE INDEX \`IDX_19468a0ccfcf3e76cbb7789cb7\` (\`uuid\`), UNIQUE INDEX \`IDX_03846b4bae9df80f19c76005a8\` (\`phone\`), UNIQUE INDEX \`IDX_fdb2f3ad8115da4c7718109a6e\` (\`email\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
-        await queryRunner.query(`CREATE TABLE \`user\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`uuid\` varchar(255) NOT NULL, \`name\` varchar(255) NOT NULL, \`email\` varchar(255) NOT NULL, \`phone\` varchar(255) NULL, UNIQUE INDEX \`IDX_a95e949168be7b7ece1a2382fe\` (\`uuid\`), UNIQUE INDEX \`IDX_e12875dfb3b1d92d7d7c5377e2\` (\`email\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`action_module\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`name\` varchar(255) NOT NULL, UNIQUE INDEX \`IDX_4a069e90199bc86c60f37039a4\` (\`name\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`user\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`uuid\` varchar(255) NOT NULL, \`name\` varchar(255) NOT NULL, \`password\` varchar(255) NULL, \`email\` varchar(255) NOT NULL, \`phone\` varchar(255) NULL, UNIQUE INDEX \`IDX_a95e949168be7b7ece1a2382fe\` (\`uuid\`), UNIQUE INDEX \`IDX_e12875dfb3b1d92d7d7c5377e2\` (\`email\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`user_permission\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`userId\` int NULL, \`moduleId\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`module_actions\` (\`moduleId\` int NOT NULL, \`action\` int NOT NULL, INDEX \`IDX_7f84769243b71b6455da85750a\` (\`moduleId\`), INDEX \`IDX_70a583a6b8315fca11a3ebcc20\` (\`action\`), PRIMARY KEY (\`moduleId\`, \`action\`)) ENGINE=InnoDB`);
         await queryRunner.query(`CREATE TABLE \`module_options\` (\`moduleId\` int NOT NULL, \`option\` int NOT NULL, INDEX \`IDX_7fc95ecd93b319db7c9759877a\` (\`moduleId\`), INDEX \`IDX_80c3253eb1450bf2315d7e7350\` (\`option\`), PRIMARY KEY (\`moduleId\`, \`option\`)) ENGINE=InnoDB`);
@@ -63,16 +63,16 @@ export class Init1698982788394 implements MigrationInterface {
         await queryRunner.query(`DROP INDEX \`IDX_e12875dfb3b1d92d7d7c5377e2\` ON \`user\``);
         await queryRunner.query(`DROP INDEX \`IDX_a95e949168be7b7ece1a2382fe\` ON \`user\``);
         await queryRunner.query(`DROP TABLE \`user\``);
-        await queryRunner.query(`DROP INDEX \`IDX_fdb2f3ad8115da4c7718109a6e\` ON \`customer\``);
-        await queryRunner.query(`DROP INDEX \`IDX_03846b4bae9df80f19c76005a8\` ON \`customer\``);
-        await queryRunner.query(`DROP INDEX \`IDX_19468a0ccfcf3e76cbb7789cb7\` ON \`customer\``);
-        await queryRunner.query(`DROP TABLE \`customer\``);
+        await queryRunner.query(`DROP INDEX \`IDX_4a069e90199bc86c60f37039a4\` ON \`action_module\``);
+        await queryRunner.query(`DROP TABLE \`action_module\``);
         await queryRunner.query(`DROP INDEX \`IDX_620a549dbcb1fff62ea85695ca\` ON \`module\``);
         await queryRunner.query(`DROP TABLE \`module\``);
         await queryRunner.query(`DROP INDEX \`IDX_5bf19b1f43cf4f22f480c61e01\` ON \`option_module\``);
         await queryRunner.query(`DROP TABLE \`option_module\``);
-        await queryRunner.query(`DROP INDEX \`IDX_4a069e90199bc86c60f37039a4\` ON \`action_module\``);
-        await queryRunner.query(`DROP TABLE \`action_module\``);
+        await queryRunner.query(`DROP INDEX \`IDX_fdb2f3ad8115da4c7718109a6e\` ON \`customer\``);
+        await queryRunner.query(`DROP INDEX \`IDX_03846b4bae9df80f19c76005a8\` ON \`customer\``);
+        await queryRunner.query(`DROP INDEX \`IDX_19468a0ccfcf3e76cbb7789cb7\` ON \`customer\``);
+        await queryRunner.query(`DROP TABLE \`customer\``);
     }
 
 }
