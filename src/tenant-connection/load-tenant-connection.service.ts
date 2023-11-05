@@ -10,9 +10,6 @@ export class LoadTenantConnectionService {
     async load (tenantName: string): Promise<Connection> {
         try {
             const credentials = JSON.parse(await this.secretesService.get(tenantName));
-
-            console.log('credentials ', credentials)
-            
             const datasource = loadDataSource({
                 host: this.dbConfig.host,
                 port: this.dbConfig.port,

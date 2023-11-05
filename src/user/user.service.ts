@@ -14,6 +14,37 @@ export class UserService {
     }
 
     async findByEmail(email: string): Promise<any> {
-        return this.userRepository.findOneBy({ email });
+        return this.userRepository.findOneBy({
+            email
+        });
+    }
+
+    async getModulesPermission(uuid: string): Promise<User> {
+        const user = await this.userRepository.findOne({
+            relations: ['permissions.module', 'permissions.actions', 'permissions.options'],
+            where: {
+                uuid
+            },
+            select: {
+                id: true,
+                permissions: {
+                    id: true,
+                    module: {
+                        id: false,
+                        name: true
+                    },
+                    actions: {
+                        id: true,
+                        name: true
+                    },
+                    options: {
+                        id: true,
+                        name: true
+                    }
+                }
+            }
+        });
+
+        return user;
     }
 }

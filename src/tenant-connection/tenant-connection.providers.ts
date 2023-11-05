@@ -21,7 +21,6 @@ export const GetAndLoadTenantConnectionInSessionProvider = {
     scope: Scope.REQUEST,
     useFactory: async (request: Request, loadTenantConnectionService: LoadTenantConnectionService) => {
         const tenantName =  request?.session?.auth?.tenant?.identifier;
-        console.log('request?.session ', request.session.auth)
         if (!tenantName) {
             throw new UnauthorizedException()
         }

@@ -1,15 +1,33 @@
 import { Module } from '@nestjs/common';
-import { PassportModule } from '@nestjs/passport'
-import { AuthService } from './auth.service';
-import { UserService } from '../user/user.service';
-import { LocalStrategy } from './local.strategy';
 import { AuthController } from './auth.controller';
-import { SessionSerializer } from './session.serializer';
-import { SessionModule } from 'src/session/session.module';
+import { CompanyService } from '../company/company.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigService } from '@nestjs/config';
+import { Company } from '../../db/app/entities/company/company.entity';
+import { HashService } from '../_common/services/Password/hash.service';
+import { UserServiceLazy } from '../user/user.service.lazy';
+
 
 @Module({
-    imports: [SessionModule, PassportModule.register({ session: true })],
-    providers: [UserService, AuthService, LocalStrategy, SessionSerializer],
+    imports: [
+        TypeOrmModule.forRootAsync({
+            useFactory: (configService: ConfigService) => {
+                const dataSource = {
+                    host: configService.get('database.host'),
+                    port: configService.get('database.port'),
+                    username: configService.get('database.user'),
+                    password: configService.get('database.password'),
+                    database: configService.get('database.db'),
+                    type: 'mysql',
+                    entities: [__dirname + '/../../db/app/entities/**/*.entity{.ts,.js}']
+                } as any;
+                return dataSource;
+            },
+            inject: [ConfigService],
+        }),
+        TypeOrmModule.forFeature([Company])
+    ],
+    providers: [CompanyService, UserServiceLazy, HashService],
     controllers: [AuthController]
 })
 export class AuthModule {}

@@ -30,6 +30,10 @@ export class CompanyService {
     return this.companyRepository.findOne({ where: { uuid }});
   }
 
+  async findByDocument(document: string): Promise<Company> {
+    return this.companyRepository.findOne({ where: { document }});
+  }
+
   async markAsProcessed(uuid: string): Promise<void> {
     const company = await this.companyRepository.findOne({ where: { uuid }});
     company.status = CompanyStatus.PROCESSED;
