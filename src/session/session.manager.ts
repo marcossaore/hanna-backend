@@ -28,7 +28,7 @@ export class SessionManager {
             secret: this.sessionOptions.secret,
             resave: false,
             saveUninitialized: false,
-            cookie: { maxAge: 360000, secure: true }
+            cookie: { maxAge:  this.sessionOptions.maxAge, secure: this.sessionOptions.secure }
         });
     }
 }

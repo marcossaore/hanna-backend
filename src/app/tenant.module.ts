@@ -1,22 +1,30 @@
 import { Module } from '@nestjs/common';
 import { CustomerModule } from '../customer/customer.module';
-import { TenantProvider } from 'src/tenant-connection/tenant-connection.provider';
-// import { AuthModule } from 'src/auth/auth.module';
+import { AuthModule } from '../auth/auth.module';
+import { GetAndLoadTenantConnectionInSessionProvider, LoadTenantConnectionProvider } from 'src/tenant-connection/tenant-connection.providers';
+import { SessionModule } from '../session/session.module';
+import { SessionSerializer } from '../auth/session.serializer';
 
 @Module({
     imports: [
+        SessionModule,
         {
             module: CustomerModule,
             providers: [
-                TenantProvider
+                LoadTenantConnectionProvider,
+                GetAndLoadTenantConnectionInSessionProvider,
+            ],
+            exports: ['CONNECTION']
+        },
+        {
+            module: AuthModule,
+            providers: [
+                LoadTenantConnectionProvider
             ]
         },
-        // {
-        //     module: AuthModule,
-        //     providers: [
-        //         TenantProvider
-        //     ]
-        // }
+    ],
+    providers: [
+        SessionSerializer
     ]
 })
 export class TenantModule {} 
