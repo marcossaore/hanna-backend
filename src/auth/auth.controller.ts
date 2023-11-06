@@ -42,14 +42,18 @@ export class AuthController {
     async login(@Body() loginDto: LoginDto, @Req() request): Promise<PermissionType> {
         const company = await this.companyService.findByDocument(loginDto.document);
         if (!company) {
-            throw new UnauthorizedException('O CNPJ, email ou senha são inválidos!')
+            throw new UnauthorizedException('O CNPJ, email ou senha são inválidos!');
         }
 
         const connection = await this.loadTenantConnectionService.load(company.companyIdentifier);
+        if (!connection) {
+            throw new UnauthorizedException('O CNPJ, email ou senha são inválidos!');
+        }
+        
         const userService = this.userService.load(connection);
         const user = await userService.findByEmail(loginDto.email);
         if (!user) {
-            throw new UnauthorizedException('O CNPJ, email ou senha são inválidos!')
+            throw new UnauthorizedException('O CNPJ, email ou senha são inválidos!');
         }
 
         const passwordIsMatched = await this.hashService.verify(user.password, loginDto.password);

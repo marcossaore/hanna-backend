@@ -3,6 +3,7 @@ import { REQUEST } from "@nestjs/core";
 import { Module, Scope, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { LoadTenantConnectionService } from './load-tenant-connection.service';
+import { LoadTenantDataSourceService } from "./load-tenant-datasource.service";
 import { secretsServiceFactory } from '../_common/helpers/factories/_common/services/secrets-service-factory';
 
 export const LoadTenantConnectionProvider = {
@@ -11,8 +12,9 @@ export const LoadTenantConnectionProvider = {
     useFactory (configService: ConfigService) {
         const dbConfig = configService.get('database');
         const { key, secret, region, version, endpoint } = configService.get('aws');
-        const factory = secretsServiceFactory({key, secret, region, version, endpoint})
-        return new LoadTenantConnectionService(dbConfig, factory);
+        const factory = secretsServiceFactory({key, secret, region, version, endpoint});
+        const loadTenantDataSourceService = new LoadTenantDataSourceService();
+        return new LoadTenantConnectionService(dbConfig, factory, loadTenantDataSourceService);
     }
 }
 
