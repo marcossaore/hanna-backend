@@ -1,5 +1,6 @@
-import { Controller, Post, Body, UnauthorizedException, Req } from '@nestjs/common';
+import { Controller, Post, Body, Req } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
+import { userUnauthorized } from '../_common/helpers/factories/errors';
 import { CompanyService } from '../company/company.service';
 import { LoadTenantConnectionService } from '../tenant-connection/load-tenant-connection.service';
 import { HashService } from '../_common/services/Password/hash.service';
@@ -42,23 +43,23 @@ export class AuthController {
     async login(@Body() loginDto: LoginDto, @Req() request): Promise<PermissionType> {
         const company = await this.companyService.findByDocument(loginDto.document);
         if (!company) {
-            throw new UnauthorizedException('O CNPJ, email ou senha são inválidos!');
+            throw userUnauthorized();
         }
 
         const connection = await this.loadTenantConnectionService.load(company.companyIdentifier);
         if (!connection) {
-            throw new UnauthorizedException('O CNPJ, email ou senha são inválidos!');
+            throw userUnauthorized();
         }
         
         const userService = this.userService.load(connection);
         const user = await userService.findByEmail(loginDto.email);
         if (!user) {
-            throw new UnauthorizedException('O CNPJ, email ou senha são inválidos!');
+            throw userUnauthorized();
         }
 
         const passwordIsMatched = await this.hashService.verify(user.password, loginDto.password);
         if (!passwordIsMatched) {
-            throw new UnauthorizedException('O CNPJ, email ou senha são inválidos!')
+            throw userUnauthorized();
         }
 
         const userPermissions = await userService.getModulesPermission(user.uuid);
