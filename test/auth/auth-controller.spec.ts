@@ -44,7 +44,7 @@ describe('AuthController', () => {
             {
                 provide: LoadTenantConnectionService,
                 useValue: {
-                    load: jest.fn()
+                    load: jest.fn().mockReturnValue({} as any)
                 }
             },
             {
@@ -116,6 +116,13 @@ describe('AuthController', () => {
             });
             const promise = sutAuthController.login(data, requestSpy);
             await expect(promise).rejects.toThrow(new Error());
+        });
+
+        it('should throws if LoadTenantConnectionService.load returns null', async () => {
+            const data = mockLoginDto();
+            jest.spyOn(loadTenantConnectionService, 'load').mockResolvedValueOnce(null);
+            const promise = sutAuthController.login(data, requestSpy);
+            await expect(promise).rejects.toThrow(new Error('O CNPJ, email ou senha são inválidos!'));
         });
 
         it('should call UserServiceLazy.load with correct connection', async () => {
