@@ -150,6 +150,37 @@ describe('Service: Company', () => {
     });
   });
 
+  describe('findByDocument', () => {
+    it('should call RepositoryCompany.findOne with correct document', async () => {
+        await sutCompanyService.findByDocument('any_document');
+        expect(companyRepository.findOne).toHaveBeenCalledTimes(1);
+        expect(companyRepository.findOne).toHaveBeenCalledWith({
+            where: {
+                document: 'any_document'
+            }
+        });
+    });
+
+    it('should throws if RepositoryCompany.findOne throws', async () => {
+        jest.spyOn(companyRepository, 'findOne').mockImplementationOnce(async() => {
+            throw new Error();
+        });
+        const promise = sutCompanyService.findByDocument('any_document');
+        await expect(promise).rejects.toThrow()
+    });
+
+    it('should return null if company not exists', async () => {
+        jest.spyOn(companyRepository, 'findOne').mockResolvedValueOnce(null);
+        const response = await sutCompanyService.findByDocument('any_document');
+        expect(response).toEqual(null);
+    });
+
+    it('should return a company when succeds', async () => {
+        const response = await sutCompanyService.findByDocument('any_document');
+        expect(response).toEqual(companyEntityMock);
+    });
+  });
+
   describe('markAsProcessed', () => {
     it('should call RepositoryCompany.findOne with correct values', async () => {
         await sutCompanyService.markAsProcessed('any_uuid');
