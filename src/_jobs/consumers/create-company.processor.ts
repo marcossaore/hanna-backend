@@ -1,5 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { OnQueueCompleted, OnQueueFailed, Process, Processor } from '@nestjs/bull';
+import {
+    OnQueueCompleted,
+    OnQueueFailed,
+    Process,
+    Processor,
+} from '@nestjs/bull';
 import { Job } from 'bull';
 import { CompanyService } from '../../../src/company/company.service';
 import { GenerateDbCredentialsService } from '../../_common/services/Database/generate-db-credentials.service';
@@ -11,11 +16,11 @@ import { MailService } from '../../mail/mail.service';
 import { ActionServiceSeed } from '../../../db/companies/seeds/action.service.seed';
 import { ModuleServiceSeed } from '../../../db/companies/seeds/module.service.seed';
 import { GenerateUuidService } from '../../_common/services/Uuid/generate-uuid-service';
+import { TokenAdapter } from '../../_common/services/Jwt/tokenAdapter';
 
 @Injectable()
 @Processor('create-company')
 export class CreateCompanyProcessor {
-
     constructor(
         private readonly companyService: CompanyService,
         private readonly generateDbCredentialsService: GenerateDbCredentialsService,
@@ -27,26 +32,26 @@ export class CreateCompanyProcessor {
         private readonly addFirstUserAsAdminService: AddFirstUserAsAdminService,
         private readonly generateUuidService: GenerateUuidService,
         private readonly mailService: MailService,
-    ){}
+        private readonly tokenAdapter: TokenAdapter,
+    ) {}
 
     @Process()
     async handleJob(job: Job) {
-
-        try {            
+        try {
             const company = await this.companyService.findByUuid(job.data.uuid);
             const credentials = this.generateDbCredentialsService.generate(company.name);
             await this.createDatabaseService.create({
                 db: company.companyIdentifier,
                 ...credentials
             });
-    
+
             await this.secretsService.save(
-                company.companyIdentifier,    
+                company.companyIdentifier,
                 JSON.stringify({
                     ...credentials
                 })
             );
-    
+
             await this.migrationsCompanyService.run(company.companyIdentifier);
 
             await this.actionServiceSeed.seed(company.companyIdentifier);
@@ -60,20 +65,27 @@ export class CreateCompanyProcessor {
                 email: company.email,
                 phone: company.phone
             });
-    
+
+            const token = this.tokenAdapter.sign({
+                companyId: company.uuid,
+                userId: uuid,
+                userName: company.partnerName
+            });
+
             await this.mailService.send({
                 to: company.email,
                 subject: 'Conta criada com sucesso!',
                 template: 'company-account-create',
                 data: {
-                    name: company.name,
+                    name: company.partnerName,
                     document: company.document,
                     partnerName: company.partnerName,
-                    email: company.email
+                    email: company.email,
+                    link: `http://localhost:3000/api/app/companies/render?token=${token}`
                 }
             });
         } catch (error) {
-           throw error; 
+            throw error;
         }
     }
 
@@ -81,7 +93,7 @@ export class CreateCompanyProcessor {
     onCompleted(job: Job) {
         this.companyService.markAsProcessed(job.data.uuid);
     }
-  
+
     @OnQueueFailed()
     onFailed(job: Job, error: Error) {
         this.companyService.markAsRejected(job.data.uuid, error);

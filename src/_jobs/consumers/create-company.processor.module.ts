@@ -17,12 +17,10 @@ import { ModuleServiceSeed } from '../../../db/companies/seeds/module.service.se
 import { ActionModule } from '../../../db/companies/entities/module/action-module.entity';
 import { AddFirstUserAsAdminService } from '../../_common/services/Database/add-first-user-as-admin.service';
 import { GenerateUuidService } from '../../_common/services/Uuid/generate-uuid-service';
+import { TokenAdapter } from '../../_common/services/Jwt/tokenAdapter';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([Company, ActionModule]),
-        MailModule
-    ],
+    imports: [TypeOrmModule.forFeature([Company, ActionModule]), MailModule],
     providers: [
         ConfigService,
         CompanyService,
@@ -30,65 +28,74 @@ import { GenerateUuidService } from '../../_common/services/Uuid/generate-uuid-s
         {
             inject: [ConfigService],
             provide: CreateDatabaseService,
-            useFactory (configService: ConfigService) {
+            useFactory(configService: ConfigService) {
                 const hostDbConfig = configService.get('database');
-                return new CreateDatabaseService(hostDbConfig, new MySqlDbManagerService());
-            }
-        },  
+                return new CreateDatabaseService(
+                    hostDbConfig,
+                    new MySqlDbManagerService(),
+                );
+            },
+        },
         {
             inject: [ConfigService],
             provide: SecretsService,
-            useFactory (configService: ConfigService) {
-                const { key, secret, region, version, endpoint } = configService.get('aws');
+            useFactory(configService: ConfigService) {
+                const { key, secret, region, version, endpoint } =
+                    configService.get('aws');
                 const secretsManagerCloud = new SecretsManagerCloud({
                     key,
                     secret,
                     region,
                     version,
-                    endpoint
+                    endpoint,
                 });
                 return new SecretsService(secretsManagerCloud);
-            }
+            },
         },
         {
             inject: [ConfigService],
             provide: MigrationsCompanyService,
-            useFactory (configService: ConfigService) {
+            useFactory(configService: ConfigService) {
                 const databaseOptions = configService.get('database');
                 return new MigrationsCompanyService(databaseOptions);
-            }
+            },
         },
         {
             inject: [ConfigService],
             provide: ActionServiceSeed,
-            useFactory (configService: ConfigService) {
+            useFactory(configService: ConfigService) {
                 const databaseOptions = configService.get('database');
                 return new ActionServiceSeed(databaseOptions);
-            }
+            },
         },
         {
             inject: [ConfigService],
             provide: ModuleServiceSeed,
-            useFactory (configService: ConfigService) {
+            useFactory(configService: ConfigService) {
                 const databaseOptions = configService.get('database');
                 return new ModuleServiceSeed(databaseOptions);
-            }
+            },
         },
         GenerateUuidService,
         {
             inject: [ConfigService],
             provide: AddFirstUserAsAdminService,
-            useFactory (configService: ConfigService) {
+            useFactory(configService: ConfigService) {
                 const databaseOptions = configService.get('database');
                 return new AddFirstUserAsAdminService(databaseOptions);
-            }
+            },
         },
         MailService,
-        CreateCompanyProcessor
+        {
+            inject: [ConfigService],
+            provide: TokenAdapter,
+            useFactory(configService: ConfigService) {
+                const jwtOptions = configService.get('jwt');
+                return new TokenAdapter(jwtOptions);
+            },
+        },
+        CreateCompanyProcessor,
     ],
-    exports: [
-        CreateCompanyProcessor
-    ]
+    exports: [CreateCompanyProcessor],
 })
-
 export class CreateCompanyProcessorModule {}

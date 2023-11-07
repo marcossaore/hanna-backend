@@ -37,5 +37,9 @@ export default () => ({
         host: process.env.MAIL_HOST,
         password: process.env.MAIL_PASSWORD,
         port: process.env.MAIL_PORT
+    },
+    jwt: {
+        secret: process.env.JWT_SECRET,
+        expiresIn: process.env.JWT_EXPIRESIN
     }
 });
