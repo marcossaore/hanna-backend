@@ -15,13 +15,13 @@ export class SecretsManagerCloud {
     constructor(private readonly serviceConfig: ServiceConfig) {
         
         const secretsManager = new SecretsManagerClient({
-            region: serviceConfig.region,
-            apiVersion: serviceConfig.version,
+            region: this.serviceConfig.region,
+            apiVersion: this.serviceConfig.version,
             credentials: {
-                accessKeyId: serviceConfig.key,
-                secretAccessKey: serviceConfig.secret
+                accessKeyId: this.serviceConfig.key,
+                secretAccessKey: this.serviceConfig.secret
             },
-            endpoint: serviceConfig.endpoint
+            endpoint: this.serviceConfig.endpoint
         });
 
         this.service = secretsManager;
