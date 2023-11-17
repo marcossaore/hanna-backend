@@ -21,7 +21,8 @@
     "app-migration:generate": "sh scripts/generate-migrations-to-app.sh",
     "app-migration:create": "sh scripts/create-migrations-to-app.sh",
     "company-migration:generate": "sh scripts/generate-migrations-to-company.sh",
-    "company-migration:create": "sh scripts/create-migrations-to-company.sh"
+    "company-migration:create": "sh scripts/create-migrations-to-company.sh",
+    "load-secrets": "sh scripts/load-secrets-to-companies.sh"
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.427.0",

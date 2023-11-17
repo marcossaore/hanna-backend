@@ -4,6 +4,7 @@
 /dist
 /node_modules
 /data
+/scripts/load-secrets-to-companies.sh
 
 # Logs
 logs
