@@ -1,9 +1,12 @@
-import { Controller, Post, Body, ConflictException, Get, Query, Param, NotFoundException, Patch, Delete } from '@nestjs/common';
+import { Controller, Post, Body, ConflictException, Get, Query, Param, NotFoundException, Patch, Delete, UseGuards } from '@nestjs/common';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { GenerateUuidService } from '../_common/services/Uuid/generate-uuid-service';
 import { CustomerService } from './customer.service';
 import { appPrefix } from '../app/application.prefixes';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
+import { AuthenticatedGuard } from '../auth/authenticated.guard';
+import { Permissions } from '../auth/permissions/permission.decorator';
+import { PermissionsGuard } from '../auth/permissions/permission.guard';
 
 @Controller(`${appPrefix}/customers`)
 export class CustomerController {
@@ -13,6 +16,9 @@ export class CustomerController {
 ) {}
 
   @Post()
+  @Permissions('customers', 'create')
+  @UseGuards(AuthenticatedGuard)
+  @UseGuards(PermissionsGuard)
   async create(@Body() createCustomerDto: CreateCustomerDto) {
     let existsCustomer = await this.customerService.findByPhone(createCustomerDto.phone);
     if (existsCustomer) {
@@ -36,6 +42,9 @@ export class CustomerController {
   }
 
   @Get()
+  @Permissions('customers', 'read')
+  @UseGuards(AuthenticatedGuard)
+  @UseGuards(PermissionsGuard)
   async findAll(@Query('limit') limit: number = 10, @Query('page') page: number = 1) {
     return this.customerService.findAll({
         limit,
@@ -44,6 +53,9 @@ export class CustomerController {
   }
 
   @Get(':id')
+  @Permissions('customers', 'read')
+  @UseGuards(AuthenticatedGuard)
+  @UseGuards(PermissionsGuard)
   async findByUuid(@Param('id') id: string) {
     const customer = await this.customerService.findByUuid(id);
     if (!customer) {
@@ -53,6 +65,9 @@ export class CustomerController {
   }
 
   @Patch(':id')
+  @Permissions('customers', 'edit')
+  @UseGuards(AuthenticatedGuard)
+  @UseGuards(PermissionsGuard)
   async updateByUuid(@Param('id') id: string, @Body() updateCustomerDto: UpdateCustomerDto) {
     const customer = await this.customerService.findByUuid(id);
     if (!customer) {
@@ -74,6 +89,9 @@ export class CustomerController {
   }
 
   @Delete(':id')
+  @Permissions('customers', 'delete')
+  @UseGuards(AuthenticatedGuard)
+  @UseGuards(PermissionsGuard)
   async removeByUuid(@Param('id') id: string) {
     const customer = await this.customerService.findByUuid(id);
     if (!customer) {
