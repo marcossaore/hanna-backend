@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
-import { InitCommandHandlerModule } from './commands/init-command-handler.module';
 import { CommandModule, CommandService } from 'nestjs-command';
+import { InitCommandHandlerModule } from './commands/init-command-handler.module';
 
 async function bootstrap() {
     const commandApp = await NestFactory.createApplicationContext(InitCommandHandlerModule, {

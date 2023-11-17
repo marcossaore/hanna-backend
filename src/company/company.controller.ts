@@ -1,20 +1,21 @@
 import {
-  Controller,
-  Post,
-  Body,
-  ConflictException,
-  UseInterceptors,
-  ClassSerializerInterceptor,
-  HttpCode
+    Controller,
+    Post,
+    Body,
+    ConflictException,
+    UseInterceptors,
+    ClassSerializerInterceptor,
+    HttpCode
 } from '@nestjs/common';
-import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
+import { InjectQueue } from '@nestjs/bull';
+import { configAppPrefix } from '@/app/application.prefixes';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { CreatedCompanyDto } from './dto/created-company.dto';
-import { InfoMessageInterceptor } from '../_common/interceptors/info-message-interceptor';
-import { GenerateUuidService } from '../_common/services/Uuid/generate-uuid-service';
+import { InfoMessageInterceptor } from '@/_common/interceptors/info-message-interceptor';
+import { GenerateUuidService } from '@/_common/services/Uuid/generate-uuid-service';
 import { CompanyService } from './company.service';
-import { configAppPrefix } from '../app/application.prefixes';
+
 
 @Controller(`${configAppPrefix}/companies`)
 export class CompanyController {

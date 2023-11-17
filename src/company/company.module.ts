@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bull';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { CompanyController } from './company.controller';
 import { ConfigService } from '@nestjs/config';
-import { Company } from '../../db/app/entities/company/company.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Company } from '@db/app/entities/company/company.entity';
+import { CreateCompanyProcessorModule } from '@/_jobs/consumers/create-company.processor.module';
 import { CompanyService } from './company.service';
-import { GenerateUuidService } from '../_common/services/Uuid/generate-uuid-service';
-import { CreateCompanyProcessorModule } from 'src/_jobs/consumers/create-company.processor.module';
+import { GenerateUuidService } from '@/_common/services/Uuid/generate-uuid-service';
+import { CompanyController } from './company.controller';
+
 
 @Module({
     imports: [

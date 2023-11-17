@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { CompanyService } from '../company/company.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { Company } from '@db/app/entities/company/company.entity';
 import { ConfigService } from '@nestjs/config';
-import { Company } from '../../db/app/entities/company/company.entity';
-import { HashService } from '../_common/services/Password/hash.service';
-import { UserServiceLazy } from '../user/user.service.lazy';
-
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { HashService } from '@/_common/services/Password/hash.service';
+import { UserServiceLazy } from '@/user/user.service.lazy';
+import { CompanyService } from '@/company/company.service';
+import { AuthController } from './auth.controller';
 
 @Module({
     imports: [

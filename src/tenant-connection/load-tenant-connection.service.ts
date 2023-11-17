@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { SecretsService } from "../_common/services/Secret/secrets-service";
-import { LoadTenantDataSourceService } from "./load-tenant-datasource.service";
 import { Connection } from "typeorm";
+import { LoadTenantDataSourceService } from "./load-tenant-datasource.service";
+import { SecretsService } from "@/_common/services/Secret/secrets-service";
 
 @Injectable()
 export class LoadTenantConnectionService {

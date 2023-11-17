@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { OnQueueCompleted, OnQueueFailed, Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
-import { CompanyService } from '../../../src/company/company.service';
-import { GenerateDbCredentialsService } from '../../_common/services/Database/generate-db-credentials.service';
-import { CreateDatabaseService } from '../../_common/services/Database/create-database.service';
-import { SecretsService } from '../../_common/services/Secret/secrets-service';
-import { MigrationsCompanyService } from '../../_common/services/Database/migrations-company.service';
-import { AddFirstUserAsAdminService } from '../../_common/services/Database/add-first-user-as-admin.service';
-import { MailService } from '../../mail/mail.service';
-import { ActionServiceSeed } from '../../../db/companies/seeds/action.service.seed';
-import { ModuleServiceSeed } from '../../../db/companies/seeds/module.service.seed';
-import { GenerateUuidService } from '../../_common/services/Uuid/generate-uuid-service';
+import { OnQueueCompleted, OnQueueFailed, Process, Processor } from '@nestjs/bull';
+import { MailService } from '@/mail/mail.service';
+import { GenerateUuidService } from '@/_common/services/Uuid/generate-uuid-service';
+import { AddFirstUserAsAdminService } from '@/_common/services/Database/add-first-user-as-admin.service';
+import { ModuleServiceSeed } from '@db/companies/seeds/module.service.seed';
+import { ActionServiceSeed } from '@db/companies/seeds/action.service.seed';
+import { MigrationsCompanyService } from '@/_common/services/Database/migrations-company.service';
+import { SecretsService } from '@/_common/services/Secret/secrets-service';
+import { CreateDatabaseService } from '@/_common/services/Database/create-database.service';
+import { GenerateDbCredentialsService } from '@/_common/services/Database/generate-db-credentials.service';
+import { CompanyService } from '@/company/company.service';
+
 
 @Injectable()
 @Processor('create-company')

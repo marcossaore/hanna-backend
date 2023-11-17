@@ -1,10 +1,11 @@
 import { Controller, Post, Body, Req } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
-import { userUnauthorized } from '../_common/helpers/factories/errors';
-import { CompanyService } from '../company/company.service';
-import { LoadTenantConnectionService } from '../tenant-connection/load-tenant-connection.service';
-import { HashService } from '../_common/services/Password/hash.service';
-import { UserServiceLazy } from '../user/user.service.lazy';
+import { userUnauthorized } from '@/_common/helpers/factories/errors';
+import { HashService } from '@/_common/services/Password/hash.service';
+import { UserServiceLazy } from '@/user/user.service.lazy';
+import { LoadTenantConnectionService } from '@/tenant-connection/load-tenant-connection.service';
+import { CompanyService } from '@/company/company.service';
+
 
 type ActionType = {
     id: number, 

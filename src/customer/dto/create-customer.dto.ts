@@ -1,7 +1,8 @@
 import { Type } from "class-transformer";
 import { IsEmail, IsNotEmpty, IsOptional, IsString, ValidateNested } from "class-validator";
-import { IsPhone } from "../../_common/validations/phone.validator";
-import { CreateAddressDto } from "../../address/dto/create-address.dto";
+import { IsPhone } from "@/_common/validations/phone.validator";
+import { CreateAddressDto } from "@/address/dto/create-address.dto";
+
 
 export class CreateCustomerDto {
     @IsString({message: JSON.stringify({ message: 'O nome do cliente deve ser "string"!', field: 'name' })})

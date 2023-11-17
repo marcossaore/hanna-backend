@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import { IsCnpj } from '../../_common/validations/cnpj.validator';
-import { IsStrongPass } from '../../_common/validations/password.validator';
+import { IsCnpj } from '@/_common/validations/cnpj.validator';
+import { IsStrongPass } from '@/_common/validations/password.validator';
 
 export class LoginDto {
     @IsCnpj({message: JSON.stringify({message: 'O CNPJ não é válido!', field: 'document'})})

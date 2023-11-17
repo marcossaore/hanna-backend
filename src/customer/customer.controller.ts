@@ -1,12 +1,13 @@
+import { appPrefix } from '@/app/application.prefixes';
 import { Controller, Post, Body, ConflictException, Get, Query, Param, NotFoundException, Patch, Delete, UseGuards } from '@nestjs/common';
 import { CreateCustomerDto } from './dto/create-customer.dto';
-import { GenerateUuidService } from '../_common/services/Uuid/generate-uuid-service';
-import { CustomerService } from './customer.service';
-import { appPrefix } from '../app/application.prefixes';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
-import { AuthenticatedGuard } from '../auth/authenticated.guard';
-import { Permissions } from '../auth/permissions/permission.decorator';
-import { PermissionsGuard } from '../auth/permissions/permission.guard';
+import { Permissions } from '@/auth/permissions/permission.decorator';
+import { AuthenticatedGuard } from '@/auth/authenticated.guard';
+import { PermissionsGuard } from '@/auth/permissions/permission.guard';
+import { CustomerService } from './customer.service';
+import { GenerateUuidService } from '@/_common/services/Uuid/generate-uuid-service';
+
 
 @Controller(`${appPrefix}/customers`)
 export class CustomerController {

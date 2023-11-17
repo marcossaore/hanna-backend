@@ -1,8 +1,8 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import { IsCnpj } from '../../_common/validations/cnpj.validator';
-import { IsCpf } from '../../_common/validations/cpf.validator';
-import { IsPhone } from '../../_common/validations/phone.validator';
-import { IsCompanyIdentifier } from '../../_common/validations/company/company-identifier.validator';
+import { IsCnpj } from '@/_common/validations/cnpj.validator';
+import { IsCompanyIdentifier } from '@/_common/validations/company/company-identifier.validator';
+import { IsCpf } from '@/_common/validations/cpf.validator';
+import { IsPhone } from '@/_common/validations/phone.validator';
 
 export class CreateCompanyDto {
     

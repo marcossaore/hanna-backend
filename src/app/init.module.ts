@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import configuration from '../_config/configuration';
-import { AppModule } from './app.module';
 import { TenantModule } from './tenant.module';
+import { AppModule } from './app.module';
+import configuration from '@/_config/configuration';
+
 
 @Module({
     imports: [

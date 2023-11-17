@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { generateRandomString, generateRandomInteger } from "../../../../src/_common/helpers/general";
+import { generateRandomInteger, generateRandomString } from "@/_common/helpers/general";
 
 @Injectable()
 export class GenerateDbCredentialsService {

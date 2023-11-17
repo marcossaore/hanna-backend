@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import configuration from '../_config/configuration';
-import { CompanyModule } from '../company/company.module';
-import appMigrations from '../../db/app/app.migrations';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import configuration from '@/_config/configuration';
+import appMigrations from '@db/app/app.migrations';
+import { CompanyModule } from '@/company/company.module';
 
 @Module({
   imports: [

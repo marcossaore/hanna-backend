@@ -1,9 +1,10 @@
+import { Company } from '@db/app/entities/company/company.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Company } from '../../db/app/entities/company/company.entity';
-import { CompanyStatus } from '../_common/enums/company-status.enum';
 import { CreateCompanyToEntity } from './dto/create-company-to-entity.dto';
+import { CompanyStatus } from '@/_common/enums/company-status.enum';
+
 
 @Injectable()
 export class CompanyService {

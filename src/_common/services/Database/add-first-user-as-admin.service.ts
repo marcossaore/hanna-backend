@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { createConnection  } from "typeorm";
 import { join } from "path";
-import { User } from "../../../../db/companies/entities/user/user.entity";
-import { Module } from "../../../../db/companies/entities/module/module.entity";
+import { User } from "@db/companies/entities/user/user.entity";
+import { Module } from "@db/companies/entities/module/module.entity";
 
 @Injectable()
 export class AddFirstUserAsAdminService {

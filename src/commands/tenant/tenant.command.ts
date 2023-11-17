@@ -1,7 +1,7 @@
-import { Command, Positional, Option } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
-import { GenerateDbCredentialsService } from '../../_common/services/Database/generate-db-credentials.service';
-import { SecretsService } from '../../_common/services/Secret/secrets-service';
+import { Command, Positional } from 'nestjs-command';
+import { GenerateDbCredentialsService } from '@/_common/services/Database/generate-db-credentials.service';
+import { SecretsService } from '@/_common/services/Secret/secrets-service';
 
 
 // how to execute it: npx nestjs-command tenant:create-secret <tenantIdentifier>
