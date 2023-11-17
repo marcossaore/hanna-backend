@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CustomerService } from '../../src/customer/customer.service';
 import { mockCreateCustomerToEntityWithAddressDto, mockCustomerEntity } from '../mock/customer.mock';
-import { GenerateUuidService } from '../../src/_common/services/Uuid/generate-uuid-service';
+import { CustomerService } from '@/customer/customer.service';
 
 const pageOptions = { limit: 1, page: 1};
 

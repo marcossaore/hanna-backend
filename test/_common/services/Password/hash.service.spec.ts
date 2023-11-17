@@ -1,5 +1,5 @@
 import * as argon2 from 'argon2';
-import { HashService } from '../../../../src/_common/services/Password/hash.service';
+import { HashService } from '@/_common/services/Password/hash.service';
 
 jest.mock('argon2');
 

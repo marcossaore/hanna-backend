@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { mockUserEntity, mockUserPermission } from '../mock/user.mock';
-import { User } from '../../db/companies/entities/user/user.entity';
-import { UserService } from '../../src/user/user.service';
+import { User } from '@db/companies/entities/user/user.entity';
+import { UserService } from '@/user/user.service';
 
 describe('Service: UserService', () => {
     let sutUserService: UserService;

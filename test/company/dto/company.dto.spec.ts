@@ -1,7 +1,7 @@
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
-import { CreateCompanyDto } from '../../../src/company/dto/create-company.dto';
 import { mockCreateCompanyDto } from '../../mock/company.mock';
+import { CreateCompanyDto } from '@/company/dto/create-company.dto';
 
 describe('Dto:  CreateCompany', () => {
     afterEach(() => {

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MailService } from '../../src/mail/mail.service';
 import { MailerModule, MailerService } from '@nestjs-modules/mailer';
+import { MailService } from '@/mail/mail.service';
 
 const createEmailSenderMock = () => ({
     to: 'any_email',

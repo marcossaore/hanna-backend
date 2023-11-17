@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthController } from '../../src/auth/auth.controller';
-import { User } from '../../db/companies/entities/user/user.entity';
-import { Company } from '../../db/app/entities/company/company.entity';
-import { CompanyService } from '../../src/company/company.service';
-import { LoadTenantConnectionService } from '../../src/tenant-connection/load-tenant-connection.service';
-import { UserServiceLazy } from '../../src/user/user.service.lazy';
-import { HashService } from '../../src/_common/services/Password/hash.service';
-import { mockLoginDto } from '../mock/auth.mock';
-import { mockUserEntity, mockUserPermission } from '../mock/user.mock';
 import { mockCompanyEntity } from '../mock/company.mock';
+import { mockUserEntity, mockUserPermission } from '../mock/user.mock';
+import { mockLoginDto } from '../mock/auth.mock';
+import { Company } from '@db/app/entities/company/company.entity';
+import { User } from '@db/companies/entities/user/user.entity';
+import { HashService } from '@/_common/services/Password/hash.service';
+import { UserServiceLazy } from '@/user/user.service.lazy';
+import { LoadTenantConnectionService } from '@/tenant-connection/load-tenant-connection.service';
+import { CompanyService } from '@/company/company.service';
+import { AuthController } from '@/auth/auth.controller';
 
 const requestSpy: any = {
     session: {

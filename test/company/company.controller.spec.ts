@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Queue } from 'bull';
 import { BullModule, getQueueToken } from '@nestjs/bull';
+import { Queue } from 'bull';
 import { mockCompanyEntity, mockCreateCompanyDto } from '../mock/company.mock';
-import { CompanyService } from '../../src/company/company.service';
-import { GenerateUuidService } from '../../src/_common/services/Uuid/generate-uuid-service';
-import { CompanyController } from '../../src/company/company.controller';
+import { GenerateUuidService } from '@/_common/services/Uuid/generate-uuid-service';
+import { CompanyService } from '@/company/company.service';
+import { CompanyController } from '@/company/company.controller';
+
 
 describe('Controller: Company', () => {
   let sutCompanyController: CompanyController;

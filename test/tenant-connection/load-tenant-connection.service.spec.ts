@@ -1,9 +1,8 @@
-import { Connection } from 'typeorm';
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { LoadTenantDataSourceService } from '../../src/tenant-connection/load-tenant-datasource.service';
-import { LoadTenantConnectionService } from '../../src/tenant-connection/load-tenant-connection.service';
-import { SecretsService } from '../../src/_common/services/Secret/secrets-service';
+import { LoadTenantDataSourceService } from '@/tenant-connection/load-tenant-datasource.service';
+import { SecretsService } from '@/_common/services/Secret/secrets-service';
+import { LoadTenantConnectionService } from '@/tenant-connection/load-tenant-connection.service';
 
 describe('Service: LoadTenantConnectionService', () => {
     let sutLoadTenantConnectionService: LoadTenantConnectionService;

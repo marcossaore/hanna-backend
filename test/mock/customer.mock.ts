@@ -1,7 +1,8 @@
 import { faker } from "@faker-js/faker";
-import { CreateCustomerDto } from "../../src/customer/dto/create-customer.dto";
-import { Customer } from "../../db/companies/entities/customer/customer.entity";
-import { CreateCustomerToEntity } from "src/customer/dto/create-customer-to-entity.dto";
+import { CreateCustomerDto } from "@/customer/dto/create-customer.dto";
+import { CreateCustomerToEntity } from "@/customer/dto/create-customer-to-entity.dto";
+import { Customer } from "@db/companies/entities/customer/customer.entity";
+
 
 export const mockCreateCustomerWithAddressDto = ({ complement = null, email = null } = {}): CreateCustomerDto => ({
     name: faker.company.name(),

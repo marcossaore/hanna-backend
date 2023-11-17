@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker';
-import { CreateCompanyDto } from '../../src/company/dto/create-company.dto';
-import { CreateCompanyToEntity } from '../../src/company/dto/create-company-to-entity.dto';
-import { Company } from '../../db/app/entities/company/company.entity';
-import { CompanyStatus } from '../../src/_common/enums/company-status.enum';
+import { CompanyStatus } from '@/_common/enums/company-status.enum';
+import { CreateCompanyToEntity } from '@/company/dto/create-company-to-entity.dto';
+import { CreateCompanyDto } from '@/company/dto/create-company.dto';
+import { Company } from '@db/app/entities/company/company.entity';
 
 export const mockCreateCompanyDto = ({ document = null, partnerDocument = null, phone = null, email = null, companyIdentifier = null } = {}): CreateCompanyDto => ({
     name: faker.company.name(),

@@ -1,9 +1,9 @@
 import { Repository } from 'typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { mockCreateCompanyToEntityDto, mockCompanyEntity } from '../mock/company.mock';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Company } from '../../db/app/entities/company/company.entity';
-import { CompanyService } from '../../src/company/company.service';
+import { CompanyService } from '@/company/company.service';
+import { Company } from '@db/app/entities/company/company.entity';
 
 const mockError = () => {
     const error = new Error('any_error');

@@ -1,17 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Company } from 'db/app/entities/company/company.entity';
 import { mockCompanyEntity } from '../../mock/company.mock';
-import { CompanyService } from '../../../src/company/company.service';
-import { GenerateDbCredentialsService } from '../../../src/_common/services/Database/generate-db-credentials.service';
-import { CreateDatabaseService } from '../../../src/_common/services/Database/create-database.service';
-import { CreateCompanyProcessor } from '../../../src/_jobs/consumers/create-company.processor';
-import { SecretsService } from '../../../src/_common/services/Secret/secrets-service';
-import { MigrationsCompanyService } from '../../../src/_common/services/Database/migrations-company.service';
-import { MailService } from '../../../src/mail/mail.service';
-import { ActionServiceSeed } from '../../../db/companies/seeds/action.service.seed';
-import { ModuleServiceSeed } from '../../../db/companies/seeds/module.service.seed';
-import { GenerateUuidService } from '../../../src/_common/services/Uuid/generate-uuid-service';
-import { AddFirstUserAsAdminService } from '../../../src/_common/services/Database/add-first-user-as-admin.service';
+import { Company } from '@db/app/entities/company/company.entity';
+import { CompanyService } from '@/company/company.service';
+import { MigrationsCompanyService } from '@/_common/services/Database/migrations-company.service';
+import { AddFirstUserAsAdminService } from '@/_common/services/Database/add-first-user-as-admin.service';
+import { GenerateUuidService } from '@/_common/services/Uuid/generate-uuid-service';
+import { MailService } from '@/mail/mail.service';
+import { SecretsService } from '@/_common/services/Secret/secrets-service';
+import { ActionServiceSeed } from '@db/companies/seeds/action.service.seed';
+import { ModuleServiceSeed } from '@db/companies/seeds/module.service.seed';
+import { CreateDatabaseService } from '@/_common/services/Database/create-database.service';
+import { GenerateDbCredentialsService } from '@/_common/services/Database/generate-db-credentials.service';
+import { CreateCompanyProcessor } from '@/_jobs/consumers/create-company.processor';
 
 const mockJobData: any = { 
     data: { 

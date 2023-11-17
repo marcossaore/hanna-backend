@@ -1,8 +1,8 @@
 import "reflect-metadata";
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
-import { LoginDto } from "../../../src/auth/dto/login.dto";
 import { mockLoginDto } from "../../mock/auth.mock";
+import { LoginDto } from "@/auth/dto/login.dto";
 
 describe('Dto:  LoginDto', () => {
     afterEach(() => {
