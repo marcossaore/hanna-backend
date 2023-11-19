@@ -6,4 +6,4 @@ fi
 
 FILENAME="$1"
 
-npx typeorm-ts-node-esm migration:generate ./db/app/migrations/${FILENAME} -d ./db/app/data-source.ts
+npx ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli migration:generate ./db/app/migrations/${FILENAME} -d ./db/app/data-source.ts

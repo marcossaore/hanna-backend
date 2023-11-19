@@ -5,5 +5,4 @@ if [ $# -ne 1 ]; then
 fi
 
 FILENAME="$1"
-
-npx typeorm-ts-node-esm migration:create ./db/app/migrations/${FILENAME}
+npx ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli migration:create ./db/app/migrations/${FILENAME}

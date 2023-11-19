@@ -6,4 +6,4 @@ fi
 
 FILENAME="$1"
 
-npx typeorm-ts-node-esm migration:create ./db/companies/migrations/${FILENAME}
+npx ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli migration:create ./db/companies/migrations/${FILENAME}
