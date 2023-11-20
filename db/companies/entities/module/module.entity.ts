@@ -1,22 +1,15 @@
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, Tree, TreeChildren, TreeParent } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { AddDateColumns } from '../../../partials/add-date-columns';
 import { ActionModule } from './action-module.entity';
 import { OptionModule } from './option-module.entity';
 
 @Entity('module')
-@Tree('closure-table')
 export class Module extends AddDateColumns {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column({ nullable: false, unique: true })
     name: string;
-
-    @TreeChildren()
-    children: Module[];
-  
-    @TreeParent()
-    parent: Module;
 
     @ManyToMany(() => ActionModule, (action: ActionModule) => action.modules, {
         cascade: true,
