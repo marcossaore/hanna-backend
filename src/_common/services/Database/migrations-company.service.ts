@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { createConnection } from "typeorm";
-import companiesMigrations from "@db/companies/companies.migrations";
+import companiesMigrations from "@infra/db/companies/companies.migrations";
 import { ConfigService } from "@nestjs/config";
 
 @Injectable()

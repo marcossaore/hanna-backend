@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bull';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Tenant } from '@db/app/entities/tenant/tenant.entity';
+import { Tenant } from '@infra/db/app/entities/tenant/tenant.entity';
 import { TenantService } from './tenant.service';
 import { GenerateUuidService } from '@/_common/services/Uuid/generate-uuid-service';
 import { TenantController } from './tenant.controller';

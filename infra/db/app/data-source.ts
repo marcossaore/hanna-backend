@@ -1,7 +1,7 @@
 require('dotenv').config();
 import { join } from 'path';
 import { DataSource } from 'typeorm';
-import env from '../../src/_config/configuration';
+import env from '../../../src/_config/configuration';
 
 const { database } = env();
 

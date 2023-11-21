@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { CompanyStatus } from '@/_common/enums/company-status.enum';
 import { CreateCompanyToEntity } from '@/tenant/dto/create-company-to-entity.dto';
 import { CreateCompanyDto } from '@/tenant/dto/create-company.dto';
-import { Company } from '@db/app/entities/company/company.entity';
+import { Company } from '@infra/db/app/entities/company/company.entity';
 
 export const mockCreateCompanyDto = ({ document = null, partnerDocument = null, phone = null, email = null, companyIdentifier = null } = {}): CreateCompanyDto => ({
     name: faker.company.name(),

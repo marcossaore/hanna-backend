@@ -1,4 +1,4 @@
-import { AddDateColumns } from "../../../../db/partials/add-date-columns";
+import { AddDateColumns } from "../../../partials/add-date-columns";
 import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('customer')

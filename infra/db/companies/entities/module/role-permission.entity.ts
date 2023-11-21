@@ -1,5 +1,5 @@
 import { Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { AddDateColumns } from '@db/partials/add-date-columns';
+import { AddDateColumns } from '@infra/db/partials/add-date-columns';
 import { Module } from './module.entity';
 import { Role } from './role.entity';
 import { Grant } from './grant.entity';

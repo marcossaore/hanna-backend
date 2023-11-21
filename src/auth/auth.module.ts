@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { Tenant } from '@db/app/entities/tenant/tenant.entity';
+import { Tenant } from '@infra/db/app/entities/tenant/tenant.entity';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HashService } from '@/_common/services/Password/hash.service';

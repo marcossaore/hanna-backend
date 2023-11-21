@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { AddDateColumns } from '@db/partials/add-date-columns';
+import { AddDateColumns } from '@infra/db/partials/add-date-columns';
 import { User } from '../user/user.entity';
 import { RolePermission } from './role-permission.entity';
 

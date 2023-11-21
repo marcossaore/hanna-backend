@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { User } from '@db/companies/entities/user/user.entity';
+import { User } from '@infra/db/companies/entities/user/user.entity';
 
 export const mockUserEntity = (): User => ({
     id: faker.number.int(),

@@ -1,4 +1,4 @@
-import { User } from "@db/companies/entities/user/user.entity";
+import { User } from "@infra/db/companies/entities/user/user.entity";
 import { AddRole } from "./protocols/add-role";
 
 export class AddAdminRole extends AddRole {

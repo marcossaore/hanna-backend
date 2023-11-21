@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { Connection } from "typeorm";
-import { load as loadDataSource } from "@db/companies/load-data-source";
+import { load as loadDataSource } from "@infra/db/companies/load-data-source";
 
 type LoadTenantDataSourceType = {
     user: string, 

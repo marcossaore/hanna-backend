@@ -1,15 +1,15 @@
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { AddDateColumns } from '@db/partials/add-date-columns';
+import { AddDateColumns } from '@infra/db/partials/add-date-columns';
 import { Module } from './module.entity';
 
-@Entity('rbac_grant')
-export class Grant extends AddDateColumns {
+@Entity('rbac_option')
+export class Option extends AddDateColumns {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column({ nullable: false, unique: true })
     name: string;
 
-    @ManyToMany(() => Module, module => module.grants)
+    @ManyToMany(() => Module, module => module.options)
     modules: Module[];
 }

@@ -1,5 +1,5 @@
-import { Role } from "@db/companies/entities/module/role.entity"
-import { User } from "@db/companies/entities/user/user.entity"
+import { Role } from "@infra/db/companies/entities/module/role.entity"
+import { User } from "@infra/db/companies/entities/user/user.entity"
 import { Connection, Repository } from "typeorm"
 
 export abstract class AddRole {

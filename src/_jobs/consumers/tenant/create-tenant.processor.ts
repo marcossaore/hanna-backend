@@ -9,7 +9,7 @@ import { SecretsService } from '@/_common/services/Secret/secrets-service';
 import { CreateDatabaseService } from '@/_common/services/Database/create-database.service';
 import { GenerateDbCredentialsService } from '@/_common/services/Database/generate-db-credentials.service';
 import { TenantService } from '@/tenant/tenant.service';
-import { SeedRunnerService } from '@db/companies/seeds/seed-runner.service.';
+import { SeedRunnerService } from '@infra/db/companies/seeds/seed-runner.service.';
 import { LoadTenantConnectionService } from '@/tenant-connection/load-tenant-connection.service';
 import { AddAdminRoleServiceLazy } from '@/role/add-admin-role.service';
 

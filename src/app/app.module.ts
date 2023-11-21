@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from '@/_config/configuration';
-import appMigrations from '@db/app/app.migrations';
+import appMigrations from '@infra/db/app/app.migrations';
 import { TenantModule } from '@/tenant/tenant.module';
 
 @Module({

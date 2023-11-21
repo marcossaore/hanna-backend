@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { AddDateColumns } from '@db/partials/add-date-columns';
+import { AddDateColumns } from '@infra/db/partials/add-date-columns';
 import { CompanyStatus } from '@/_common/enums/company-status.enum';
 
 @Entity('tenant')

@@ -100,7 +100,7 @@
     ],
     "moduleNameMapper": {
         "^@/(.*)$": "<rootDir>/src/$1",
-        "^@db/(.*)$": "<rootDir>/db/$1"
+        "^@infra/(.*)$": "<rootDir>/infra/$1"
     },
     "coverageDirectory": "coverage",
     "testEnvironment": "node"

@@ -3,7 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { mockCreateCompanyToEntityDto, mockCompanyEntity } from '../mock/company.mock';
 import { CompanyService } from '@/company/company.service';
-import { Company } from '@db/app/entities/company/company.entity';
+import { Company } from '@infra/db/app/entities/company/company.entity';
 
 const mockError = () => {
     const error = new Error('any_error');

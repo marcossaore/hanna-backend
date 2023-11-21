@@ -1,4 +1,4 @@
-import { Tenant } from '@db/app/entities/tenant/tenant.entity';
+import { Tenant } from '@infra/db/app/entities/tenant/tenant.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';

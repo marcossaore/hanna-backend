@@ -1,9 +1,9 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
-import { Tenant } from '@db/app/entities/tenant/tenant.entity';
-import { Grant } from '@db/companies/entities/module/grant.entity';
+import { Tenant } from '@infra/db/app/entities/tenant/tenant.entity';
+import { Grant } from '@infra/db/companies/entities/module/grant.entity';
 import { MailModule } from '@/mail/mail.module';
-import { SeedRunnerModule } from '@db/companies/seeds/seed-runner.module';
+import { SeedRunnerModule } from '@infra/db/companies/seeds/seed-runner.module';
 import { CreateDatabaseModule } from '@/_common/services/Database/create-database.module';
 import { SecretsModule } from '@/_common/services/Secret/secrets.module';
 import { MigrationsCompanyModule } from '@/_common/services/Database/migrations-company.module';

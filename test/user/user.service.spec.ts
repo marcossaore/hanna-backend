@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { mockUserEntity, mockUserPermission } from '../mock/user.mock';
-import { User } from '@db/companies/entities/user/user.entity';
+import { User } from '@infra/db/companies/entities/user/user.entity';
 import { UserService } from '@/user/user.service';
 
 describe('Service: UserService', () => {
