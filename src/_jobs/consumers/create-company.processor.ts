@@ -3,18 +3,19 @@ import { Job } from 'bull';
 import { OnQueueCompleted, OnQueueFailed, Process, Processor } from '@nestjs/bull';
 import { MailService } from '@/mail/mail.service';
 import { GenerateUuidService } from '@/_common/services/Uuid/generate-uuid-service';
-import { AddFirstUserAsAdminService } from '@/_common/services/Database/add-first-user-as-admin.service';
+import { UserServiceLazy } from '@/user/user.service.lazy';
 import { MigrationsCompanyService } from '@/_common/services/Database/migrations-company.service';
 import { SecretsService } from '@/_common/services/Secret/secrets-service';
 import { CreateDatabaseService } from '@/_common/services/Database/create-database.service';
 import { GenerateDbCredentialsService } from '@/_common/services/Database/generate-db-credentials.service';
 import { CompanyService } from '@/company/company.service';
 import { SeedRunnerService } from '@db/companies/seeds/seed-runner.service.';
-
+import { LoadTenantConnectionService } from '@/tenant-connection/load-tenant-connection.service';
+import { AddAdminRoleServiceLazy } from '@/role/add-admin-role.service';
 
 @Injectable()
 @Processor('create-company')
-export class CreateCompanyProcessor {
+export class  CreateCompanyProcessor {
 
     constructor(
         private readonly seedRunnerService: SeedRunnerService,
@@ -23,41 +24,50 @@ export class CreateCompanyProcessor {
         private readonly createDatabaseService: CreateDatabaseService,
         private readonly secretsService: SecretsService,
         private readonly migrationsCompanyService: MigrationsCompanyService,
-        private readonly addFirstUserAsAdminService: AddFirstUserAsAdminService,
+        private readonly userService: UserServiceLazy,
+        private readonly adminRoleService: AddAdminRoleServiceLazy,
         private readonly generateUuidService: GenerateUuidService,
-        private readonly mailService: MailService,
+        private readonly loadTenantConnectionService: LoadTenantConnectionService,
+        private readonly mailService: MailService
     ){}
 
     @Process()
     async handleJob(job: Job) {
 
-        try {            
+        try {   
             const company = await this.companyService.findByUuid(job.data.uuid);
             const credentials = this.generateDbCredentialsService.generate(company.name);
             await this.createDatabaseService.create({
                 db: company.companyIdentifier,
                 ...credentials
             });
-    
             await this.secretsService.save(
                 company.companyIdentifier,    
                 JSON.stringify({
                     ...credentials
                 })
             );
-    
+            
+            const connection = await this.loadTenantConnectionService.load(company.companyIdentifier, 5);
+            if (!connection) {
+                throw new Error('Connection it was not established!');
+            }
+
             await this.migrationsCompanyService.run(company.companyIdentifier);
+            await this.seedRunnerService.seed(connection);
 
-            await this.seedRunnerService.seed(company.companyIdentifier)
-
+            const userService = this.userService.load(connection);
             const uuid = this.generateUuidService.generate();
 
-            await this.addFirstUserAsAdminService.add(company.companyIdentifier, {
+            const user = await userService.save({
                 uuid,
                 name: company.partnerName,
                 email: company.email,
                 phone: company.phone
             });
+
+            const adminRoleService = this.adminRoleService.load(connection);
+            userService.addRole(user.uuid, adminRoleService);
     
             await this.mailService.send({
                 to: company.email,

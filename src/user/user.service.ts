@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Connection, Repository } from 'typeorm';
 import { User } from '@db/companies/entities/user/user.entity';
+import { AddRole } from '@/role/protocols/add-role';
 
 @Injectable()
 export class UserService {
@@ -27,24 +28,35 @@ export class UserService {
             },
             select: {
                 id: true,
-                permissions: {
-                    id: true,
-                    module: {
-                        id: false,
-                        name: true
-                    },
-                    actions: {
-                        id: true,
-                        name: true
-                    },
-                    options: {
-                        id: true,
-                        name: true
-                    }
-                }
+                // permissions: {
+                //     id: true,
+                //     module: {
+                //         id: false,
+                //         name: true
+                //     },
+                //     actions: {
+                //         id: true,
+                //         name: true
+                //     },
+                //     options: {
+                //         id: true,
+                //         name: true
+                //     }
+                // }
             }
         });
 
         return user;
+    }
+
+    async save (data: any) : Promise<User> {
+        const user = await this.userRepository.save(data);
+        return user;
+    }
+
+    async addRole (uuid: string, addRole: AddRole) : Promise<void> {
+        const user = await this.userRepository.findOneBy({ uuid });
+        const userWithRoles = await addRole.add(user);
+        await this.userRepository.save(userWithRoles);
     }
 }

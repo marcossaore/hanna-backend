@@ -1,3 +1,3 @@
-interface Lazy<G1, G2> {
-    load (options: G1): G2
+interface Lazy<T1, T2> {
+    load (options: T1): T2
 }

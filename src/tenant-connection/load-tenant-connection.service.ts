@@ -1,16 +1,21 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { Connection } from "typeorm";
 import { LoadTenantDataSourceService } from "./load-tenant-datasource.service";
 import { SecretsService } from "@/_common/services/Secret/secrets-service";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class LoadTenantConnectionService {
+    private dbConfig: { host: string, port: number };
+
     constructor(
-        @Inject('DB_CONFIG') private readonly dbConfig: {host: string, port: number},
+        private readonly configService: ConfigService,
         private readonly secretesService: SecretsService,
         private readonly loadTenantDatasourceService: LoadTenantDataSourceService
-    ) {}
-    async load (tenantName: string): Promise<Connection> {
+    ) {
+        this.dbConfig = this.configService.get('database');
+    }
+    async load (tenantName: string, timeoutInMinutes: number = 0): Promise<Connection> {
         try {
             const credentials = JSON.parse(await this.secretesService.get(tenantName));
             const datasource = this.loadTenantDatasourceService.load({
@@ -18,8 +23,9 @@ export class LoadTenantConnectionService {
                 port: this.dbConfig.port,
                 user: credentials.dbUser,
                 password: credentials.dbPass,
-                db: tenantName
-            })
+                db: tenantName,
+                connectTimeout: timeoutInMinutes
+            });
             return datasource;
         } catch (error) {
             return null;

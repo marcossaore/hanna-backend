@@ -1,10 +1,16 @@
 import { Injectable } from "@nestjs/common";
 import { createConnection } from "typeorm";
 import companiesMigrations from "@db/companies/companies.migrations";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class MigrationsCompanyService {
-    constructor (private readonly dbConfig: { host: string, port: number, user: string, password: string }) {}
+
+    private readonly dbConfig: { host: string, port: number, user: string, password: string }
+
+    constructor (private readonly configService: ConfigService) {
+        this.dbConfig = this.configService.get('database');
+    }
 
     async run (databaseName: string) {
         const connection = await createConnection({
