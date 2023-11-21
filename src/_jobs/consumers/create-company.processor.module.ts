@@ -3,8 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { Company } from '@db/app/entities/company/company.entity';
 import { Grant } from '@db/companies/entities/module/grant.entity';
-import { ActionServiceSeed } from '@db/companies/seeds/action.service.seed';
-import { ModuleServiceSeed } from '@db/companies/seeds/module.service.seed';
 import { MailModule } from '@/mail/mail.module';
 import { CompanyService } from '@/company/company.service';
 import { GenerateDbCredentialsService } from '@/_common/services/Database/generate-db-credentials.service';
@@ -17,12 +15,17 @@ import { GenerateUuidService } from '@/_common/services/Uuid/generate-uuid-servi
 import { AddFirstUserAsAdminService } from '@/_common/services/Database/add-first-user-as-admin.service';
 import { MailService } from '@/mail/mail.service';
 import { CreateCompanyProcessor } from './create-company.processor';
-
+import { SeedRunnerModule } from '@db/companies/seeds/seed-runner.module';
+import { SeedRunnerService } from '@db/companies/seeds/seed-runner.service.';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([Company, Grant]),
-        MailModule
+        MailModule,
+        {
+            module: SeedRunnerModule,
+            exports: [SeedRunnerService]
+        }
     ],
     providers: [
         ConfigService,
@@ -57,22 +60,6 @@ import { CreateCompanyProcessor } from './create-company.processor';
             useFactory (configService: ConfigService) {
                 const databaseOptions = configService.get('database');
                 return new MigrationsCompanyService(databaseOptions);
-            }
-        },
-        {
-            inject: [ConfigService],
-            provide: ActionServiceSeed,
-            useFactory (configService: ConfigService) {
-                const databaseOptions = configService.get('database');
-                return new ActionServiceSeed(databaseOptions);
-            }
-        },
-        {
-            inject: [ConfigService],
-            provide: ModuleServiceSeed,
-            useFactory (configService: ConfigService) {
-                const databaseOptions = configService.get('database');
-                return new ModuleServiceSeed(databaseOptions);
             }
         },
         GenerateUuidService,

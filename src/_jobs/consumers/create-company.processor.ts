@@ -4,13 +4,12 @@ import { OnQueueCompleted, OnQueueFailed, Process, Processor } from '@nestjs/bul
 import { MailService } from '@/mail/mail.service';
 import { GenerateUuidService } from '@/_common/services/Uuid/generate-uuid-service';
 import { AddFirstUserAsAdminService } from '@/_common/services/Database/add-first-user-as-admin.service';
-import { ModuleServiceSeed } from '@db/companies/seeds/module.service.seed';
-import { ActionServiceSeed } from '@db/companies/seeds/action.service.seed';
 import { MigrationsCompanyService } from '@/_common/services/Database/migrations-company.service';
 import { SecretsService } from '@/_common/services/Secret/secrets-service';
 import { CreateDatabaseService } from '@/_common/services/Database/create-database.service';
 import { GenerateDbCredentialsService } from '@/_common/services/Database/generate-db-credentials.service';
 import { CompanyService } from '@/company/company.service';
+import { SeedRunnerService } from '@db/companies/seeds/seed-runner.service.';
 
 
 @Injectable()
@@ -18,13 +17,12 @@ import { CompanyService } from '@/company/company.service';
 export class CreateCompanyProcessor {
 
     constructor(
+        private readonly seedRunnerService: SeedRunnerService,
         private readonly companyService: CompanyService,
         private readonly generateDbCredentialsService: GenerateDbCredentialsService,
         private readonly createDatabaseService: CreateDatabaseService,
         private readonly secretsService: SecretsService,
         private readonly migrationsCompanyService: MigrationsCompanyService,
-        private readonly actionServiceSeed: ActionServiceSeed,
-        private readonly moduleServiceSeed: ModuleServiceSeed,
         private readonly addFirstUserAsAdminService: AddFirstUserAsAdminService,
         private readonly generateUuidService: GenerateUuidService,
         private readonly mailService: MailService,
@@ -50,8 +48,7 @@ export class CreateCompanyProcessor {
     
             await this.migrationsCompanyService.run(company.companyIdentifier);
 
-            await this.actionServiceSeed.seed(company.companyIdentifier);
-            await this.moduleServiceSeed.seed(company.companyIdentifier);
+            await this.seedRunnerService.seed(company.companyIdentifier)
 
             const uuid = this.generateUuidService.generate();
 
