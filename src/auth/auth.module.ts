@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { Company } from '@db/app/entities/company/company.entity';
+import { Tenant } from '@db/app/entities/tenant/tenant.entity';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HashService } from '@/_common/services/Password/hash.service';
 import { UserServiceLazy } from '@/user/user.service.lazy';
-import { CompanyService } from '@/company/company.service';
 import { AuthController } from './auth.controller';
+import { TenantService } from '@/tenant/tenant.service';
 
 @Module({
     imports: [
@@ -24,9 +24,9 @@ import { AuthController } from './auth.controller';
             },
             inject: [ConfigService],
         }),
-        TypeOrmModule.forFeature([Company])
+        TypeOrmModule.forFeature([Tenant])
     ],
-    providers: [CompanyService, UserServiceLazy, HashService],
+    providers: [TenantService, UserServiceLazy, HashService],
     controllers: [AuthController]
 })
 export class AuthModule {}

@@ -1,9 +1,9 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { CompanyStatus } from '../../../../src/_common/enums/company-status.enum';
-import { AddDateColumns } from '../../../partials/add-date-columns';
+import { AddDateColumns } from '@db/partials/add-date-columns';
+import { CompanyStatus } from '@/_common/enums/company-status.enum';
 
-@Entity('company')
-export class Company extends AddDateColumns {
+@Entity('tenant')
+export class Tenant extends AddDateColumns {
     @PrimaryGeneratedColumn()
     id: number;
 

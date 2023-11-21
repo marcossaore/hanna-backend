@@ -1,16 +1,15 @@
-import { Company } from '@db/app/entities/company/company.entity';
+import { Tenant } from '@db/app/entities/tenant/tenant.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateCompanyToEntity } from './dto/create-company-to-entity.dto';
+import { CreateTenantToEntity } from './dto/create-tenant-to-entity.dto';
 import { CompanyStatus } from '@/_common/enums/company-status.enum';
 
-
 @Injectable()
-export class CompanyService {
+export class TenantService {
   constructor(
-    @InjectRepository(Company)
-    private readonly companyRepository: Repository<Company>
+    @InjectRepository(Tenant)
+    private readonly companyRepository: Repository<Tenant>
   ) {}
 
   async exists(document: string): Promise<boolean>{
@@ -23,15 +22,15 @@ export class CompanyService {
     return exists ? true : false;
   }
 
-  async create(createCompanyDto: CreateCompanyToEntity): Promise<Company> {
+  async create(createCompanyDto: CreateTenantToEntity): Promise<Tenant> {
     return this.companyRepository.save(createCompanyDto);
   }
 
-  async findByUuid(uuid: string): Promise<Company> {
+  async findByUuid(uuid: string): Promise<Tenant> {
     return this.companyRepository.findOne({ where: { uuid }});
   }
 
-  async findByDocument(document: string): Promise<Company> {
+  async findByDocument(document: string): Promise<Tenant> {
     return this.companyRepository.findOne({ where: { document }});
   }
 

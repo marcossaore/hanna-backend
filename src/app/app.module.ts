@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from '@/_config/configuration';
 import appMigrations from '@db/app/app.migrations';
-import { CompanyModule } from '@/company/company.module';
+import { TenantModule } from '@/tenant/tenant.module';
 
 @Module({
   imports: [
@@ -35,7 +35,7 @@ import { CompanyModule } from '@/company/company.module';
         },
         inject: [ConfigService],
     }),
-    CompanyModule
+    TenantModule
   ],
 })
 export class AppModule {} 

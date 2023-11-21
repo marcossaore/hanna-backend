@@ -2,16 +2,15 @@ import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bull';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Company } from '@db/app/entities/company/company.entity';
-import { CreateCompanyProcessorModule } from '@/_jobs/consumers/create-company.processor.module';
-import { CompanyService } from './company.service';
+import { Tenant } from '@db/app/entities/tenant/tenant.entity';
+import { TenantService } from './tenant.service';
 import { GenerateUuidService } from '@/_common/services/Uuid/generate-uuid-service';
-import { CompanyController } from './company.controller';
-
+import { TenantController } from './tenant.controller';
+import { CreateTenantProcessorModule } from '@/_jobs/consumers/tenant/create-tenant.processor.module';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Company]),
+        TypeOrmModule.forFeature([Tenant]),
         BullModule.registerQueueAsync({
             name: 'create-company',
             inject: [ConfigService],
@@ -24,12 +23,12 @@ import { CompanyController } from './company.controller';
               },
             }),
         }),
-        CreateCompanyProcessorModule
+        CreateTenantProcessorModule
     ],
-    controllers: [CompanyController],
+    controllers: [TenantController],
     providers: [
-        CompanyService, 
+        TenantService, 
         GenerateUuidService
     ]
 })
-export class CompanyModule {}
+export class TenantModule {}

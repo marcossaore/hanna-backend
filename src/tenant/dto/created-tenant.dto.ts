@@ -1,12 +1,12 @@
 import { PartialType } from "@nestjs/mapped-types";
 import { Exclude } from "class-transformer";
-import { Company } from "@db/app/entities/company/company.entity";
+import { Tenant } from "@db/app/entities/tenant/tenant.entity";
 
-export class CreatedCompanyDto extends PartialType(Company) {
+export class CreatedTenantDto extends PartialType(Tenant) {
     @Exclude()
     id: number;
 
-    constructor(partial: Partial<Company>) {
+    constructor(partial: Partial<Tenant>) {
         super();
         Object.assign(this, partial);
     }

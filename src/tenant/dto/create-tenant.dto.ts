@@ -4,7 +4,7 @@ import { IsCompanyIdentifier } from '@/_common/validations/company/company-ident
 import { IsCpf } from '@/_common/validations/cpf.validator';
 import { IsPhone } from '@/_common/validations/phone.validator';
 
-export class CreateCompanyDto {
+export class CreateTenantDto {
     
     @IsString({message: JSON.stringify({message: 'O nome da empresa deve ser "string"!', field: 'name'})})
     @IsNotEmpty({message: JSON.stringify({message: 'O nome da empresa deve ser informado!', field: 'name'})})

@@ -1,11 +1,10 @@
 import { Controller, Post, Body, Req } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { userUnauthorized } from '@/_common/helpers/factories/errors';
+import { TenantService } from '@/tenant/tenant.service';
 import { HashService } from '@/_common/services/Password/hash.service';
 import { UserServiceLazy } from '@/user/user.service.lazy';
 import { LoadTenantConnectionService } from '@/tenant-connection/load-tenant-connection.service';
-import { CompanyService } from '@/company/company.service';
-
 
 type ActionType = {
     id: number, 
@@ -34,7 +33,7 @@ type PermissionType = {
 @Controller('auth')
 export class AuthController {
     constructor(
-        private readonly companyService: CompanyService,
+        private readonly tenantService: TenantService,
         private readonly loadTenantConnectionService: LoadTenantConnectionService,
         private readonly userService: UserServiceLazy,
         private readonly hashService: HashService,
@@ -42,7 +41,7 @@ export class AuthController {
 
     @Post('/login')
     async login(@Body() loginDto: LoginDto, @Req() request): Promise<any> { //PermissionType
-        const company = await this.companyService.findByDocument(loginDto.document);
+        const company = await this.tenantService.findByDocument(loginDto.document);
         if (!company) {
             throw userUnauthorized();
         }

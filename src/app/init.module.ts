@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { TenantModule } from './tenant.module';
+import { TenantAppModule } from './tenant-app.module';
 import { AppModule } from './app.module';
 import configuration from '@/_config/configuration';
 
@@ -12,7 +12,7 @@ import configuration from '@/_config/configuration';
             load: [configuration],
         }),
         AppModule, // => /api/app/**
-        TenantModule // => /api/**
+        TenantAppModule // => /api/**
     ]
 })
 export class InitModule {} 

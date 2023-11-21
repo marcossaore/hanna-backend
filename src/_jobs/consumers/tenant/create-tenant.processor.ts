@@ -8,18 +8,18 @@ import { MigrationsCompanyService } from '@/_common/services/Database/migrations
 import { SecretsService } from '@/_common/services/Secret/secrets-service';
 import { CreateDatabaseService } from '@/_common/services/Database/create-database.service';
 import { GenerateDbCredentialsService } from '@/_common/services/Database/generate-db-credentials.service';
-import { CompanyService } from '@/company/company.service';
+import { TenantService } from '@/tenant/tenant.service';
 import { SeedRunnerService } from '@db/companies/seeds/seed-runner.service.';
 import { LoadTenantConnectionService } from '@/tenant-connection/load-tenant-connection.service';
 import { AddAdminRoleServiceLazy } from '@/role/add-admin-role.service';
 
 @Injectable()
 @Processor('create-company')
-export class  CreateCompanyProcessor {
+export class  CreateTenantProcessor {
 
     constructor(
         private readonly seedRunnerService: SeedRunnerService,
-        private readonly companyService: CompanyService,
+        private readonly tenantService: TenantService,
         private readonly generateDbCredentialsService: GenerateDbCredentialsService,
         private readonly createDatabaseService: CreateDatabaseService,
         private readonly secretsService: SecretsService,
@@ -35,7 +35,7 @@ export class  CreateCompanyProcessor {
     async handleJob(job: Job) {
 
         try {   
-            const company = await this.companyService.findByUuid(job.data.uuid);
+            const company = await this.tenantService.findByUuid(job.data.uuid);
             const credentials = this.generateDbCredentialsService.generate(company.name);
             await this.createDatabaseService.create({
                 db: company.companyIdentifier,
@@ -87,11 +87,11 @@ export class  CreateCompanyProcessor {
 
     @OnQueueCompleted()
     onCompleted(job: Job) {
-        this.companyService.markAsProcessed(job.data.uuid);
+        this.tenantService.markAsProcessed(job.data.uuid);
     }
   
     @OnQueueFailed()
     onFailed(job: Job, error: Error) {
-        this.companyService.markAsRejected(job.data.uuid, error);
+        this.tenantService.markAsRejected(job.data.uuid, error);
     }
 }
