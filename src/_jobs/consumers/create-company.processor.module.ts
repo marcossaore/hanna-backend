@@ -16,16 +16,12 @@ import { AddFirstUserAsAdminService } from '@/_common/services/Database/add-firs
 import { MailService } from '@/mail/mail.service';
 import { CreateCompanyProcessor } from './create-company.processor';
 import { SeedRunnerModule } from '@db/companies/seeds/seed-runner.module';
-import { SeedRunnerService } from '@db/companies/seeds/seed-runner.service.';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([Company, Grant]),
         MailModule,
-        {
-            module: SeedRunnerModule,
-            exports: [SeedRunnerService]
-        }
+        SeedRunnerModule,
     ],
     providers: [
         ConfigService,

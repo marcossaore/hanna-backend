@@ -7,21 +7,21 @@ import { AddRolesSeedService } from './all/add-roles.seed.service';
 
 @Module({
     providers: [
-       {
+           {
             inject: [ConfigService],
             provide: SeedRunnerService,
             useFactory (configService: ConfigService) {
-                const databaseOptions = configService.get('database');
                 return new SeedRunnerService(
-                    databaseOptions,
+                    configService,
                     [
                         new AddGrantsSeedService(),
                         new AddModulesSeedService(),
-                        new AddRolesSeedService(),
+                        new AddRolesSeedService()
                     ]
                 );
             }
         }
-    ]
+    ],
+    exports: [SeedRunnerService]
 })
 export class SeedRunnerModule {}

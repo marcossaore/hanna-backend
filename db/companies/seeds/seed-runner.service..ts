@@ -1,15 +1,20 @@
 import { Injectable } from "@nestjs/common";
-import { join } from "path";
+import { ConfigService } from "@nestjs/config";
 import { Connection, createConnection } from "typeorm";
+import { join } from "path";
 
 @Injectable()
 export class SeedRunnerService implements SeedProtocol<string> {
     private connection: Connection;
+    private dbConfig: { host: string, port: number, user: string, password: string };
 
     constructor (
-        private readonly dbConfig: { host: string, port: number, user: string, password: string },
-        private readonly seeders: SeedProtocol<Connection>[]
-    ) {}
+        private readonly configService: ConfigService,
+        private readonly seeders: SeedProtocol<Connection>[],
+        private readonly timeout: number = 5
+    ) {
+        this.dbConfig = this.configService.get('database');
+    }
 
     async seed(database: string): Promise<void> {
         this.connection = await createConnection({
@@ -21,7 +26,7 @@ export class SeedRunnerService implements SeedProtocol<string> {
             password: this.dbConfig.password,
             database: database,
             entities: [join(__dirname, '../entities/**/*.entity{.ts,.js}')],
-            connectTimeout: 60000 * 5
+            connectTimeout: 60000 * this.timeout
         });
 
         try {
