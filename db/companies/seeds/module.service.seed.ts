@@ -1,8 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { createConnection } from "typeorm";
-import { ActionModule } from "../entities/module/action-module.entity";
-import { Module as ModuleEntity } from "../entities/module/module.entity";
+import { Module } from "../entities/module/module.entity";
 import { join } from "path";
+import { Role } from "../entities/module/role.entity";
+import { Grant } from "../entities/module/grant.entity";
 
 @Injectable()
 export class ModuleServiceSeed {
@@ -21,10 +22,10 @@ export class ModuleServiceSeed {
         });
 
         try {
-            const actionRepository = connection.getRepository(ActionModule);
-            const moduleRepository = connection.getRepository(ModuleEntity);
+            const grantRepository = connection.getRepository(Grant);
+            const moduleRepository = connection.getRepository(Module);
     
-            const allActions = await actionRepository.find();
+            const allGrants = await grantRepository.find();
     
             const salesModule = await moduleRepository.findOne({
                 where: {
@@ -35,7 +36,7 @@ export class ModuleServiceSeed {
             if (!salesModule) {
                 await moduleRepository.save({
                     name: 'sales',
-                    actions: allActions,
+                    grants: allGrants,
                     options: [
                         {
                             name: 'pinPass'
@@ -56,25 +57,22 @@ export class ModuleServiceSeed {
             if (!bathGroomingModule) {
                 bathGroomingModule = await moduleRepository.save({
                     name: 'bathGrooming',
-                    actions: allActions,
+                    grants: allGrants,
                 });
     
                 await moduleRepository.save({
                     name: 'schedule',
-                    actions: allActions,
-                    parent: bathGroomingModule
+                    grants: allGrants,
                 });
         
                 await moduleRepository.save({
                     name: 'services',
-                    actions: allActions,
-                    parent: bathGroomingModule
+                    grants: allGrants,
                 });
         
                 await moduleRepository.save({
                     name: 'plans',
-                    actions: allActions,
-                    parent: bathGroomingModule
+                    grants: allGrants,
                 });
             }
     
@@ -86,8 +84,7 @@ export class ModuleServiceSeed {
     
             if (!petsModule) {
                 await moduleRepository.save({
-                    name: 'pets',
-                    actions: allActions
+                    name: 'pets'
                 });
             }
     
@@ -100,7 +97,7 @@ export class ModuleServiceSeed {
             if (!customersModule) {
                 await moduleRepository.save({
                     name: 'customers',
-                    actions: allActions,
+                    grants: allGrants,
                     options: [
                         {
                             name: 'bill'
@@ -111,6 +108,28 @@ export class ModuleServiceSeed {
                     ]
                 });
             }
+
+            const allModules = await moduleRepository.find({
+                relations: ['grants', 'options']
+            });
+
+            const associatePermissions = [];
+
+            for (const module of allModules) {
+                associatePermissions.push({
+                    module: {
+                        id: module.id
+                    },
+                    grants: module.grants,
+                    options: module.options
+                })
+            }
+
+            const roleRepository = connection.getRepository(Role);
+            await roleRepository.save({
+                name: 'admin',
+                permissions: associatePermissions
+            })
             
         } catch (error) { 
             throw error;

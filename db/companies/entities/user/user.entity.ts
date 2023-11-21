@@ -1,6 +1,6 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { AddDateColumns } from '../../../partials/add-date-columns';
-import { UserPermission } from './user-permissions.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { AddDateColumns } from '@db/partials/add-date-columns';
+import { Role } from '../module/role.entity';
 
 @Entity('user')
 export class User extends AddDateColumns {
@@ -22,10 +22,10 @@ export class User extends AddDateColumns {
     @Column({ nullable: true })
     phone?: string;
 
-    @OneToMany(() => UserPermission, (userPermission: UserPermission) => userPermission.user, {
+    @ManyToOne(() => Role, (role: Role) => role.user, {
         cascade: true,
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
     })
-    permissions: UserPermission[];
+    role: Role;
 }

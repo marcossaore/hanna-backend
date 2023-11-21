@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { createConnection  } from "typeorm";
-import { ActionModule } from "../entities/module/action-module.entity";
 import { join } from "path";
+import { Grant } from "../entities/module/grant.entity";
 
 @Injectable()
 export class ActionServiceSeed {
@@ -21,12 +21,12 @@ export class ActionServiceSeed {
         });
 
         try {
-            const actionRepository =  connection.getRepository(ActionModule);
+            const grantRepository =  connection.getRepository(Grant);
     
-            const totalActions = await actionRepository.count();
+            const totalActions = await grantRepository.count();
     
             if (totalActions === 0) {
-                await actionRepository.save([
+                await grantRepository.save([
                     {
                         name: 'read'
                     },

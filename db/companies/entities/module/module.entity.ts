@@ -1,9 +1,9 @@
 import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { AddDateColumns } from '../../../partials/add-date-columns';
-import { ActionModule } from './action-module.entity';
-import { OptionModule } from './option-module.entity';
+import { AddDateColumns } from '@db/partials/add-date-columns';
+import { Grant } from './grant.entity';
+import { Option } from './option.entity';
 
-@Entity('module')
+@Entity('rbac_module')
 export class Module extends AddDateColumns {
     @PrimaryGeneratedColumn()
     id: number;
@@ -11,31 +11,31 @@ export class Module extends AddDateColumns {
     @Column({ nullable: false, unique: true })
     name: string;
 
-    @ManyToMany(() => ActionModule, (action: ActionModule) => action.modules, {
+    @ManyToMany(() => Grant, (grant: Grant) => grant.modules, {
         cascade: true,
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
     })
     @JoinTable({
-        name: 'module_actions',
+        name: 'rbac_module_grants',
         joinColumn: {
           name: 'moduleId',
           referencedColumnName: 'id',
         },
         inverseJoinColumn: {
-          name: 'action',
+          name: 'grant',
           referencedColumnName: 'id',
         }
     })
-    actions: ActionModule[];
+    grants: Grant[];
 
-    @ManyToMany(() => OptionModule, (option: OptionModule) => option.modules, {
+    @ManyToMany(() => Option, (option: Option) => option.modules, {
         cascade: true,
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
     })
     @JoinTable({
-        name: 'module_options',
+        name: 'rbac_module_options',
         joinColumn: {
             name: 'moduleId',
             referencedColumnName: 'id',
@@ -45,5 +45,5 @@ export class Module extends AddDateColumns {
             referencedColumnName: 'id',
         }
     })
-    options: OptionModule[];
+    options: Option[];
 }

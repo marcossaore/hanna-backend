@@ -1,5 +1,5 @@
-import { Init1700445769849 } from "./migrations/1700445769849-init";
+import { Init1700524878898 } from "./migrations/1700524878898-init";
 
 export default [
-    Init1700445769849
+    Init1700524878898
 ]

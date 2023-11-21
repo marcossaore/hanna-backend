@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { Company } from '@db/app/entities/company/company.entity';
+import { Grant } from '@db/companies/entities/module/grant.entity';
 import { ActionServiceSeed } from '@db/companies/seeds/action.service.seed';
-import { ActionModule } from '@db/companies/entities/module/action-module.entity';
 import { ModuleServiceSeed } from '@db/companies/seeds/module.service.seed';
 import { MailModule } from '@/mail/mail.module';
 import { CompanyService } from '@/company/company.service';
@@ -21,7 +21,7 @@ import { CreateCompanyProcessor } from './create-company.processor';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Company, ActionModule]),
+        TypeOrmModule.forFeature([Company, Grant]),
         MailModule
     ],
     providers: [
