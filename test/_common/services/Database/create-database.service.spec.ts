@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MySqlDbManagerService } from '@/_common/services/Database/repository/mysql-db-manager';
-import { DbManagerProtocol } from '@/_common/services/Database/repository/protocols/db-manager.protocol';
-import { CreateDatabaseService } from '@/_common/services/Database/create-database.service';
+import { MySqlDbManagerService } from '@infra/plugins/database/repository/mysql-db-manager';
+import { DbManagerProtocol } from '@infra/plugins/database/repository/protocols/db-manager.protocol';
+import { CreateDatabaseService } from '@/_common/services/databse/create-database.service';
 
 describe('Service: CreateDatabaseService', () => {
     let sutCreateDatabaseService: CreateDatabaseService;

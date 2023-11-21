@@ -5,12 +5,12 @@ import { CompanyService } from '@/company/company.service';
 import { MigrationsCompanyService } from '@/_common/services/Database/migrations-company.service';
 import { AddFirstUserAsAdminService } from '@/_common/services/Database/add-first-user-as-admin.service';
 import { GenerateUuidService } from '@/_common/services/Uuid/generate-uuid-service';
-import { MailService } from '@/mail/mail.service';
+import { MailService } from '@infra/mail/mail.service';
 import { SecretsService } from '@/_common/services/Secret/secrets-service';
 import { ActionServiceSeed } from '@infra/db/companies/seeds/action.service.seed';
 import { ModuleServiceSeed } from '@infra/db/companies/seeds/module.service.seed';
-import { CreateDatabaseService } from '@/_common/services/Database/create-database.service';
-import { GenerateDbCredentialsService } from '@/_common/services/Database/generate-db-credentials.service';
+import { CreateDatabaseService } from '@/_common/services/databse/create-database.service';
+import { GenerateDbCredentialsService } from '@infra/plugins/database/generate-db-credentials.service';
 import { CreateCompanyProcessor } from '@/_jobs/consumers/create-company.processor';
 
 const mockJobData: any = { 

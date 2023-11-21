@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { CommandModule } from 'nestjs-command';
 import { ConfigModule } from '@nestjs/config';
-import configuration from '@/_config/configuration';
-import { TenantCommandModule } from './tenant/tenant-command.module';
+import configuration from '@/shared/_config/configuration';
+import { ExampleCommandModule } from './example/example-command.module';
 
 @Module({
     imports: [
@@ -11,7 +11,7 @@ import { TenantCommandModule } from './tenant/tenant-command.module';
             load: [configuration],
         }),
         CommandModule, 
-        TenantCommandModule
+        ExampleCommandModule
     ]
 })
 export class InitCommandHandlerModule {}

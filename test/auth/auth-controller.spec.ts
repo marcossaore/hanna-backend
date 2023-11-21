@@ -5,8 +5,8 @@ import { mockLoginDto } from '../mock/auth.mock';
 import { Company } from '@infra/db/app/entities/company/company.entity';
 import { User } from '@infra/db/companies/entities/user/user.entity';
 import { HashService } from '@/_common/services/Password/hash.service';
-import { UserServiceLazy } from '@/user/user.service.lazy';
-import { LoadTenantConnectionService } from '@/tenant-connection/load-tenant-connection.service';
+import { UserServiceLazy } from '@/modules/application/user/user.service.lazy';
+import { LoadTenantConnectionService } from '@/modules/application/tenant-connection/load-tenant-connection.service';
 import { CompanyService } from '@/company/company.service';
 import { AuthController } from '@/auth/auth.controller';
 

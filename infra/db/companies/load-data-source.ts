@@ -1,11 +1,11 @@
 import { join } from 'path';
 import { DataSource } from 'typeorm';
 
-export const load = ({ user, password, db, host, port, connectTimeout = 0 }: {user: string, password: string, db: string, host: string, port: number, connectTimeout: number}): DataSource => {
+export const load = ({ user, password, db, host, port, type, connectTimeout = 0 }: {user: string, password: string, db: string, host: string, port: number, type: any, connectTimeout: number}): DataSource => {
     try {
         return new DataSource({
             migrationsTransactionMode: 'all',
-            type: 'mysql',
+            type,
             host: host,
             port: port,
             username: user,

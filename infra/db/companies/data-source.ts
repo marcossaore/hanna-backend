@@ -1,13 +1,13 @@
 require('dotenv').config();
 import { join } from 'path';
 import { DataSource } from 'typeorm';
-import env from '../../../src/_config/configuration';
+import env from '../../../src/shared/_config/configuration';
 
 const { database } = env();
 
 const AppDataSource =  new DataSource({
     migrationsTransactionMode: 'all',
-    type: 'mysql',
+    type: database.type,
     host: database.host,
     port: database.port,
     username: database.user,

@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { LoadTenantDataSourceService } from '@/tenant-connection/load-tenant-datasource.service';
+import { LoadTenantDataSourceService } from '@/modules/application/tenant-connection/load-tenant-datasource.service';
 import { SecretsService } from '@/_common/services/Secret/secrets-service';
-import { LoadTenantConnectionService } from '@/tenant-connection/load-tenant-connection.service';
+import { LoadTenantConnectionService } from '@/modules/application/tenant-connection/load-tenant-connection.service';
 
 describe('Service: LoadTenantConnectionService', () => {
     let sutLoadTenantConnectionService: LoadTenantConnectionService;

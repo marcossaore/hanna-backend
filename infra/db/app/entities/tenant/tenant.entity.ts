@@ -1,6 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { AddDateColumns } from '@infra/db/partials/add-date-columns';
-import { CompanyStatus } from '@/_common/enums/company-status.enum';
+import { TenantStatus } from '@/shared/enums/tenant-status.enum';
+
 
 @Entity('tenant')
 export class Tenant extends AddDateColumns {
@@ -31,8 +32,8 @@ export class Tenant extends AddDateColumns {
     @Column({ nullable: false })
     email: string;
 
-    @Column({ type: 'enum', enum: CompanyStatus, default: CompanyStatus.PENDING })
-    status: CompanyStatus;
+    @Column({ type: 'enum', enum: TenantStatus, default: TenantStatus.PENDING })
+    status: TenantStatus;
 
     @Column({ type: 'text', default: null, nullable: true })
     error?: string;

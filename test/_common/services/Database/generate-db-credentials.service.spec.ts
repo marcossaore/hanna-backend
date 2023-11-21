@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { GenerateDbCredentialsService } from '@/_common/services/Database/generate-db-credentials.service';
+import { GenerateDbCredentialsService } from '@infra/plugins/database/generate-db-credentials.service';
 
 describe('Service: GenerateDbCredentialsService', () => {
     let sutGenerateDbCredentialsService: GenerateDbCredentialsService;
