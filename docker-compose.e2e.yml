@@ -1,0 +1,77 @@
+version: '3'
+
+services:
+    app:
+        build: .
+        volumes:
+            - .:/usr/src/app
+            - /usr/src/app/node_modules # 'hack' prevents node_modules/ in the container from being overridden
+        working_dir: /usr/src/app
+        command: npm run test:e2e
+        env_file:
+            - .env
+        environment:
+            PORT: 3001
+            ENVIRONMENT: dev
+            DB_HOST: db
+            DB_PORT: 3306
+            DB_USER: hanna_test
+            DB_PASSWORD: test
+            DB_DATABASE: test
+            REDIS_HOST: memorydb
+        depends_on:
+            - db
+            - memorydb
+            - localstack
+        links:
+            - db
+        networks:
+            - hanna-test
+        ports:
+            - 3001:80
+    db:
+        image: custom_mysql
+        build: 
+            context: .docker/db
+            args:
+                DB_DATABASE: test
+                DB_USER: hanna_test
+                DB_PASSWORD: test
+        environment:
+            MYSQL_ROOT_PASSWORD: test
+        ports:
+            - 3306:3306
+        command: --init-file=/docker-entrypoint-initdb.d/init.sql
+        networks:
+            - hanna-test
+    memorydb:
+        image: redis:6.2-alpine
+        ports:
+            - '6379:6379'
+        command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASS}
+        # volumes:
+        #     - queue:/data
+        networks:
+            - hanna-test
+    localstack:
+        image: localstack/localstack
+        container_name: localstack
+        environment:
+            SERVICES: secretsmanager
+            DEBUG: 1
+            DATA_DIR: /tmp/localstack/data
+            AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+            AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+            AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+        ports:
+            - "127.0.0.1:4510-4530:4510-4530"
+            - "127.0.0.1:4566:4566"
+            - "127.0.0.1:4571:4571"
+        networks:
+            - hanna-test
+
+networks:
+    hanna-test:
+
+# volumes:
+#     queue:

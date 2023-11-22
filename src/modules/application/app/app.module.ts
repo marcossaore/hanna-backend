@@ -15,6 +15,9 @@ import { TenantModule } from '@/modules/application/tenant/tenant.module';
         useFactory: (configService: ConfigService) => {
 
             const { host, port, user, password, db, type } = configService.get('database');
+
+            console.log('host ', host)
+            console.log('port ', port)
             const dataSource = {
                 host,
                 port,
