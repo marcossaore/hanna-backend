@@ -5,4 +5,4 @@ if [ $# -ne 1 ]; then
 fi
 
 FILENAME="$1"
-npx ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli migration:generate ./db/companies/migrations/${FILENAME} -d ./db/companies/data-source.ts
+npx ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli migration:generate ./infra/db/companies/migrations/${FILENAME} -d ./db/companies/data-source.ts
