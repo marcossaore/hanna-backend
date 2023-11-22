@@ -102,6 +102,13 @@
         "^@/(.*)$": "<rootDir>/src/$1",
         "^@infra/(.*)$": "<rootDir>/infra/$1"
     },
+    "watchPathIgnorePatterns": [
+        "<rootDir>/data/",
+        "<rootDir>/dist/",
+        "<rootDir>/docs/",
+        "<rootDir>/node_modules/",
+        "<rootDir>/scripts/"
+    ],
     "coverageDirectory": "coverage",
     "testEnvironment": "node"
   }
