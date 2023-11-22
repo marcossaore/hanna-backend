@@ -16,7 +16,7 @@ import { InfoMessageInterceptor } from '@/adapters/interceptors/info-message-int
 import { GenerateUuidService } from '@infra/plugins/uuid/generate-uuid-service';
 import { TenantService } from './tenant.service';
 
-@Controller(`${configAppPrefix}/companies`)
+@Controller(`${configAppPrefix}/tenanties`)
 export class TenantController {
   constructor(
       private readonly tenantService: TenantService,
