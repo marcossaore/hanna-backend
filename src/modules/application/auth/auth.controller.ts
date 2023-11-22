@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Req } from '@nestjs/common';
+import { Controller, Post, Body, Req, HttpCode } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { userUnauthorized } from '@/factories/errors';
 import { TenantService } from '@/modules/application/tenant/tenant.service';
@@ -91,5 +91,13 @@ export class AuthController {
             name: user.name,
             permissions
         };
+    }
+
+    @Post('/logout')
+    @HttpCode(204)
+    async logout(@Req() request): Promise<void> {
+        if (request.session.auth) {
+            request.session.destroy()
+        }
     }
 }
