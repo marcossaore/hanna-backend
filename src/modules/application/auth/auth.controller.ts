@@ -6,7 +6,7 @@ import { HashService } from '@infra/plugins/hash/hash.service';
 import { UserServiceLazy } from '@/modules/application/user/user.service.lazy';
 import { LoadTenantConnectionService } from '@/modules/application/tenant-connection/load-tenant-connection.service';
 
-type ActionType = {
+type GrantType = {
     id: number, 
     name: string
 }
@@ -19,7 +19,7 @@ type OptionType = {
 type ModuleType = {
     module: {
         name: string,
-        actions: ActionType[],
+        grants: GrantType[],
         options: OptionType[]
     }
 }
@@ -40,7 +40,7 @@ export class AuthController {
     ) {}
 
     @Post('/login')
-    async login(@Body() loginDto: LoginDto, @Req() request): Promise<any> { //PermissionType
+    async login(@Body() loginDto: LoginDto, @Req() request): Promise<PermissionType> {
         const company = await this.tenantService.findByDocument(loginDto.document);
 
         if (!company) {
