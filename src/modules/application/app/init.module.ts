@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TenantAppModule } from './tenant-app.module';
 import { AppModule } from './app.module';
-import configuration from '@/shared/_config/configuration';
+import configuration from '@/shared/config/configuration';
 
 @Module({
     imports: [

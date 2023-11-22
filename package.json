@@ -109,6 +109,15 @@
         "<rootDir>/node_modules/",
         "<rootDir>/scripts/"
     ],
+    "coveragePathIgnorePatterns": [
+        "<rootDir>/src/adapters/",
+        "<rootDir>/src/commands/",
+        "<rootDir>/src/factories/",
+        "<rootDir>/src/shared/",
+        "<rootDir>/src/templates/",
+        "<rootDir>/src/validations/",
+        "<rootDir>/src/*.ts"
+    ],
     "coverageDirectory": "coverage",
     "testEnvironment": "node"
   }

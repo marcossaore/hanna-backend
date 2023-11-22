@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CommandModule } from 'nestjs-command';
 import { ConfigModule } from '@nestjs/config';
-import configuration from '@/shared/_config/configuration';
+import configuration from '@/shared/config/configuration';
 import { ExampleCommandModule } from './example/example-command.module';
 
 @Module({
