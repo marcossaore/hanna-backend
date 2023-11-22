@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { mockCreateCustomerWithAddressDto, mockCustomerEntity } from '../mock/customer.mock';
+import { mockCreateCustomerWithAddressDto, mockCustomerEntity } from '../../../../mock/customer.mock';
 import { Customer } from '@infra/db/companies/entities/customer/customer.entity';
 import { CustomerService } from '@/modules/application/customer/customer.service';
-import { GenerateUuidService } from '@/_common/services/Uuid/generate-uuid-service';
+import { GenerateUuidService } from '@infra/plugins/uuid/generate-uuid-service';
 import { CustomerController } from '@/modules/application/customer/customer.controller';
 
-describe('CustomerController', () => {
+describe('Controller: CustomerController', () => {
   let sutCustomerController: CustomerController;
   let generateUuidService : GenerateUuidService;
   let customerService : CustomerService;

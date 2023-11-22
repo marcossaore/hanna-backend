@@ -1,7 +1,7 @@
 import "reflect-metadata";
+import { mockCreateCustomerWithAddressDto } from "../../../../../mock/customer.mock";
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
-import { mockCreateCustomerWithAddressDto } from "../../mock/customer.mock";
 import { CreateCustomerDto } from "@/modules/application/customer/dto/create-customer.dto";
 
 describe('Dto:  CreateCustomerDto', () => {

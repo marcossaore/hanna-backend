@@ -1,10 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MySqlDbManagerService } from '@infra/plugins/database/repository/mysql-db-manager';
+import { ConfigService } from '@nestjs/config';
 import { DbManagerProtocol } from '@infra/plugins/database/repository/protocols/db-manager.protocol';
-import { CreateDatabaseService } from '@/_common/services/databse/create-database.service';
+import { CreateDatabaseService } from '@infra/plugins/database/create-database.service';
+import { MySqlDbManagerService } from '@infra/plugins/database/repository/mysql-db-manager';
 
 describe('Service: CreateDatabaseService', () => {
     let sutCreateDatabaseService: CreateDatabaseService;
+    let confiService: ConfigService;
     let dbManageService: MySqlDbManagerService;
     let mockCredentials = {
         db: 'any_db',
@@ -16,9 +18,14 @@ describe('Service: CreateDatabaseService', () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 {
-                    provide: 'HOST_DB_CONFIG',
+                    provide: ConfigService,
                     useValue: {
-                        host: 'config_host', user: 'config_user', password: 'config_password', port: 'config_port'
+                        get: jest.fn().mockReturnValue({
+                            host: 'any_host',
+                            port: 'any_port',
+                            user: 'any_user', 
+                            password: 'any_pass' 
+                        })
                     }
                 },
                 {
@@ -35,6 +42,7 @@ describe('Service: CreateDatabaseService', () => {
         .compile();
 
         sutCreateDatabaseService = module.get<CreateDatabaseService>(CreateDatabaseService);
+        confiService = module.get<ConfigService>(ConfigService);
         dbManageService = module.get<DbManagerProtocol>(MySqlDbManagerService);
     });
 
@@ -42,14 +50,24 @@ describe('Service: CreateDatabaseService', () => {
         jest.clearAllMocks();
     });
 
+    it('CreateDatabaseService should have dbConfig with values provided by ConfigService', async () => {
+        const dbConfig = (sutCreateDatabaseService as any).dbConfig;
+        expect(dbConfig).toEqual({
+            host: 'any_host',
+            port: 'any_port',
+            user: 'any_user', 
+            password: 'any_pass'
+        });
+    });
+
     it('should call DbManagerService.createConnection with correct values provided by ConfigService', async () => {
         await sutCreateDatabaseService.create(mockCredentials);
         expect(dbManageService.createConnection).toHaveBeenCalledTimes(1);
         expect(dbManageService.createConnection).toHaveBeenCalledWith({
-            host: 'config_host',
-            user: 'config_user',
-            port: 'config_port',
-            password: 'config_password'
+            host: 'any_host',
+            port: 'any_port',
+            user: 'any_user', 
+            password: 'any_pass'
         });
     });
 

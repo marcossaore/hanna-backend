@@ -7,7 +7,11 @@ export class HashService {
   }
 
   async verify(hashed: string, input: string): Promise<boolean> {
-      const isMatch = await argon2.verify(hashed, input);
-      return isMatch;
+    try {
+        const isMatch = await argon2.verify(hashed, input);
+        return isMatch;
+    } catch (error) {
+        return null;
+    }
   }
 }

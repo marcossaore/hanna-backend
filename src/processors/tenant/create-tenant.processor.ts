@@ -14,20 +14,20 @@ import { LoadTenantConnectionService } from '@/modules/application/tenant-connec
 import { MailService } from '@/modules/infra/mail/mail.service';
 
 @Injectable()
-@Processor('create-company')
+@Processor('create-tenant')
 export class  CreateTenantProcessor {
 
     constructor(
-        private readonly seedRunnerService: SeedRunnerService,
         private readonly tenantService: TenantService,
         private readonly generateDbCredentialsService: GenerateDbCredentialsService,
         private readonly createDatabaseService: CreateDatabaseService,
         private readonly secretsService: SecretsService,
-        private readonly migrationsCompanyService: MigrationsCompanyService,
-        private readonly userService: UserServiceLazy,
-        private readonly adminRoleService: AddAdminRoleServiceLazy,
-        private readonly generateUuidService: GenerateUuidService,
         private readonly loadTenantConnectionService: LoadTenantConnectionService,
+        private readonly migrationsCompanyService: MigrationsCompanyService,
+        private readonly seedRunnerService: SeedRunnerService,
+        private readonly userService: UserServiceLazy,
+        private readonly generateUuidService: GenerateUuidService,
+        private readonly adminRoleService: AddAdminRoleServiceLazy,
         private readonly mailService: MailService
     ){}
 
@@ -67,7 +67,7 @@ export class  CreateTenantProcessor {
             });
 
             const adminRoleService = this.adminRoleService.load(connection);
-            userService.addRole(user.uuid, adminRoleService);
+            await userService.addRole(user.uuid, adminRoleService);
     
             await this.mailService.send({
                 to: company.email,

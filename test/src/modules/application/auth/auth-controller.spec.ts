@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { mockCompanyEntity } from '../mock/company.mock';
-import { mockUserEntity, mockUserPermission } from '../mock/user.mock';
-import { mockLoginDto } from '../mock/auth.mock';
-import { Company } from '@infra/db/app/entities/company/company.entity';
+import { mockUserEntity, mockUserPermission } from '../../../../mock/user.mock';
+import { mockCompanyEntity } from '../../../../mock/company.mock';
+import { mockLoginDto } from '../../../../mock/auth.mock';
+import { Tenant } from '@infra/db/app/entities/tenant/tenant.entity';
 import { User } from '@infra/db/companies/entities/user/user.entity';
-import { HashService } from '@/_common/services/Password/hash.service';
-import { UserServiceLazy } from '@/modules/application/user/user.service.lazy';
+import { HashService } from '@infra/plugins/hash/hash.service';
 import { LoadTenantConnectionService } from '@/modules/application/tenant-connection/load-tenant-connection.service';
-import { CompanyService } from '@/company/company.service';
-import { AuthController } from '@/auth/auth.controller';
+import { TenantService } from '@/modules/application/tenant/tenant.service';
+import { UserServiceLazy } from '@/modules/application/user/user.service.lazy';
+import { AuthController } from '@/modules/application/auth/auth.controller';
 
 const requestSpy: any = {
     session: {
@@ -17,85 +17,84 @@ const requestSpy: any = {
 }
 
 describe('AuthController', () => {
-  let sutAuthController: AuthController;
-  let companyService : CompanyService;
-  let loadTenantConnectionService: LoadTenantConnectionService;
-  let userServiceLazy: UserServiceLazy;
-  let hashService: HashService;
-  let entityCompanyMock: Company;
-  let entityUserMock: User;
-  let userPermissionMock: any;
+    let entityTenantMock: Tenant;
+    let entityUserMock: User;
+    let userPermissionMock: any;
+    let sutAuthController: AuthController;
+    let tenantService : TenantService;
+    let loadTenantConnectionService: LoadTenantConnectionService;
+    let userServiceLazy: UserServiceLazy;
+    let hashService: HashService;
 
-  beforeEach(async () => {
+    beforeEach(async () => {
+        entityTenantMock = mockCompanyEntity();
+        entityUserMock = mockUserEntity();
+        userPermissionMock = mockUserPermission();
 
-    entityCompanyMock = mockCompanyEntity();
-    entityUserMock = mockUserEntity();
-    userPermissionMock = mockUserPermission();
-
-    const module: TestingModule = await Test.createTestingModule({
-        controllers: [AuthController],
-        providers: [
-            {
-                provide: CompanyService,
-                useValue: {
-                    findByDocument: jest.fn().mockResolvedValue(Promise.resolve(entityCompanyMock))
+        const module: TestingModule = await Test.createTestingModule({
+            controllers: [AuthController],
+            providers: [
+                {
+                    provide: TenantService,
+                    useValue: {
+                        findByDocument: jest.fn().mockResolvedValue(Promise.resolve(entityTenantMock))
+                    }
+                },
+                {
+                    provide: LoadTenantConnectionService,
+                    useValue: {
+                        load: jest.fn().mockReturnValue({} as any)
+                    }
+                },
+                {
+                    provide: UserServiceLazy,
+                    useValue: {
+                        load: jest.fn().mockReturnValue(
+                            {
+                                findByEmail: jest.fn().mockResolvedValue(Promise.resolve(entityUserMock)),
+                                getRoles: jest.fn().mockResolvedValue(Promise.resolve({ role: {permissions: userPermissionMock } }))
+                            }
+                        )
+                    }
+                },
+                {
+                    provide: HashService,
+                    useValue: {
+                        verify: jest.fn().mockResolvedValue(Promise.resolve(true))
+                    }
                 }
-            },
-            {
-                provide: LoadTenantConnectionService,
-                useValue: {
-                    load: jest.fn().mockReturnValue({} as any)
-                }
-            },
-            {
-                provide: UserServiceLazy,
-                useValue: {
-                    load: jest.fn().mockReturnValue(
-                        {
-                            findByEmail: jest.fn().mockResolvedValue(Promise.resolve(entityUserMock)),
-                            getModulesPermission: jest.fn().mockResolvedValue(Promise.resolve({ permissions: userPermissionMock }))
-                        }
-                    )
-                }
-            },
-            {
-                provide: HashService,
-                useValue: {
-                    verify: jest.fn().mockResolvedValue(Promise.resolve(true))
-                }
-            }
-        ]
-    }).compile();
+            ]
+        }).compile();
 
-    sutAuthController = module.get<AuthController>(AuthController);
-    companyService = module.get<CompanyService>(CompanyService);
-    loadTenantConnectionService = module.get<LoadTenantConnectionService>(LoadTenantConnectionService);
-    userServiceLazy = module.get<UserServiceLazy>(UserServiceLazy);
-    hashService = module.get<HashService>(HashService);
-  });
+        sutAuthController = module.get<AuthController>(AuthController);
+        tenantService = module.get<TenantService>(TenantService);
+        loadTenantConnectionService = module.get<LoadTenantConnectionService>(LoadTenantConnectionService);
+        userServiceLazy = module.get<UserServiceLazy>(UserServiceLazy);
+        hashService = module.get<HashService>(HashService);
+    });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  })
+    afterEach(() => {
+        jest.clearAllMocks();
+    })
 
     describe('login', () => {
-        it('should call CompanyService.findByDocument with correct document', async () => {
+        it('should call TenantService.findByDocument with correct document', async () => {
             const data = mockLoginDto();
             await sutAuthController.login(data, requestSpy);
-            expect(companyService.findByDocument).toHaveBeenCalledWith(data.document);
-            expect(companyService.findByDocument).toHaveBeenCalledTimes(1);
+            expect(tenantService.findByDocument).toHaveBeenCalledWith(data.document);
+            expect(tenantService.findByDocument).toHaveBeenCalledTimes(1);
         });
 
-        it('should throws if CompanyService.findByDocument returns null', async () => {
+        it('should throws if TenantService.findByDocument returns null', async () => {
             const data = mockLoginDto();
-            jest.spyOn(companyService, 'findByDocument').mockReturnValueOnce(Promise.resolve(null));
+            jest.spyOn(tenantService, 'findByDocument').mockReturnValueOnce(Promise.resolve(null));
             const promise = sutAuthController.login(data, requestSpy);
             await expect(promise).rejects.toThrow(new Error('O CNPJ, email ou senha são inválidos!'));
         });
 
-        it('should throws if CompanyService.findByDocument throws', async () => {
+        it('should throws if TenantService.findByDocument throws', async () => {
             const data = mockLoginDto();
-            jest.spyOn(companyService, 'findByDocument').mockImplementationOnce(() => {
+            jest.spyOn(tenantService, 'findByDocument').mockImplementationOnce(() => {
                 throw new Error();
             });
             const promise = sutAuthController.login(data, requestSpy);
@@ -105,7 +104,7 @@ describe('AuthController', () => {
         it('should call LoadTenantConnectionService.load with correct document', async () => {
             const data = mockLoginDto();
             await sutAuthController.login(data, requestSpy);
-            expect(loadTenantConnectionService.load).toHaveBeenCalledWith(entityCompanyMock.companyIdentifier);
+            expect(loadTenantConnectionService.load).toHaveBeenCalledWith(entityTenantMock.companyIdentifier);
             expect(loadTenantConnectionService.load).toHaveBeenCalledTimes(1);
         });
 
@@ -128,7 +127,7 @@ describe('AuthController', () => {
         it('should call UserServiceLazy.load with correct connection', async () => {
             const data = mockLoginDto();
             await sutAuthController.login(data, requestSpy);
-            expect(userServiceLazy.load).toHaveBeenCalledWith(loadTenantConnectionService.load(entityCompanyMock.companyIdentifier));
+            expect(userServiceLazy.load).toHaveBeenCalledWith(loadTenantConnectionService.load(entityTenantMock.companyIdentifier));
             expect(userServiceLazy.load).toHaveBeenCalledTimes(1);
         });
 
@@ -190,18 +189,18 @@ describe('AuthController', () => {
             await expect(promise).rejects.toThrow(new Error());
         });
 
-        it('should call UserService.getModulesPermission with correct uuid', async () => {
+        it('should call UserService.getRoles with correct uuid', async () => {
             const data = mockLoginDto();
             const userService = userServiceLazy.load('any_connection' as any);
             await sutAuthController.login(data, requestSpy);
-            expect(userService.getModulesPermission).toHaveBeenCalledWith(entityUserMock.uuid);
-            expect(userService.getModulesPermission).toHaveBeenCalledTimes(1);
+            expect(userService.getRoles).toHaveBeenCalledWith(entityUserMock.uuid);
+            expect(userService.getRoles).toHaveBeenCalledTimes(1);
         });
 
-        it('should throws if UserService.getModulesPermission throws', async () => {
+        it('should throws if UserService.getRoles throws', async () => {
             const data = mockLoginDto();
             const userService = userServiceLazy.load('any_connection' as any);
-            jest.spyOn(userService, 'getModulesPermission').mockImplementationOnce(() => {
+            jest.spyOn(userService, 'getRoles').mockImplementationOnce(() => {
                 throw new Error();
             });
             const promise = sutAuthController.login(data, requestSpy);
@@ -213,8 +212,8 @@ describe('AuthController', () => {
             await sutAuthController.login(data, requestSpy);
             expect(requestSpy.session.auth).toEqual({
                 tenant: {
-                    identifier: entityCompanyMock.companyIdentifier,
-                    uuid: entityCompanyMock.uuid
+                    identifier: entityTenantMock.companyIdentifier,
+                    uuid: entityTenantMock.uuid
                 },
                 user: {
                     name: entityUserMock.name,
@@ -223,7 +222,7 @@ describe('AuthController', () => {
                         {
                             module: {
                                 name: 'sales',
-                                actions: [
+                                grants: [
                                     {
                                         id: 1,
                                         name: 'read'
@@ -268,7 +267,7 @@ describe('AuthController', () => {
                     {
                         module: {
                             name: 'sales',
-                            actions: [
+                            grants: [
                                 {
                                     id: 1,
                                     name: 'read'
@@ -301,6 +300,5 @@ describe('AuthController', () => {
                 ]
             });
         });
-
     });
 });

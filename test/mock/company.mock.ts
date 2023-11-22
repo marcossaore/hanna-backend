@@ -1,10 +1,10 @@
+import { CreateTenantToEntity } from '@/modules/application/tenant/dto/create-tenant-to-entity.dto';
+import { CreateTenantDto } from '@/modules/application/tenant/dto/create-tenant.dto';
+import { TenantStatus } from '@/shared/enums/tenant-status.enum';
 import { faker } from '@faker-js/faker';
-import { CompanyStatus } from '@/_common/enums/company-status.enum';
-import { CreateCompanyToEntity } from '@/tenant/dto/create-company-to-entity.dto';
-import { CreateCompanyDto } from '@/tenant/dto/create-company.dto';
-import { Company } from '@infra/db/app/entities/company/company.entity';
+import { Tenant } from '@infra/db/app/entities/tenant/tenant.entity';
 
-export const mockCreateCompanyDto = ({ document = null, partnerDocument = null, phone = null, email = null, companyIdentifier = null } = {}): CreateCompanyDto => ({
+export const mockCreateCompanyDto = ({ document = null, partnerDocument = null, phone = null, email = null, companyIdentifier = null } = {}): CreateTenantDto => ({
     name: faker.company.name(),
     document: document || '81102759000187', // valid cnpj
     partnerName: faker.internet.userName(),
@@ -14,7 +14,7 @@ export const mockCreateCompanyDto = ({ document = null, partnerDocument = null, 
     email: email || faker.internet.email()
 });
 
-export const mockCreateCompanyToEntityDto = ({ document = null, partnerDocument = null, phone = null, email = null, companyIdentifier = null } = {}): CreateCompanyToEntity => ({
+export const mockCreateCompanyToEntityDto = ({ document = null, partnerDocument = null, phone = null, email = null, companyIdentifier = null } = {}): CreateTenantToEntity => ({
     name: faker.company.name(),
     document: document || '81102759000187', // valid cnpj
     partnerName: faker.internet.userName(),
@@ -25,7 +25,7 @@ export const mockCreateCompanyToEntityDto = ({ document = null, partnerDocument 
     uuid: faker.string.uuid()
 });
 
-export const mockCompanyEntity = ({ document = null, partnerDocument = null, phone = null, email = null, companyIdentifier = null } = {}): Company => ({
+export const mockCompanyEntity = ({ document = null, partnerDocument = null, phone = null, email = null, companyIdentifier = null } = {}): Tenant => ({
     name: faker.company.name(),
     document: document || faker.string.numeric({ length: 14 }),
     partnerName: faker.internet.userName(),
@@ -37,5 +37,5 @@ export const mockCompanyEntity = ({ document = null, partnerDocument = null, pho
     id: faker.number.int(),
     createdAt: faker.date.anytime(),
     updatedAt: faker.date.anytime(),
-    status: CompanyStatus.PENDING
+    status: TenantStatus.PENDING
 });

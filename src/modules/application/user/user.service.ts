@@ -20,35 +20,6 @@ export class UserService {
         });
     }
 
-    async getModulesPermission(uuid: string): Promise<User> {
-        const user = await this.userRepository.findOne({
-            relations: ['permissions.module', 'permissions.actions', 'permissions.options'],
-            where: {
-                uuid
-            },
-            select: {
-                id: true,
-                // permissions: {
-                //     id: true,
-                //     module: {
-                //         id: false,
-                //         name: true
-                //     },
-                //     actions: {
-                //         id: true,
-                //         name: true
-                //     },
-                //     options: {
-                //         id: true,
-                //         name: true
-                //     }
-                // }
-            }
-        });
-
-        return user;
-    }
-
     async save (data: any) : Promise<User> {
         const user = await this.userRepository.save(data);
         return user;
@@ -58,5 +29,38 @@ export class UserService {
         const user = await this.userRepository.findOneBy({ uuid });
         const userWithRoles = await addRole.add(user);
         await this.userRepository.save(userWithRoles);
+    }
+
+    async getRoles(uuid: string): Promise<User> {
+        const user = await this.userRepository.findOne({
+            relations: ['role.permissions.module.grants', 'role.permissions.module.options'],
+            where: {
+                uuid
+            },
+            select: {
+                id: true,
+                uuid: true,
+                name: true,
+                role: {
+                    id: true,
+                    permissions: {
+                        id: true,
+                        module: {
+                            id: true,
+                            name: true,
+                            grants: {
+                                id: true,
+                                name: true
+                            },
+                            options: {
+                                id: true,
+                                name: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        return user;
     }
 }

@@ -10,7 +10,7 @@ export const mockUserEntity = (): User => ({
     password: faker.string.alphanumeric({ length : 10 }),
     createdAt: faker.date.anytime(),
     updatedAt: faker.date.anytime(),
-    permissions: []
+    role: null
 });
 
 export const mockUserPermission = (): any => {
@@ -18,36 +18,36 @@ export const mockUserPermission = (): any => {
         {
           id: 1,
           module: {
-            name: "sales"
+            name: "sales",
+            grants: [
+              {
+                id: 1,
+                name: "read"
+              },
+              {
+                id: 2,
+                name: "create"
+              },
+              {
+                id: 3,
+                name: "edit"
+              },
+              {
+                id: 4,
+                name: "delete"
+              }
+            ],
+            options: [
+              {
+                id: 1,
+                name: "pinPass"
+              },
+              {
+                id: 2,
+                name: "accountMode"
+              }
+            ]
           },
-          actions: [
-            {
-              id: 1,
-              name: "read"
-            },
-            {
-              id: 2,
-              name: "create"
-            },
-            {
-              id: 3,
-              name: "edit"
-            },
-            {
-              id: 4,
-              name: "delete"
-            }
-          ],
-          options: [
-            {
-              id: 1,
-              name: "pinPass"
-            },
-            {
-              id: 2,
-              name: "accountMode"
-            }
-          ]
         }
     ]
 }

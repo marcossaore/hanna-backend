@@ -42,6 +42,7 @@ export class AuthController {
     @Post('/login')
     async login(@Body() loginDto: LoginDto, @Req() request): Promise<any> { //PermissionType
         const company = await this.tenantService.findByDocument(loginDto.document);
+
         if (!company) {
             throw userUnauthorized();
         }
@@ -62,16 +63,16 @@ export class AuthController {
             throw userUnauthorized();
         }
 
-        const userPermissions = await userService.getModulesPermission(user.uuid);
-        // const permissions = userPermissions.permissions.map(({ module, actions, options }) => {
-        //     return {
-        //         module: {
-        //             ...module,
-        //             actions,
-        //             options
-        //         }
-        //     }
-        // })
+        const userPermissions = await userService.getRoles(user.uuid);
+        const permissions = userPermissions.role.permissions.map(({ module }) => {
+            return {
+                module: {
+                    name: module.name,
+                    grants: module.grants,
+                    options: module.options
+                }
+            }
+        });
 
         request.session.auth = {
             tenant: {
@@ -81,14 +82,14 @@ export class AuthController {
             user: {
                 uuid: user.uuid,
                 name: user.name,
-                // permissions
+                permissions
             }
         }
         
         return {
             uuid: user.uuid,
             name: user.name,
-            // permissions
+            permissions
         };
     }
 }

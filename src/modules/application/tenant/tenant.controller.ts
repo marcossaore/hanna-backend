@@ -21,7 +21,7 @@ export class TenantController {
   constructor(
       private readonly tenantService: TenantService,
       private readonly generateUuidService: GenerateUuidService,
-      @InjectQueue('create-company') private readonly createCompanyQueue: Queue
+      @InjectQueue('create-tenant') private readonly createTenantQueue: Queue
   ) {}
 
   @UseInterceptors(new InfoMessageInterceptor('Em breve você receberá um email com instruções de login!'), ClassSerializerInterceptor)
@@ -45,7 +45,7 @@ export class TenantController {
     });
 
     try {
-        this.createCompanyQueue.add({ uuid });
+        this.createTenantQueue.add({ uuid });
     } catch (error) {}
     
     return new CreatedTenantDto(newCompany);

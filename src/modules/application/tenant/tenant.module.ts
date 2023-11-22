@@ -12,7 +12,7 @@ import { CreateTenantProcessorModule } from '@/processors/tenant/create-tenant.p
     imports: [
         TypeOrmModule.forFeature([Tenant]),
         BullModule.registerQueueAsync({
-            name: 'create-company',
+            name: 'create-tenant',
             inject: [ConfigService],
             useFactory: async (configService: ConfigService) => ({
               redis: {             

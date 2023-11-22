@@ -1,8 +1,9 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoadTenantDataSourceService } from '@/modules/application/tenant-connection/load-tenant-datasource.service';
-import { SecretsService } from '@/_common/services/Secret/secrets-service';
+import { SecretsService } from '@/modules/infra/secrets/secrets-service';
 import { LoadTenantConnectionService } from '@/modules/application/tenant-connection/load-tenant-connection.service';
+import { ConfigService } from '@nestjs/config';
 
 describe('Service: LoadTenantConnectionService', () => {
     let sutLoadTenantConnectionService: LoadTenantConnectionService;
@@ -15,10 +16,13 @@ describe('Service: LoadTenantConnectionService', () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 {
-                    provide: 'DB_CONFIG',
-                    useValue : {
-                        host: 'any_host',
-                        port: 1234
+                    provide: ConfigService,
+                    useValue: {
+                        get: jest.fn().mockReturnValue({
+                            host: 'any_host',
+                            port: 'any_port',
+                            type: 'any_type'
+                        })
                     }
                 },
                 {
@@ -41,8 +45,21 @@ describe('Service: LoadTenantConnectionService', () => {
         secretsService = module.get<SecretsService>(SecretsService);
         loadTenantDataSourceService = module.get<LoadTenantDataSourceService>(LoadTenantDataSourceService);
     });
+    
+    describe('LoadTenantConnectionService Initialize', () => {
+        it('LoadTenantConnectionService should have dbConfig with values provided by ConfigService', async () => {
+            const dbConfig = (sutLoadTenantConnectionService as any).dbConfig;
+            expect(dbConfig).toEqual({
+                host: 'any_host',
+                port: 'any_port',
+                type: 'any_type'
+            });
+        });
+    
+    });
 
     describe('load', () => {
+        
         it('should call SecretsService.get with correct value', async () => {
             await sutLoadTenantConnectionService.load(tenantName);
             expect(secretsService.get).toBeCalledWith(tenantName);
@@ -63,14 +80,30 @@ describe('Service: LoadTenantConnectionService', () => {
             expect(response).toBe(null);
         });
 
-        it('should call LoadTenantDataSourceService.load with correct values', async () => {
+        it('should call LoadTenantDataSourceService.load with correct values (connectTimeout default 0)', async () => {
             await sutLoadTenantConnectionService.load(tenantName);
             expect(loadTenantDataSourceService.load).toBeCalledWith({
                 host: 'any_host',
-                port: 1234,
+                port: 'any_port',
+                type: 'any_type',
                 user: 'any_user',
                 password: 'any_pass',
-                db: tenantName
+                db: tenantName,
+                connectTimeout: 0
+            });
+            expect(loadTenantDataSourceService.load).toBeCalledTimes(1);
+        });
+
+        it('should call LoadTenantDataSourceService.load with correct values (connectTimeout set 5)', async () => {
+            await sutLoadTenantConnectionService.load(tenantName, 5);
+            expect(loadTenantDataSourceService.load).toBeCalledWith({
+                host: 'any_host',
+                port: 'any_port',
+                type: 'any_type',
+                user: 'any_user',
+                password: 'any_pass',
+                db: tenantName,
+                connectTimeout: 5
             });
             expect(loadTenantDataSourceService.load).toBeCalledTimes(1);
         });

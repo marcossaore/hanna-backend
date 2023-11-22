@@ -12,7 +12,6 @@ import { TenantService } from '@/modules/application/tenant/tenant.service';
         TypeOrmModule.forRootAsync({
             useFactory: (configService: ConfigService) => {
                 const { host, port, user, password, db, type } = configService.get('database');
-
                 const dataSource = {
                     host,
                     port,

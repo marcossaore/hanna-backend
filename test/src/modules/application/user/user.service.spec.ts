@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { mockUserEntity, mockUserPermission } from '../mock/user.mock';
+import { mockUserEntity, mockUserPermission } from '../../../../mock/user.mock';
 import { User } from '@infra/db/companies/entities/user/user.entity';
 import { UserService } from '@/modules/application/user/user.service';
 
@@ -58,30 +58,35 @@ describe('Service: UserService', () => {
         });
     });
 
-    describe('getModulesPermission', () => {
+    describe('getRoles', () => {
         it('should call UserRepository.findOne with correct value', async () => {
-            await sutUserService.getModulesPermission('any_uuid');
+            await sutUserService.getRoles('any_uuid');
             expect(userRepository.findOne).toBeCalledWith(
                 {
-                    relations: ['permissions.module', 'permissions.actions', 'permissions.options'],
+                    relations: ['role.permissions.module.grants', 'role.permissions.module.options'],
                     where: {
                         uuid: 'any_uuid'
                     },
                     select: {
                         id: true,
-                        permissions: {
+                        uuid: true,
+                        name: true,
+                        role: {
                             id: true,
-                            module: {
-                                id: false,
-                                name: true
-                            },
-                            actions: {
+                            permissions: {
                                 id: true,
-                                name: true
-                            },
-                            options: {
-                                id: true,
-                                name: true
+                                module: {
+                                    id: true,
+                                    name: true,
+                                    grants: {
+                                        id: true,
+                                        name: true
+                                    },
+                                    options: {
+                                        id: true,
+                                        name: true
+                                    }
+                                }
                             }
                         }
                     }
@@ -90,16 +95,16 @@ describe('Service: UserService', () => {
             expect(userRepository.findOne).toBeCalledTimes(1);
         });
 
-        it('should throws if UserRepository.findOne throws', async () => {
+        it('should throws if UserRepository.getRoles throws', async () => {
             jest.spyOn(userRepository, 'findOne').mockImplementationOnce(() => {
                 throw new Error();
             });
-            const promise = sutUserService.getModulesPermission('any_uuid');
+            const promise = sutUserService.getRoles('any_uuid');
             await expect(promise).rejects.toThrow();
         });
 
         it('should return modules on success', async () => {
-            const response = await sutUserService.getModulesPermission('any_uuid');
+            const response = await sutUserService.getRoles('any_uuid');
             expect(response).toEqual(permissionMock);
         });
     });
