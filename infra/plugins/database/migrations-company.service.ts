@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { createConnection } from "typeorm";
-import companiesMigrations from "@infra/db/companies/companies.migrations";
 import { ConfigService } from "@nestjs/config";
+import { join } from "path";
 
 @Injectable()
 export class MigrationsCompanyService {
@@ -22,7 +22,7 @@ export class MigrationsCompanyService {
             password: this.dbConfig.password,
             database: databaseName,
             synchronize: false,
-            migrations: companiesMigrations,
+            migrations: [join('dist/infra/db/companies/migrations/*{.ts,.js}')],
             migrationsRun: true
         });
 
