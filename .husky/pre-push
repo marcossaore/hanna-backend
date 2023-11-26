@@ -1,9 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-echo "Você deseja executar todos os testes no docker antes de realizar o 'push'?"
-read response
-
-if [ "$response" == "y" ] || [ "$response" == "Y" ]; then
-    npm run test:ci:docker
-fi
+npm run test:ci:docker
