@@ -1,4 +1,19 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npm run test:ci:docker
+ask_question() {
+  local prompt="$1"
+  local response
+  while true; do
+    read -p "$prompt (y/n): " response
+    case $response in
+      [Yy]* ) return 0;;  # User answered 'yes'
+      [Nn]* ) return 1;;  # User answered 'no'
+      * ) echo "Please answer 'y' or 'n'.";;
+    esac
+  done
+}
+
+if ask_question "Do you want to test ci docker before push?"; then
+  npm run test:ci:docker
+fi
