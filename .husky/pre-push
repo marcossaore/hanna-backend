@@ -1,9 +1,6 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
 echo "Você deseja executar todos os testes no docker antes de realizar o 'push'?"
 read response
 
