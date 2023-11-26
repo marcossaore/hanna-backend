@@ -78,9 +78,9 @@ services:
             AWS_DEFAULT_REGION: us-east-1
             AWS_SECRET_ACCESS_KEY: localstack-secret-access-key
         ports:
-            - "127.0.0.1:4510-4530"
-            - "127.0.0.1:4566"
-            - "127.0.0.1:4571"
+            - "4510-4530"
+            - "4566"
+            - "4571"
         networks:
             - hanna-test
 networks:
