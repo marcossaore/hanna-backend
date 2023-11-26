@@ -35,7 +35,7 @@ services:
             MAIL_HOST:  localhost
             MAIL_PASSWORD: any_pass
             MAIL_PORT: 1030
-            MAIL_TRANSPORT: smtp://${MAIL_USER}:${MAIL_PASSWORD}@${MAIL_HOST}
+            MAIL_TRANSPORT: smtp://hanna@test.com:any_pass@$localhost
         depends_on:
             - db
             - memorydb
@@ -77,7 +77,7 @@ services:
             AWS_ACCESS_KEY_ID: localstack-access-key-id
             AWS_DEFAULT_REGION: us-east-1
             AWS_SECRET_ACCESS_KEY: localstack-secret-access-key
-        expose:
+        ports:
             - "127.0.0.1:4510-4530"
             - "127.0.0.1:4566"
             - "127.0.0.1:4571"
