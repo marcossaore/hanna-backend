@@ -8,7 +8,7 @@ import { CalculateRequestTimeInterceptor } from './adapters/interceptors/calcula
 async function bootstrap() {
     const app = await NestFactory.create(InitModule);
     app.useGlobalPipes(new ValidationPipe());
-    app.use((new AddRequestTimeMiddleware()).use);
+    app.use(new AddRequestTimeMiddleware().use);
     app.useGlobalFilters(new HttpExceptionFilter());
     app.useGlobalInterceptors(new CalculateRequestTimeInterceptor());
     await app.listen(3000);

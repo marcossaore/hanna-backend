@@ -24,7 +24,7 @@ import { CreateTenantProcessor } from './create-tenant.processor';
         CreateDatabaseModule,
         SecretsModule,
         MigrationsCompanyModule,
-        LoadTenantConnectionModule
+        LoadTenantConnectionModule,
     ],
     providers: [
         ConfigService,
@@ -33,11 +33,8 @@ import { CreateTenantProcessor } from './create-tenant.processor';
         GenerateUuidService,
         UserServiceLazy,
         AddAdminRoleServiceLazy,
-        CreateTenantProcessor
+        CreateTenantProcessor,
     ],
-    exports: [
-        CreateTenantProcessor
-    ]
+    exports: [CreateTenantProcessor],
 })
-
 export class CreateTenantProcessorModule {}

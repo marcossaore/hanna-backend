@@ -5,7 +5,7 @@ import { MailService } from '@/modules/infra/mail/mail.service';
 const createEmailSenderMock = () => ({
     to: 'any_email',
     subject: 'any_subject',
-    template: 'any_template'
+    template: 'any_template',
 });
 
 describe('Service: MailService', () => {
@@ -19,10 +19,10 @@ describe('Service: MailService', () => {
                 {
                     provide: MailerService,
                     useValue: {
-                        sendMail: jest.fn()
-                    }
+                        sendMail: jest.fn(),
+                    },
                 },
-                MailService
+                MailService,
             ],
         }).compile();
 
@@ -36,7 +36,7 @@ describe('Service: MailService', () => {
         expect(mailerService.sendMail).toBeCalledTimes(1);
         expect(mailerService.sendMail).toBeCalledWith({
             context: new Object(),
-            ...data
+            ...data,
         });
     });
 
@@ -44,18 +44,18 @@ describe('Service: MailService', () => {
         const data = {
             ...createEmailSenderMock(),
             data: {
-                name: 'any_name'
-            }
-        }
+                name: 'any_name',
+            },
+        };
         await sutMailService.send(data);
         expect(mailerService.sendMail).toBeCalledTimes(1);
         expect(mailerService.sendMail).toBeCalledWith({
             context: new Object({
-                name: 'any_name'
+                name: 'any_name',
             }),
-            subject: "any_subject",
-            template: "any_template",
-            to: "any_email"
+            subject: 'any_subject',
+            template: 'any_template',
+            to: 'any_email',
         });
     });
 

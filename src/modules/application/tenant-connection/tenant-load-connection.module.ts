@@ -9,11 +9,8 @@ import { LoadTenantDataSourceService } from './load-tenant-datasource.service';
     providers: [
         ConfigService,
         LoadTenantDataSourceService,
-        LoadTenantConnectionService
+        LoadTenantConnectionService,
     ],
-    exports: [
-        LoadTenantConnectionService
-    ]
+    exports: [LoadTenantConnectionService],
 })
-
 export class LoadTenantConnectionModule {}

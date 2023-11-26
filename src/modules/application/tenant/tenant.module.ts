@@ -15,20 +15,17 @@ import { CreateTenantProcessorModule } from '@/processors/tenant/create-tenant.p
             name: 'create-tenant',
             inject: [ConfigService],
             useFactory: async (configService: ConfigService) => ({
-              redis: {             
-                host: configService.get('queue.host'),
-                port: configService.get('queue.port'),
-                password: configService.get('queue.pass'),
-                username: configService.get('queue.user')
-              },
+                redis: {
+                    host: configService.get('queue.host'),
+                    port: configService.get('queue.port'),
+                    password: configService.get('queue.pass'),
+                    username: configService.get('queue.user'),
+                },
             }),
         }),
-        CreateTenantProcessorModule
+        CreateTenantProcessorModule,
     ],
     controllers: [TenantController],
-    providers: [
-        TenantService, 
-        GenerateUuidService
-    ]
+    providers: [TenantService, GenerateUuidService],
 })
 export class TenantModule {}

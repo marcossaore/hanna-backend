@@ -1,10 +1,12 @@
-import { faker } from "@faker-js/faker";
-import { CreateCustomerDto } from "@/modules/application/customer/dto/create-customer.dto";
-import { CreateCustomerToEntity } from "@/modules/application/customer/dto/create-customer-to-entity.dto";
-import { Customer } from "@infra/db/companies/entities/customer/customer.entity";
+import { faker } from '@faker-js/faker';
+import { CreateCustomerDto } from '@/modules/application/customer/dto/create-customer.dto';
+import { CreateCustomerToEntity } from '@/modules/application/customer/dto/create-customer-to-entity.dto';
+import { Customer } from '@infra/db/companies/entities/customer/customer.entity';
 
-
-export const mockCreateCustomerWithAddressDto = ({ complement = null, email = null } = {}): CreateCustomerDto => ({
+export const mockCreateCustomerWithAddressDto = ({
+    complement = null,
+    email = null,
+} = {}): CreateCustomerDto => ({
     name: faker.company.name(),
     email: email || faker.internet.email(),
     phone: faker.string.numeric({ length: 11 }),
@@ -15,16 +17,20 @@ export const mockCreateCustomerWithAddressDto = ({ complement = null, email = nu
         city: faker.location.city(),
         country: faker.location.state(),
         state: faker.location.country(),
-        complement
-    }
+        complement,
+    },
 });
 
-export const mockCreateCustomerToEntityWithAddressDto = (): CreateCustomerToEntity => ({
-    ...mockCreateCustomerWithAddressDto(),
-    uuid: faker.string.uuid()
-});
+export const mockCreateCustomerToEntityWithAddressDto =
+    (): CreateCustomerToEntity => ({
+        ...mockCreateCustomerWithAddressDto(),
+        uuid: faker.string.uuid(),
+    });
 
-export const mockCustomerEntity = ({ email = null, complement = null } = {}): Customer => {
+export const mockCustomerEntity = ({
+    email = null,
+    complement = null,
+} = {}): Customer => {
     const customer: Customer = {
         id: faker.number.int(),
         uuid: faker.string.uuid(),
@@ -38,8 +44,8 @@ export const mockCustomerEntity = ({ email = null, complement = null } = {}): Cu
         state: faker.location.country(),
         createdAt: faker.date.anytime(),
         updatedAt: faker.date.anytime(),
-        deletedAt: null
-    }
+        deletedAt: null,
+    };
 
     if (email) {
         customer.email = email;
@@ -50,4 +56,4 @@ export const mockCustomerEntity = ({ email = null, complement = null } = {}): Cu
     }
 
     return customer;
-}
+};

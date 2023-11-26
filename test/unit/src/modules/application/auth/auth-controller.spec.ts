@@ -11,17 +11,15 @@ import { UserServiceLazy } from '@/modules/application/user/user.service.lazy';
 import { AuthController } from '@/modules/application/auth/auth.controller';
 
 const requestSpy: any = {
-    session: {
-
-    }
-}
+    session: {},
+};
 
 describe('AuthController', () => {
     let entityTenantMock: Tenant;
     let entityUserMock: User;
     let userPermissionMock: any;
     let sutAuthController: AuthController;
-    let tenantService : TenantService;
+    let tenantService: TenantService;
     let loadTenantConnectionService: LoadTenantConnectionService;
     let userServiceLazy: UserServiceLazy;
     let hashService: HashService;
@@ -37,66 +35,90 @@ describe('AuthController', () => {
                 {
                     provide: TenantService,
                     useValue: {
-                        findByDocument: jest.fn().mockResolvedValue(Promise.resolve(entityTenantMock))
-                    }
+                        findByDocument: jest
+                            .fn()
+                            .mockResolvedValue(
+                                Promise.resolve(entityTenantMock),
+                            ),
+                    },
                 },
                 {
                     provide: LoadTenantConnectionService,
                     useValue: {
-                        load: jest.fn().mockReturnValue({} as any)
-                    }
+                        load: jest.fn().mockReturnValue({} as any),
+                    },
                 },
                 {
                     provide: UserServiceLazy,
                     useValue: {
-                        load: jest.fn().mockReturnValue(
-                            {
-                                findByEmail: jest.fn().mockResolvedValue(Promise.resolve(entityUserMock)),
-                                getRoles: jest.fn().mockResolvedValue(Promise.resolve({ role: {permissions: userPermissionMock } }))
-                            }
-                        )
-                    }
+                        load: jest.fn().mockReturnValue({
+                            findByEmail: jest
+                                .fn()
+                                .mockResolvedValue(
+                                    Promise.resolve(entityUserMock),
+                                ),
+                            getRoles: jest.fn().mockResolvedValue(
+                                Promise.resolve({
+                                    role: {
+                                        permissions: userPermissionMock,
+                                    },
+                                }),
+                            ),
+                        }),
+                    },
                 },
                 {
                     provide: HashService,
                     useValue: {
-                        verify: jest.fn().mockResolvedValue(Promise.resolve(true))
-                    }
-                }
-            ]
+                        verify: jest
+                            .fn()
+                            .mockResolvedValue(Promise.resolve(true)),
+                    },
+                },
+            ],
         }).compile();
 
         sutAuthController = module.get<AuthController>(AuthController);
         tenantService = module.get<TenantService>(TenantService);
-        loadTenantConnectionService = module.get<LoadTenantConnectionService>(LoadTenantConnectionService);
+        loadTenantConnectionService = module.get<LoadTenantConnectionService>(
+            LoadTenantConnectionService,
+        );
         userServiceLazy = module.get<UserServiceLazy>(UserServiceLazy);
         hashService = module.get<HashService>(HashService);
     });
 
     afterEach(() => {
         jest.clearAllMocks();
-    })
+    });
 
     describe('login', () => {
         it('should call TenantService.findByDocument with correct document', async () => {
             const data = mockLoginDto();
             await sutAuthController.login(data, requestSpy);
-            expect(tenantService.findByDocument).toHaveBeenCalledWith(data.document);
+            expect(tenantService.findByDocument).toHaveBeenCalledWith(
+                data.document,
+            );
             expect(tenantService.findByDocument).toHaveBeenCalledTimes(1);
         });
 
         it('should throws if TenantService.findByDocument returns null', async () => {
             const data = mockLoginDto();
-            jest.spyOn(tenantService, 'findByDocument').mockReturnValueOnce(Promise.resolve(null));
+            jest.spyOn(tenantService, 'findByDocument').mockReturnValueOnce(
+                Promise.resolve(null),
+            );
             const promise = sutAuthController.login(data, requestSpy);
-            await expect(promise).rejects.toThrow(new Error('O CNPJ, email ou senha são inválidos!'));
+            await expect(promise).rejects.toThrow(
+                new Error('O CNPJ, email ou senha são inválidos!'),
+            );
         });
 
         it('should throws if TenantService.findByDocument throws', async () => {
             const data = mockLoginDto();
-            jest.spyOn(tenantService, 'findByDocument').mockImplementationOnce(() => {
-                throw new Error();
-            });
+            jest.spyOn(tenantService, 'findByDocument').mockImplementationOnce(
+                () => {
+                    throw new Error();
+                },
+            );
             const promise = sutAuthController.login(data, requestSpy);
             await expect(promise).rejects.toThrow(new Error());
         });
@@ -104,13 +126,18 @@ describe('AuthController', () => {
         it('should call LoadTenantConnectionService.load with correct document', async () => {
             const data = mockLoginDto();
             await sutAuthController.login(data, requestSpy);
-            expect(loadTenantConnectionService.load).toHaveBeenCalledWith(entityTenantMock.companyIdentifier);
+            expect(loadTenantConnectionService.load).toHaveBeenCalledWith(
+                entityTenantMock.companyIdentifier,
+            );
             expect(loadTenantConnectionService.load).toHaveBeenCalledTimes(1);
         });
 
         it('should throws if LoadTenantConnectionService.load throws', async () => {
             const data = mockLoginDto();
-            jest.spyOn(loadTenantConnectionService, 'load').mockImplementationOnce(() => {
+            jest.spyOn(
+                loadTenantConnectionService,
+                'load',
+            ).mockImplementationOnce(() => {
                 throw new Error();
             });
             const promise = sutAuthController.login(data, requestSpy);
@@ -119,15 +146,24 @@ describe('AuthController', () => {
 
         it('should throws if LoadTenantConnectionService.load returns null', async () => {
             const data = mockLoginDto();
-            jest.spyOn(loadTenantConnectionService, 'load').mockResolvedValueOnce(null);
+            jest.spyOn(
+                loadTenantConnectionService,
+                'load',
+            ).mockResolvedValueOnce(null);
             const promise = sutAuthController.login(data, requestSpy);
-            await expect(promise).rejects.toThrow(new Error('O CNPJ, email ou senha são inválidos!'));
+            await expect(promise).rejects.toThrow(
+                new Error('O CNPJ, email ou senha são inválidos!'),
+            );
         });
 
         it('should call UserServiceLazy.load with correct connection', async () => {
             const data = mockLoginDto();
             await sutAuthController.login(data, requestSpy);
-            expect(userServiceLazy.load).toHaveBeenCalledWith(loadTenantConnectionService.load(entityTenantMock.companyIdentifier));
+            expect(userServiceLazy.load).toHaveBeenCalledWith(
+                loadTenantConnectionService.load(
+                    entityTenantMock.companyIdentifier,
+                ),
+            );
             expect(userServiceLazy.load).toHaveBeenCalledTimes(1);
         });
 
@@ -151,17 +187,23 @@ describe('AuthController', () => {
         it('should throws if UserService.findByEmail returns null', async () => {
             const data = mockLoginDto();
             const userService = userServiceLazy.load('any_connection' as any);
-            jest.spyOn(userService, 'findByEmail').mockReturnValueOnce(Promise.resolve(null));
+            jest.spyOn(userService, 'findByEmail').mockReturnValueOnce(
+                Promise.resolve(null),
+            );
             const promise = sutAuthController.login(data, requestSpy);
-            await expect(promise).rejects.toThrow(new Error('O CNPJ, email ou senha são inválidos!'));
+            await expect(promise).rejects.toThrow(
+                new Error('O CNPJ, email ou senha são inválidos!'),
+            );
         });
 
         it('should throws if UserService.findByEmail throws', async () => {
             const data = mockLoginDto();
             const userService = userServiceLazy.load('any_connection' as any);
-            jest.spyOn(userService, 'findByEmail').mockImplementationOnce(() => {
-                throw new Error();
-            });
+            jest.spyOn(userService, 'findByEmail').mockImplementationOnce(
+                () => {
+                    throw new Error();
+                },
+            );
             const promise = sutAuthController.login(data, requestSpy);
             await expect(promise).rejects.toThrow(new Error());
         });
@@ -169,15 +211,22 @@ describe('AuthController', () => {
         it('should call HashService.verify with correct values', async () => {
             const data = mockLoginDto();
             await sutAuthController.login(data, requestSpy);
-            expect(hashService.verify).toHaveBeenCalledWith(entityUserMock.password, data.password);
+            expect(hashService.verify).toHaveBeenCalledWith(
+                entityUserMock.password,
+                data.password,
+            );
             expect(hashService.verify).toHaveBeenCalledTimes(1);
         });
 
         it('should throws if HashService.verify no match', async () => {
             const data = mockLoginDto();
-            jest.spyOn(hashService, 'verify').mockReturnValueOnce(Promise.resolve(false));
+            jest.spyOn(hashService, 'verify').mockReturnValueOnce(
+                Promise.resolve(false),
+            );
             const promise = sutAuthController.login(data, requestSpy);
-            await expect(promise).rejects.toThrow(new Error('O CNPJ, email ou senha são inválidos!'));
+            await expect(promise).rejects.toThrow(
+                new Error('O CNPJ, email ou senha são inválidos!'),
+            );
         });
 
         it('should throws if HashService.verify throws', async () => {
@@ -193,7 +242,9 @@ describe('AuthController', () => {
             const data = mockLoginDto();
             const userService = userServiceLazy.load('any_connection' as any);
             await sutAuthController.login(data, requestSpy);
-            expect(userService.getRoles).toHaveBeenCalledWith(entityUserMock.uuid);
+            expect(userService.getRoles).toHaveBeenCalledWith(
+                entityUserMock.uuid,
+            );
             expect(userService.getRoles).toHaveBeenCalledTimes(1);
         });
 
@@ -213,7 +264,7 @@ describe('AuthController', () => {
             expect(requestSpy.session.auth).toEqual({
                 tenant: {
                     identifier: entityTenantMock.companyIdentifier,
-                    uuid: entityTenantMock.uuid
+                    uuid: entityTenantMock.uuid,
                 },
                 user: {
                     name: entityUserMock.name,
@@ -225,34 +276,34 @@ describe('AuthController', () => {
                                 grants: [
                                     {
                                         id: 1,
-                                        name: 'read'
+                                        name: 'read',
                                     },
                                     {
                                         id: 2,
-                                        name: 'create'
+                                        name: 'create',
                                     },
                                     {
                                         id: 3,
-                                        name: 'edit'
+                                        name: 'edit',
                                     },
                                     {
                                         id: 4,
-                                        name: 'delete'
-                                    }
+                                        name: 'delete',
+                                    },
                                 ],
                                 options: [
                                     {
                                         id: 1,
-                                        name: 'pinPass'
+                                        name: 'pinPass',
                                     },
                                     {
                                         id: 2,
-                                        name: 'accountMode'
-                                    }
-                                ]
-                            }
-                        }
-                    ]
+                                        name: 'accountMode',
+                                    },
+                                ],
+                            },
+                        },
+                    ],
                 },
             });
         });
@@ -270,34 +321,34 @@ describe('AuthController', () => {
                             grants: [
                                 {
                                     id: 1,
-                                    name: 'read'
+                                    name: 'read',
                                 },
                                 {
                                     id: 2,
-                                    name: 'create'
+                                    name: 'create',
                                 },
                                 {
                                     id: 3,
-                                    name: 'edit'
+                                    name: 'edit',
                                 },
                                 {
                                     id: 4,
-                                    name: 'delete'
-                                }
+                                    name: 'delete',
+                                },
                             ],
                             options: [
                                 {
                                     id: 1,
-                                    name: 'pinPass'
+                                    name: 'pinPass',
                                 },
                                 {
                                     id: 2,
-                                    name: 'accountMode'
-                                }
-                            ]
-                        }
-                    }
-                ]
+                                    name: 'accountMode',
+                                },
+                            ],
+                        },
+                    },
+                ],
             });
         });
     });

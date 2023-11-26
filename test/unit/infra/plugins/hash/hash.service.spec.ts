@@ -1,13 +1,14 @@
 import * as argon2 from 'argon2';
 import { HashService } from '@infra/plugins/hash/hash.service';
 
-
 describe('Service: HashService', () => {
     let sutHashService: HashService;
 
     beforeEach(async () => {
         sutHashService = new HashService();
-        jest.spyOn(argon2, 'hash').mockReturnValue(Promise.resolve('hashed_value'));
+        jest.spyOn(argon2, 'hash').mockReturnValue(
+            Promise.resolve('hashed_value'),
+        );
         jest.spyOn(argon2, 'verify').mockReturnValue(Promise.resolve(true));
     });
 
@@ -44,7 +45,7 @@ describe('Service: HashService', () => {
         });
 
         it('should return null if argon2.hash throws', async () => {
-            jest.spyOn((argon2), 'verify').mockImplementationOnce(() => {
+            jest.spyOn(argon2, 'verify').mockImplementationOnce(() => {
                 throw new Error();
             });
             const response = await sutHashService.verify('hashed', 'key');

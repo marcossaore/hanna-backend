@@ -3,16 +3,16 @@ import { CommandModule, CommandService } from 'nestjs-command';
 import { InitCommandHandlerModule } from './commands/init-command-handler.module';
 
 async function bootstrap() {
-    const commandApp = await NestFactory.createApplicationContext(InitCommandHandlerModule, {
-        logger: false
-    });
+    const commandApp = await NestFactory.createApplicationContext(
+        InitCommandHandlerModule,
+        {
+            logger: false,
+        },
+    );
 
     try {
-        await commandApp
-          .select(CommandModule)
-          .get(CommandService)
-          .exec();
-        await commandApp.close()
+        await commandApp.select(CommandModule).get(CommandService).exec();
+        await commandApp.close();
     } catch (error) {
         console.error(error);
         await commandApp.close();

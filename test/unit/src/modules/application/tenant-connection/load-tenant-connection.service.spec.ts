@@ -21,62 +21,71 @@ describe('Service: LoadTenantConnectionService', () => {
                         get: jest.fn().mockReturnValue({
                             host: 'any_host',
                             port: 'any_port',
-                            type: 'any_type'
-                        })
-                    }
+                            type: 'any_type',
+                        }),
+                    },
                 },
                 {
                     provide: SecretsService,
-                    useValue : {
-                        get: jest.fn().mockReturnValue('{"dbUser": "any_user", "dbPass": "any_pass"}')
-                    }
+                    useValue: {
+                        get: jest
+                            .fn()
+                            .mockReturnValue(
+                                '{"dbUser": "any_user", "dbPass": "any_pass"}',
+                            ),
+                    },
                 },
                 {
                     provide: LoadTenantDataSourceService,
                     useValue: {
-                        load: jest.fn().mockReturnValue({} as any)
-                    }
+                        load: jest.fn().mockReturnValue({} as any),
+                    },
                 },
-                LoadTenantConnectionService
+                LoadTenantConnectionService,
             ],
         }).compile();
 
-        sutLoadTenantConnectionService = module.get<LoadTenantConnectionService>(LoadTenantConnectionService);
+        sutLoadTenantConnectionService =
+            module.get<LoadTenantConnectionService>(
+                LoadTenantConnectionService,
+            );
         secretsService = module.get<SecretsService>(SecretsService);
-        loadTenantDataSourceService = module.get<LoadTenantDataSourceService>(LoadTenantDataSourceService);
+        loadTenantDataSourceService = module.get<LoadTenantDataSourceService>(
+            LoadTenantDataSourceService,
+        );
     });
-    
+
     describe('LoadTenantConnectionService Initialize', () => {
         it('LoadTenantConnectionService should have dbConfig with values provided by ConfigService', async () => {
             const dbConfig = (sutLoadTenantConnectionService as any).dbConfig;
             expect(dbConfig).toEqual({
                 host: 'any_host',
                 port: 'any_port',
-                type: 'any_type'
+                type: 'any_type',
             });
         });
-    
     });
 
     describe('load', () => {
-        
         it('should call SecretsService.get with correct value', async () => {
             await sutLoadTenantConnectionService.load(tenantName);
             expect(secretsService.get).toBeCalledWith(tenantName);
             expect(secretsService.get).toBeCalledTimes(1);
         });
-    
+
         it('should returns null if SecretsService.get returns null', async () => {
             jest.spyOn(secretsService, 'get').mockReturnValueOnce(null);
-            const response = await sutLoadTenantConnectionService.load(tenantName);
+            const response =
+                await sutLoadTenantConnectionService.load(tenantName);
             expect(response).toBe(null);
         });
-    
+
         it('should returns null if SecretsService.get throws', async () => {
             jest.spyOn(secretsService, 'get').mockImplementationOnce(() => {
                 throw new Error();
-            })
-            const response = await sutLoadTenantConnectionService.load(tenantName);
+            });
+            const response =
+                await sutLoadTenantConnectionService.load(tenantName);
             expect(response).toBe(null);
         });
 
@@ -89,7 +98,7 @@ describe('Service: LoadTenantConnectionService', () => {
                 user: 'any_user',
                 password: 'any_pass',
                 db: tenantName,
-                connectTimeout: 0
+                connectTimeout: 0,
             });
             expect(loadTenantDataSourceService.load).toBeCalledTimes(1);
         });
@@ -103,23 +112,27 @@ describe('Service: LoadTenantConnectionService', () => {
                 user: 'any_user',
                 password: 'any_pass',
                 db: tenantName,
-                connectTimeout: 5
+                connectTimeout: 5,
             });
             expect(loadTenantDataSourceService.load).toBeCalledTimes(1);
         });
 
         it('should returns null if LoadTenantDataSourceService.load throws', async () => {
-            jest.spyOn(loadTenantDataSourceService, 'load').mockImplementationOnce(() => {
+            jest.spyOn(
+                loadTenantDataSourceService,
+                'load',
+            ).mockImplementationOnce(() => {
                 throw new Error();
-            })
-            const response = await sutLoadTenantConnectionService.load(tenantName);
+            });
+            const response =
+                await sutLoadTenantConnectionService.load(tenantName);
             expect(response).toBe(null);
         });
 
         it('should returns a Connection when succeds', async () => {
-            const response = await sutLoadTenantConnectionService.load(tenantName);
+            const response =
+                await sutLoadTenantConnectionService.load(tenantName);
             expect(response).toEqual({});
         });
-    })
-
+    });
 });

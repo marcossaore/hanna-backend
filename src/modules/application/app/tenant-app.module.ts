@@ -17,26 +17,32 @@ import { AuthModule } from '../auth/auth.module';
                 {
                     provide: 'CONNECTION',
                     scope: Scope.REQUEST,
-                    useFactory: async (request: Request, loadTenantConnectionService: LoadTenantConnectionService) => {
-                        const tenantName =  request?.session?.auth?.tenant?.identifier;
+                    useFactory: async (
+                        request: Request,
+                        loadTenantConnectionService: LoadTenantConnectionService,
+                    ) => {
+                        const tenantName =
+                            request?.session?.auth?.tenant?.identifier;
                         if (!tenantName) {
-                            throw new UnauthorizedException()
+                            throw new UnauthorizedException();
                         }
                         try {
-                            return await loadTenantConnectionService.load(tenantName)
+                            return await loadTenantConnectionService.load(
+                                tenantName,
+                            );
                         } catch (error) {
-                            throw new UnauthorizedException()
+                            throw new UnauthorizedException();
                         }
                     },
-                    inject: [REQUEST, LoadTenantConnectionService]
-                }
+                    inject: [REQUEST, LoadTenantConnectionService],
+                },
             ],
-            exports: ['CONNECTION']
+            exports: ['CONNECTION'],
         },
         {
             module: AuthModule,
-            imports: [LoadTenantConnectionModule]
-        }
-    ]
+            imports: [LoadTenantConnectionModule],
+        },
+    ],
 })
-export class TenantAppModule {} 
+export class TenantAppModule {}

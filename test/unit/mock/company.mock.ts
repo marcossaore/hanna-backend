@@ -4,28 +4,48 @@ import { TenantStatus } from '@/shared/enums/tenant-status.enum';
 import { faker } from '@faker-js/faker';
 import { Tenant } from '@infra/db/app/entities/tenant/tenant.entity';
 
-export const mockCreateCompanyDto = ({ document = null, partnerDocument = null, phone = null, email = null, companyIdentifier = null } = {}): CreateTenantDto => ({
+export const mockCreateCompanyDto = ({
+    document = null,
+    partnerDocument = null,
+    phone = null,
+    email = null,
+    companyIdentifier = null,
+} = {}): CreateTenantDto => ({
     name: faker.company.name(),
     document: document || '81102759000187', // valid cnpj
     partnerName: faker.internet.userName(),
     partnerDocument: partnerDocument || '02020957035', // valid cpf
-    companyIdentifier: companyIdentifier || faker.string.alphanumeric({ length: 10 }),
-    phone: phone || faker.string.numeric({ length: 11 }),
-    email: email || faker.internet.email()
-});
-
-export const mockCreateCompanyToEntityDto = ({ document = null, partnerDocument = null, phone = null, email = null, companyIdentifier = null } = {}): CreateTenantToEntity => ({
-    name: faker.company.name(),
-    document: document || '81102759000187', // valid cnpj
-    partnerName: faker.internet.userName(),
-    partnerDocument: partnerDocument || '02020957035', // valid cpf
-    companyIdentifier: companyIdentifier || faker.string.alphanumeric({ length: 10 }),
+    companyIdentifier:
+        companyIdentifier || faker.string.alphanumeric({ length: 10 }),
     phone: phone || faker.string.numeric({ length: 11 }),
     email: email || faker.internet.email(),
-    uuid: faker.string.uuid()
 });
 
-export const mockCompanyEntity = ({ document = null, partnerDocument = null, phone = null, email = null, companyIdentifier = null } = {}): Tenant => ({
+export const mockCreateCompanyToEntityDto = ({
+    document = null,
+    partnerDocument = null,
+    phone = null,
+    email = null,
+    companyIdentifier = null,
+} = {}): CreateTenantToEntity => ({
+    name: faker.company.name(),
+    document: document || '81102759000187', // valid cnpj
+    partnerName: faker.internet.userName(),
+    partnerDocument: partnerDocument || '02020957035', // valid cpf
+    companyIdentifier:
+        companyIdentifier || faker.string.alphanumeric({ length: 10 }),
+    phone: phone || faker.string.numeric({ length: 11 }),
+    email: email || faker.internet.email(),
+    uuid: faker.string.uuid(),
+});
+
+export const mockCompanyEntity = ({
+    document = null,
+    partnerDocument = null,
+    phone = null,
+    email = null,
+    companyIdentifier = null,
+} = {}): Tenant => ({
     name: faker.company.name(),
     document: document || faker.string.numeric({ length: 14 }),
     partnerName: faker.internet.userName(),
@@ -37,5 +57,5 @@ export const mockCompanyEntity = ({ document = null, partnerDocument = null, pho
     id: faker.number.int(),
     createdAt: faker.date.anytime(),
     updatedAt: faker.date.anytime(),
-    status: TenantStatus.PENDING
+    status: TenantStatus.PENDING,
 });

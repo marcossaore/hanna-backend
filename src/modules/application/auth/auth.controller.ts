@@ -7,28 +7,28 @@ import { UserServiceLazy } from '@/modules/application/user/user.service.lazy';
 import { LoadTenantConnectionService } from '@/modules/application/tenant-connection/load-tenant-connection.service';
 
 type GrantType = {
-    id: number, 
-    name: string
-}
+    id: number;
+    name: string;
+};
 
 type OptionType = {
-    id: number, 
-    name: string
-}
+    id: number;
+    name: string;
+};
 
 type ModuleType = {
     module: {
-        name: string,
-        grants: GrantType[],
-        options: OptionType[]
-    }
-}
+        name: string;
+        grants: GrantType[];
+        options: OptionType[];
+    };
+};
 
 type PermissionType = {
-    uuid: string,
-    name: string,
-    permissions: ModuleType[]
-}
+    uuid: string;
+    name: string;
+    permissions: ModuleType[];
+};
 
 @Controller('auth')
 export class AuthController {
@@ -40,39 +40,51 @@ export class AuthController {
     ) {}
 
     @Post('/login')
-    async login(@Body() loginDto: LoginDto, @Req() request): Promise<PermissionType> {
-        const company = await this.tenantService.findByDocument(loginDto.document);
+    async login(
+        @Body() loginDto: LoginDto,
+        @Req() request,
+    ): Promise<PermissionType> {
+        const company = await this.tenantService.findByDocument(
+            loginDto.document,
+        );
 
         if (!company) {
             throw userUnauthorized();
         }
 
-        const connection = await this.loadTenantConnectionService.load(company.companyIdentifier);
+        const connection = await this.loadTenantConnectionService.load(
+            company.companyIdentifier,
+        );
         if (!connection) {
             throw userUnauthorized();
         }
-        
+
         const userService = this.userService.load(connection);
         const user = await userService.findByEmail(loginDto.email);
         if (!user) {
             throw userUnauthorized();
         }
 
-        const passwordIsMatched = await this.hashService.verify(user.password, loginDto.password);
+        const passwordIsMatched = await this.hashService.verify(
+            user.password,
+            loginDto.password,
+        );
         if (!passwordIsMatched) {
             throw userUnauthorized();
         }
 
         const userPermissions = await userService.getRoles(user.uuid);
-        const permissions = userPermissions.role.permissions.map(({ module }) => {
-            return {
-                module: {
-                    name: module.name,
-                    grants: module.grants,
-                    options: module.options
-                }
-            }
-        });
+        const permissions = userPermissions.role.permissions.map(
+            ({ module }) => {
+                return {
+                    module: {
+                        name: module.name,
+                        grants: module.grants,
+                        options: module.options,
+                    },
+                };
+            },
+        );
 
         request.session.auth = {
             tenant: {
@@ -82,14 +94,14 @@ export class AuthController {
             user: {
                 uuid: user.uuid,
                 name: user.name,
-                permissions
-            }
-        }
-        
+                permissions,
+            },
+        };
+
         return {
             uuid: user.uuid,
             name: user.name,
-            permissions
+            permissions,
         };
     }
 
@@ -97,7 +109,7 @@ export class AuthController {
     @HttpCode(204)
     async logout(@Req() request): Promise<void> {
         if (request.session.auth) {
-            request.session.destroy()
+            request.session.destroy();
         }
     }
 }

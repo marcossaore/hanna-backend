@@ -11,7 +11,8 @@ import { TenantService } from '@/modules/application/tenant/tenant.service';
     imports: [
         TypeOrmModule.forRootAsync({
             useFactory: (configService: ConfigService) => {
-                const { host, port, user, password, db, type } = configService.get('database');
+                const { host, port, user, password, db, type } =
+                    configService.get('database');
                 const dataSource = {
                     host,
                     port,
@@ -19,15 +20,18 @@ import { TenantService } from '@/modules/application/tenant/tenant.service';
                     password,
                     database: db,
                     type,
-                    entities: [__dirname + '/../../db/app/entities/**/*.entity{.ts,.js}']
+                    entities: [
+                        __dirname +
+                            '/../../db/app/entities/**/*.entity{.ts,.js}',
+                    ],
                 } as any;
                 return dataSource;
             },
             inject: [ConfigService],
         }),
-        TypeOrmModule.forFeature([Tenant])
+        TypeOrmModule.forFeature([Tenant]),
     ],
     providers: [TenantService, UserServiceLazy, HashService],
-    controllers: [AuthController]
+    controllers: [AuthController],
 })
 export class AuthModule {}
