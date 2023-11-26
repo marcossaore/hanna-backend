@@ -15,7 +15,7 @@ ask_question() {
 }
 
 if ask_question "Do you want to test ci docker before push?"; then
-  npm run test:ci:docker
+  npm run test:ci:docker && exit 0 || exit 1
 fi
 
 exit 0
