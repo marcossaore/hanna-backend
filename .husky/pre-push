@@ -11,9 +11,11 @@ ask_question() {
       [Nn]* ) return 1;;  # User answered 'no'
       * ) echo "Please answer 'y' or 'n'.";;
     esac
-  done
+  done  </dev/tty
 }
 
 if ask_question "Do you want to test ci docker before push?"; then
   npm run test:ci:docker
 fi
+
+exit 0
