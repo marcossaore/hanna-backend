@@ -11,7 +11,7 @@ import configuration from '@/shared/config/configuration';
             load: [configuration],
         }),
         AppModule, // => /api/app/**
-        TenantAppModule // => /api/**
-    ]
+        TenantAppModule, // => /api/**
+    ],
 })
-export class InitModule {} 
+export class InitModule {}

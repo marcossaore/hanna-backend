@@ -8,20 +8,20 @@ import { SecretsManagerCloud } from '@infra/plugins/secrets/secrets-manager.clou
         {
             inject: [ConfigService],
             provide: SecretsService,
-            useFactory (configService: ConfigService) {
-                const { key, secret, region, version, endpoint } = configService.get('aws');
+            useFactory(configService: ConfigService) {
+                const { key, secret, region, version, endpoint } =
+                    configService.get('aws');
                 const secretsManagerCloud = new SecretsManagerCloud({
                     key,
                     secret,
                     region,
                     version,
-                    endpoint
+                    endpoint,
                 });
                 return new SecretsService(secretsManagerCloud);
-            }
+            },
         },
     ],
-    exports: [SecretsService]
+    exports: [SecretsService],
 })
-
 export class SecretsModule {}

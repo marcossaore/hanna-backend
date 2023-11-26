@@ -6,12 +6,11 @@ import { MySqlDbManagerService } from '@infra/plugins/database/repository/mysql-
 
 describe('Service: CreateDatabaseService', () => {
     let sutCreateDatabaseService: CreateDatabaseService;
-    let confiService: ConfigService;
     let dbManageService: MySqlDbManagerService;
-    let mockCredentials = {
+    const mockCredentials = {
         db: 'any_db',
         dbUser: 'any_db_user',
-        dbPass: 'any_db_pass'
+        dbPass: 'any_db_pass',
     };
 
     beforeEach(async () => {
@@ -23,26 +22,26 @@ describe('Service: CreateDatabaseService', () => {
                         get: jest.fn().mockReturnValue({
                             host: 'any_host',
                             port: 'any_port',
-                            user: 'any_user', 
-                            password: 'any_pass' 
-                        })
-                    }
+                            user: 'any_user',
+                            password: 'any_pass',
+                        }),
+                    },
                 },
                 {
                     provide: MySqlDbManagerService,
                     useValue: {
                         createConnection: jest.fn().mockReturnThis(),
                         query: jest.fn(),
-                        end: jest.fn()
-                    }
+                        end: jest.fn(),
+                    },
                 },
-                CreateDatabaseService
-            ]
-        })
-        .compile();
+                CreateDatabaseService,
+            ],
+        }).compile();
 
-        sutCreateDatabaseService = module.get<CreateDatabaseService>(CreateDatabaseService);
-        confiService = module.get<ConfigService>(ConfigService);
+        sutCreateDatabaseService = module.get<CreateDatabaseService>(
+            CreateDatabaseService,
+        );
         dbManageService = module.get<DbManagerProtocol>(MySqlDbManagerService);
     });
 
@@ -55,8 +54,8 @@ describe('Service: CreateDatabaseService', () => {
         expect(dbConfig).toEqual({
             host: 'any_host',
             port: 'any_port',
-            user: 'any_user', 
-            password: 'any_pass'
+            user: 'any_user',
+            password: 'any_pass',
         });
     });
 
@@ -66,35 +65,42 @@ describe('Service: CreateDatabaseService', () => {
         expect(dbManageService.createConnection).toHaveBeenCalledWith({
             host: 'any_host',
             port: 'any_port',
-            user: 'any_user', 
-            password: 'any_pass'
+            user: 'any_user',
+            password: 'any_pass',
         });
     });
 
     it('should call DbManagerService.query with correct values', async () => {
         await sutCreateDatabaseService.create(mockCredentials);
-        expect(dbManageService.query).toHaveBeenCalledWith(`CREATE DATABASE IF NOT EXISTS \`${mockCredentials.db}\``);
+        expect(dbManageService.query).toHaveBeenCalledWith(
+            `CREATE DATABASE IF NOT EXISTS \`${mockCredentials.db}\``,
+        );
         expect(dbManageService.query).toHaveBeenCalledWith(
             `CREATE USER IF NOT EXISTS ?@'%' IDENTIFIED BY ?`,
-            [mockCredentials.dbUser, mockCredentials.dbPass]
+            [mockCredentials.dbUser, mockCredentials.dbPass],
         );
         expect(dbManageService.query).toHaveBeenCalledWith(
             `GRANT SELECT, INSERT, UPDATE, DELETE ON \`${mockCredentials.db}\`.* TO ?@'%'`,
-            [mockCredentials.dbUser]
+            [mockCredentials.dbUser],
         );
         expect(dbManageService.query).toHaveBeenCalledWith('FLUSH PRIVILEGES');
 
         expect(dbManageService.query).toHaveBeenCalledTimes(4);
     });
 
-     it('should call DbManagerService.query with correct values if some query fails and throws', async () => {
+    it('should call DbManagerService.query with correct values if some query fails and throws', async () => {
         jest.spyOn(dbManageService, 'query').mockImplementationOnce(() => {
-            throw new Error()
+            throw new Error();
         });
         const promise = sutCreateDatabaseService.create(mockCredentials);
         await expect(promise).rejects.toThrow();
-        expect(dbManageService.query).toHaveBeenCalledWith(`DROP DATABASE IF EXISTS \`${mockCredentials.db}\``);
-        expect(dbManageService.query).toHaveBeenCalledWith(`DROP USER IF EXISTS ?@'%'`, [mockCredentials.dbUser]);
+        expect(dbManageService.query).toHaveBeenCalledWith(
+            `DROP DATABASE IF EXISTS \`${mockCredentials.db}\``,
+        );
+        expect(dbManageService.query).toHaveBeenCalledWith(
+            `DROP USER IF EXISTS ?@'%'`,
+            [mockCredentials.dbUser],
+        );
         expect(dbManageService.query).toHaveBeenCalledTimes(3);
         expect(dbManageService.end).toHaveBeenCalledTimes(1);
     });

@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Job } from 'bull';
-import { OnQueueCompleted, OnQueueFailed, Process, Processor } from '@nestjs/bull';
+import {
+    OnQueueCompleted,
+    OnQueueFailed,
+    Process,
+    Processor,
+} from '@nestjs/bull';
 import { SeedRunnerService } from '@infra/db/companies/seeds/seed-runner.service.';
 import { TenantService } from '@/modules/application/tenant/tenant.service';
 import { GenerateDbCredentialsService } from '@infra/plugins/database/generate-db-credentials.service';
@@ -15,8 +20,7 @@ import { MailService } from '@/modules/infra/mail/mail.service';
 
 @Injectable()
 @Processor('create-tenant')
-export class  CreateTenantProcessor {
-
+export class CreateTenantProcessor {
     constructor(
         private readonly tenantService: TenantService,
         private readonly generateDbCredentialsService: GenerateDbCredentialsService,
@@ -28,27 +32,32 @@ export class  CreateTenantProcessor {
         private readonly userService: UserServiceLazy,
         private readonly generateUuidService: GenerateUuidService,
         private readonly adminRoleService: AddAdminRoleServiceLazy,
-        private readonly mailService: MailService
-    ){}
+        private readonly mailService: MailService,
+    ) {}
 
     @Process()
     async handleJob(job: Job) {
-        try {   
+        try {
             const company = await this.tenantService.findByUuid(job.data.uuid);
-            const credentials = this.generateDbCredentialsService.generate(company.name);
+            const credentials = this.generateDbCredentialsService.generate(
+                company.name,
+            );
             await this.createDatabaseService.create({
                 db: company.companyIdentifier,
-                ...credentials
+                ...credentials,
             });
             await this.secretsService.save(
-                company.companyIdentifier,    
+                company.companyIdentifier,
                 JSON.stringify({
-                    ...credentials
-                })
+                    ...credentials,
+                }),
             );
-            
-            const connection = await this.loadTenantConnectionService.load(company.companyIdentifier, 5);
-            
+
+            const connection = await this.loadTenantConnectionService.load(
+                company.companyIdentifier,
+                5,
+            );
+
             if (!connection) {
                 throw new Error('Connection it was not established!');
             }
@@ -63,12 +72,12 @@ export class  CreateTenantProcessor {
                 uuid,
                 name: company.partnerName,
                 email: company.email,
-                phone: company.phone
+                phone: company.phone,
             });
 
             const adminRoleService = this.adminRoleService.load(connection);
             await userService.addRole(user.uuid, adminRoleService);
-    
+
             await this.mailService.send({
                 to: company.email,
                 subject: 'Conta criada com sucesso!',
@@ -77,11 +86,11 @@ export class  CreateTenantProcessor {
                     name: company.name,
                     document: company.document,
                     partnerName: company.partnerName,
-                    email: company.email
-                }
+                    email: company.email,
+                },
             });
         } catch (error) {
-           throw error; 
+            throw error;
         }
     }
 
@@ -89,7 +98,7 @@ export class  CreateTenantProcessor {
     onCompleted(job: Job) {
         this.tenantService.markAsProcessed(job.data.uuid);
     }
-  
+
     @OnQueueFailed()
     onFailed(job: Job, error: Error) {
         this.tenantService.markAsRejected(job.data.uuid, error);

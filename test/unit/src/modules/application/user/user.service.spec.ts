@@ -6,8 +6,8 @@ import { UserService } from '@/modules/application/user/user.service';
 describe('Service: UserService', () => {
     let sutUserService: UserService;
     let userRepository: any;
-    let userMock: User
-    let permissionMock: any
+    let userMock: User;
+    let permissionMock: any;
 
     beforeEach(async () => {
         userMock = mockUserEntity();
@@ -17,10 +17,10 @@ describe('Service: UserService', () => {
                 {
                     provide: 'CONNECTION',
                     useValue: {
-                        getRepository: jest.fn()
-                    }
+                        getRepository: jest.fn(),
+                    },
                 },
-                UserService
+                UserService,
             ],
         }).compile();
 
@@ -34,7 +34,9 @@ describe('Service: UserService', () => {
     describe('findByEmail', () => {
         it('should call UserRepository.findOneBy with correct value', async () => {
             await sutUserService.findByEmail('any_email');
-            expect(userRepository.findOneBy).toBeCalledWith({ email: 'any_email' });
+            expect(userRepository.findOneBy).toBeCalledWith({
+                email: 'any_email',
+            });
             expect(userRepository.findOneBy).toBeCalledTimes(1);
         });
 
@@ -45,9 +47,11 @@ describe('Service: UserService', () => {
         });
 
         it('should throws if UserRepository.findOneBy throws', async () => {
-            jest.spyOn(userRepository, 'findOneBy').mockImplementationOnce(() => {
-                throw new Error();
-            });
+            jest.spyOn(userRepository, 'findOneBy').mockImplementationOnce(
+                () => {
+                    throw new Error();
+                },
+            );
             const promise = sutUserService.findByEmail('any_email');
             await expect(promise).rejects.toThrow();
         });
@@ -61,37 +65,38 @@ describe('Service: UserService', () => {
     describe('getRoles', () => {
         it('should call UserRepository.findOne with correct value', async () => {
             await sutUserService.getRoles('any_uuid');
-            expect(userRepository.findOne).toBeCalledWith(
-                {
-                    relations: ['role.permissions.module.grants', 'role.permissions.module.options'],
-                    where: {
-                        uuid: 'any_uuid'
-                    },
-                    select: {
+            expect(userRepository.findOne).toBeCalledWith({
+                relations: [
+                    'role.permissions.module.grants',
+                    'role.permissions.module.options',
+                ],
+                where: {
+                    uuid: 'any_uuid',
+                },
+                select: {
+                    id: true,
+                    uuid: true,
+                    name: true,
+                    role: {
                         id: true,
-                        uuid: true,
-                        name: true,
-                        role: {
+                        permissions: {
                             id: true,
-                            permissions: {
+                            module: {
                                 id: true,
-                                module: {
+                                name: true,
+                                grants: {
                                     id: true,
                                     name: true,
-                                    grants: {
-                                        id: true,
-                                        name: true
-                                    },
-                                    options: {
-                                        id: true,
-                                        name: true
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            );
+                                },
+                                options: {
+                                    id: true,
+                                    name: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            });
             expect(userRepository.findOne).toBeCalledTimes(1);
         });
 

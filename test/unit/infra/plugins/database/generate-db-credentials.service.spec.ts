@@ -6,13 +6,13 @@ describe('Service: GenerateDbCredentialsService', () => {
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            providers: [
-                GenerateDbCredentialsService
-            ]
-        })
-        .compile();
+            providers: [GenerateDbCredentialsService],
+        }).compile();
 
-        sutGenerateDbCredentialsService = module.get<GenerateDbCredentialsService>(GenerateDbCredentialsService);
+        sutGenerateDbCredentialsService =
+            module.get<GenerateDbCredentialsService>(
+                GenerateDbCredentialsService,
+            );
     });
 
     afterEach(() => {
@@ -27,14 +27,16 @@ describe('Service: GenerateDbCredentialsService', () => {
     });
 
     it('should returns dbUser with 11 chars when a password grether then 6 chars is provided', async () => {
-        const response = sutGenerateDbCredentialsService.generate('6_OrMoreChars');
+        const response =
+            sutGenerateDbCredentialsService.generate('6_OrMoreChars');
         expect(response.dbUser.length).toBe(11);
         expect(response.dbUser).toContain('6_OrMo');
         expect(/\d{4}/.test(response.dbUser)).toBe(true);
     });
 
     it('should returns dbPass with some value', async () => {
-        const response = sutGenerateDbCredentialsService.generate('6_OrMoreChars');
+        const response =
+            sutGenerateDbCredentialsService.generate('6_OrMoreChars');
         expect(response.dbPass).toBeTruthy();
     });
 

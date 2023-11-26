@@ -5,24 +5,22 @@ import { SessionManager } from './session.manager';
 @Module({
     providers: [
         {
-          provide: 'SESSION_OPTIONS',
-          useFactory: (configService: ConfigService) => {
-            const session = configService.get('session');
-            return {
-                ...session
-            }
-          },
-          inject: [ConfigService],
+            provide: 'SESSION_OPTIONS',
+            useFactory: (configService: ConfigService) => {
+                const session = configService.get('session');
+                return {
+                    ...session,
+                };
+            },
+            inject: [ConfigService],
         },
-        SessionManager
-      ]
+        SessionManager,
+    ],
 })
-export class SessionModule implements NestModule  {
+export class SessionModule implements NestModule {
     constructor(private readonly sessionManager: SessionManager) {}
 
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(
-            this.sessionManager.getSession()
-        ).forRoutes('*');
+        consumer.apply(this.sessionManager.getSession()).forRoutes('*');
     }
 }

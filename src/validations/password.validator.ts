@@ -1,4 +1,9 @@
-import { ValidatorConstraint, ValidatorConstraintInterface, registerDecorator, ValidationArguments } from 'class-validator';
+import {
+    ValidatorConstraint,
+    ValidatorConstraintInterface,
+    registerDecorator,
+    ValidationArguments,
+} from 'class-validator';
 
 interface StrongPassOptions {
     minLength?: number;
@@ -9,13 +14,12 @@ interface StrongPassOptions {
 }
 
 @ValidatorConstraint({ name: 'isStrongPass', async: false })
-export class IsStrongPassConstraint  implements ValidatorConstraintInterface {
+export class IsStrongPassConstraint implements ValidatorConstraintInterface {
     validate(password: string, args: ValidationArguments) {
-
         if (!password) {
             return false;
         }
-        
+
         const options: StrongPassOptions = args.constraints[0] || {};
 
         const {
@@ -42,14 +46,14 @@ export class IsStrongPassConstraint  implements ValidatorConstraintInterface {
 }
 
 export function IsStrongPass(message: string, options?: StrongPassOptions) {
-    return function (object: Object, propertyName: string) {
+    return function (object: unknown, propertyName: string) {
         registerDecorator({
             name: 'isStrongPass',
             target: object.constructor,
             propertyName: propertyName,
             constraints: [options],
             options: {
-                message
+                message,
             },
             validator: IsStrongPassConstraint,
         });

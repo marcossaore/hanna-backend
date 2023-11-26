@@ -1,0 +1,7 @@
+.docker
+.husky
+coverage
+data
+docs
+node_modules
+scripts

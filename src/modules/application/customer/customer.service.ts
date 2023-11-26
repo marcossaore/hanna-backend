@@ -6,18 +6,15 @@ import { Customer } from '@infra/db/companies/entities/customer/customer.entity'
 
 @Injectable()
 export class CustomerService {
+    private readonly customerRepository: Repository<Customer>;
 
-    private readonly customerRepository: Repository<Customer>
-
-    constructor(
-        @Inject('CONNECTION') private readonly connection: Connection
-    ) {
-        this.customerRepository = this.connection.getRepository(Customer)
+    constructor(@Inject('CONNECTION') private readonly connection: Connection) {
+        this.customerRepository = this.connection.getRepository(Customer);
     }
 
     async findByPhone(phone: string): Promise<Customer> {
         return this.customerRepository.findOneBy({ phone });
-    } 
+    }
 
     async findByEmail(email: string): Promise<Customer> {
         return this.customerRepository.findOneBy({ email });
@@ -27,14 +24,20 @@ export class CustomerService {
         return this.customerRepository.save(createCustomerDto);
     }
 
-    async findAll({ limit, page }: { limit: number, page: number }) : Promise<Customer[]> {
+    async findAll({
+        limit,
+        page,
+    }: {
+        limit: number;
+        page: number;
+    }): Promise<Customer[]> {
         const skip = (page - 1) * limit;
         return this.customerRepository.find({
             take: limit,
             skip,
             order: {
-                createdAt: 'DESC'
-            }
+                createdAt: 'DESC',
+            },
         });
     }
 

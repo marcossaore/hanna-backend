@@ -4,38 +4,54 @@ import { DefaultHttpException } from '@/shared/errors/default-http-exception';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
-
     private readonly convertActions = [
         { read: 'leitura' },
-        { create: 'criação' }, 
+        { create: 'criação' },
         { edit: 'edição' },
-        { delete: 'deleção' }
+        { delete: 'deleção' },
     ];
 
     constructor(private reflector: Reflector) {}
 
     canActivate(context: ExecutionContext): boolean {
-        const metadata = this.reflector.get<{ module: string; action: string }>('permission', context.getHandler());
-        
+        const metadata = this.reflector.get<{ module: string; action: string }>(
+            'permission',
+            context.getHandler(),
+        );
+
         if (!metadata) {
-            throw new DefaultHttpException(`Você não possui permissão de ${this.convertAction(metadata.action)} ao módulo: "${module}" `, 403);
+            throw new DefaultHttpException(
+                `Você não possui permissão de ${this.convertAction(
+                    metadata.action,
+                )} ao módulo: "${module}" `,
+                403,
+            );
         }
 
         const request = context.switchToHttp().getRequest();
 
-        const moduleIsAllowed = request.session.auth.user.permissions.filter(({ module }) => {
-            return metadata.module === module.name && 
-            module.grants.filter(({ name }) => name === metadata.action);
-        });
+        const moduleIsAllowed = request.session.auth.user.permissions.filter(
+            ({ module }) => {
+                return (
+                    metadata.module === module.name &&
+                    module.grants.filter(({ name }) => name === metadata.action)
+                );
+            },
+        );
 
         if (moduleIsAllowed.length === 0) {
-            throw new DefaultHttpException(`Você não possui permissão de ${this.convertAction(metadata.action)} ao módulo: "${module}" `, 403);
+            throw new DefaultHttpException(
+                `Você não possui permissão de ${this.convertAction(
+                    metadata.action,
+                )} ao módulo: "${module}" `,
+                403,
+            );
         }
 
         return true;
     }
 
-    private convertAction (action: string) {
+    private convertAction(action: string) {
         this.convertActions[action];
     }
 }

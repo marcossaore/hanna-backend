@@ -11,23 +11,29 @@ services:
                 DB_PASSWORD: $DB_PASSWORD
         environment:
             MYSQL_ROOT_PASSWORD: $DB_PASSWORD
+            DB_PASSWORD: $DB_PASSWORD
+            DB_USER: $DB_USER
         ports:
             - 3306:3306
         command: --init-file=/docker-entrypoint-initdb.d/init.sql
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "$DB_USER", "-p$DB_PASSWORD"]
+            interval: 10s
+            timeout: 5s
+            retries: 3
         networks:
             - hanna-web
         volumes:
             - ./data/mysql:/var/lib/mysql
-    phpmyadmin:
-        image: phpmyadmin/phpmyadmin
-        container_name: phpmyadmin
-        environment:
-            PMA_HOST: db
-            MYSQL_ROOT_PASSWORD: $DB_PASSWORD
-        ports:
-            - 8080:80
-        networks:
-            - hanna-web
+    # phpmyadmin:
+    #     image: phpmyadmin/phpmyadmin
+    #     environment:
+    #         PMA_HOST: db
+    #         MYSQL_ROOT_PASSWORD: $DB_PASSWORD
+    #     ports:
+    #         - 8080:80
+    #     networks:
+    #         - hanna-web
     memorydb:
         image: redis:6.2-alpine
         ports:
@@ -42,7 +48,6 @@ services:
         - 8025:8025
     localstack:
         image: localstack/localstack
-        container_name: localstack
         environment:
             SERVICES: secretsmanager
             DEBUG: 1

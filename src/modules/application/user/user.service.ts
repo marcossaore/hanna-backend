@@ -5,27 +5,24 @@ import { AddRole } from '../role/protocols/add-role';
 
 @Injectable()
 export class UserService {
+    private readonly userRepository: Repository<User>;
 
-    private readonly userRepository: Repository<User>
-
-    constructor(
-        @Inject('CONNECTION') private readonly connection: Connection
-    ) {
-        this.userRepository = this.connection.getRepository(User)
+    constructor(@Inject('CONNECTION') private readonly connection: Connection) {
+        this.userRepository = this.connection.getRepository(User);
     }
 
     async findByEmail(email: string): Promise<any> {
         return this.userRepository.findOneBy({
-            email
+            email,
         });
     }
 
-    async save (data: any) : Promise<User> {
+    async save(data: any): Promise<User> {
         const user = await this.userRepository.save(data);
         return user;
     }
 
-    async addRole (uuid: string, addRole: AddRole) : Promise<void> {
+    async addRole(uuid: string, addRole: AddRole): Promise<void> {
         const user = await this.userRepository.findOneBy({ uuid });
         const userWithRoles = await addRole.add(user);
         await this.userRepository.save(userWithRoles);
@@ -33,9 +30,12 @@ export class UserService {
 
     async getRoles(uuid: string): Promise<User> {
         const user = await this.userRepository.findOne({
-            relations: ['role.permissions.module.grants', 'role.permissions.module.options'],
+            relations: [
+                'role.permissions.module.grants',
+                'role.permissions.module.options',
+            ],
             where: {
-                uuid
+                uuid,
             },
             select: {
                 id: true,
@@ -50,16 +50,16 @@ export class UserService {
                             name: true,
                             grants: {
                                 id: true,
-                                name: true
+                                name: true,
                             },
                             options: {
                                 id: true,
-                                name: true
-                            }
-                        }
-                    }
-                }
-            }
+                                name: true,
+                            },
+                        },
+                    },
+                },
+            },
         });
         return user;
     }

@@ -10,8 +10,8 @@ import { ExampleCommandModule } from './example/example-command.module';
             isGlobal: true,
             load: [configuration],
         }),
-        CommandModule, 
-        ExampleCommandModule
-    ]
+        CommandModule,
+        ExampleCommandModule,
+    ],
 })
 export class InitCommandHandlerModule {}
