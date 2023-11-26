@@ -7,7 +7,7 @@ import { join } from "path";
 export class MigrationsCompanyService {
 
     private readonly dbConfig: { host: string, port: number, user: string, password: string, type: any }
-
+    
     constructor (private readonly configService: ConfigService) {
         this.dbConfig = this.configService.get('database');
     }
@@ -22,13 +22,14 @@ export class MigrationsCompanyService {
             password: this.dbConfig.password,
             database: databaseName,
             synchronize: false,
-            migrations: [join('dist/infra/db/companies/migrations/*{.ts,.js}')],
+            migrations: [join(process.cwd(), '/infra/db/companies/migrations/*{.ts,.js}')],
             migrationsRun: true
         });
 
         try {
             await connection.runMigrations();
         } catch (error) {
+            console.log('error ', error)
             throw error;
         } finally {
             await connection.close();

@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import configuration from '@/shared/config/configuration';
-import appMigrations from '@infra/db/app/app.migrations';
 import { TenantModule } from '@/modules/application/tenant/tenant.module';
+import configuration from '@/shared/config/configuration';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -16,8 +16,6 @@ import { TenantModule } from '@/modules/application/tenant/tenant.module';
 
             const { host, port, user, password, db, type } = configService.get('database');
 
-            console.log('host ', host)
-            console.log('port ', port)
             const dataSource = {
                 host,
                 port,
@@ -25,16 +23,26 @@ import { TenantModule } from '@/modules/application/tenant/tenant.module';
                 password,
                 database: db,
                 type,
-                entities: [__dirname + '/../../../../infra/db/app/entities/**/*.entity{.ts,.js}']
+                entities: [join(process.cwd(), '/infra/db/app/entities/**/*.entity{.ts,.js}')],
+                migrations: [join(process.cwd(), '/infra/db/app/migrations/*{.ts,.js}')],
             } as any;
 
-            if (configService.get('environment') === 'dev') {
+            const environment = configService.get('environment');
+
+            if (environment === 'dev') {
+                // dataSource.entities = [join(__dirname, '/infra/db/app/entities/**/*.entity{.ts,.js}')];
                 dataSource.synchronize = true;
                 dataSource.migrationsRun = false
             } else {
+                if (environment === 'test') {
+                    // dataSource.entities = [join(__dirname, '/infra/db/app/entities/**/*.entity{.ts,.js}')]
+                    // dataSource.migrations = [join(__dirname + '/infra/db/app/migrations/*{.ts,.js}')];
+                }
+                // }else {
+                //     dataSource.migrations = [join('dist/infra/db/app/migrations/*{.ts,.js}')];
+                // }
                 dataSource.synchronize = false;
                 dataSource.migrationsRun = true;
-                dataSource.migrations = appMigrations;
             }
             return dataSource;
         },

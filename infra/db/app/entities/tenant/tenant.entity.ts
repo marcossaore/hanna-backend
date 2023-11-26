@@ -2,7 +2,6 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { AddDateColumns } from '@infra/db/partials/add-date-columns';
 import { TenantStatus } from '@/shared/enums/tenant-status.enum';
 
-
 @Entity('tenant')
 export class Tenant extends AddDateColumns {
     @PrimaryGeneratedColumn()

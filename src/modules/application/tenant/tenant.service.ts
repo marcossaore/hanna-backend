@@ -9,41 +9,41 @@ import { Tenant } from '@infra/db/app/entities/tenant/tenant.entity';
 export class TenantService {
   constructor(
     @InjectRepository(Tenant)
-    private readonly companyRepository: Repository<Tenant>
+    private readonly tenantRepository: Repository<Tenant>
   ) {}
 
   async exists(document: string): Promise<boolean>{
-    const exists = await this.companyRepository.findOneBy({ document });
+    const exists = await this.tenantRepository.findOneBy({ document });
     return exists ? true : false;
   }
 
   async existsIdentifier (identifier: string): Promise<boolean> {
-    const exists = await this.companyRepository.findOneBy({ companyIdentifier: identifier });
+    const exists = await this.tenantRepository.findOneBy({ companyIdentifier: identifier });
     return exists ? true : false;
   }
 
   async create(createCompanyDto: CreateTenantToEntity): Promise<Tenant> {
-    return this.companyRepository.save(createCompanyDto);
+    return this.tenantRepository.save(createCompanyDto);
   }
 
   async findByUuid(uuid: string): Promise<Tenant> {
-    return this.companyRepository.findOne({ where: { uuid }});
+    return this.tenantRepository.findOne({ where: { uuid }});
   }
 
   async findByDocument(document: string): Promise<Tenant> {
-    return this.companyRepository.findOne({ where: { document }});
+    return this.tenantRepository.findOne({ where: { document }});
   }
 
   async markAsProcessed(uuid: string): Promise<void> {
-    const company = await this.companyRepository.findOne({ where: { uuid }});
+    const company = await this.tenantRepository.findOne({ where: { uuid }});
     company.status = TenantStatus.PROCESSED;
-    this.companyRepository.save(company);
+    this.tenantRepository.save(company);
   }
 
   async markAsRejected(uuid: string, error: Error): Promise<void> {
-    const company = await this.companyRepository.findOne({ where: { uuid }});
-    company.status = TenantStatus.REJECTED;
+    const company = await this.tenantRepository.findOne({ where: { uuid }});
+    company.status =  TenantStatus.REJECTED;
     company.error = error.stack;
-    this.companyRepository.save(company);
+    this.tenantRepository.save(company);
   }
 }

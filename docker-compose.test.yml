@@ -1,0 +1,87 @@
+version: '3'
+
+services:
+    app:
+        build: 
+            context: .
+            dockerfile: Dockerfile.test
+        volumes:
+            - .:/usr/src/app
+            - /usr/src/app/node_modules # 'hack' prevents node_modules/ in the container from being overridden
+        working_dir: /usr/src/app
+        command: npm run test:ci
+        environment:
+            PORT: 3001
+            ENVIRONMENT: test
+            DB_HOST: db
+            DB_PORT: 3306
+            DB_USER: hanna_test
+            DB_PASSWORD: test
+            DB_DATABASE: test
+            REDIS_HOST: memorydb
+            REDIS_PASS: r3dis
+            REDIS_PORT: 6379
+            REDIS_USER: default
+            SESSION_SECRET: s3ssi0n_s3cr3t
+            SESSION_PREFIX: hanna_sess_test
+            SESSION_SECURE: 'yes'
+            AWS_ACCESS_KEY_ID: localstack-access-key-id
+            AWS_SECRET_ACCESS_KEY: localstack-secret-access-key
+            AWS_DEFAULT_REGION: us-east-1
+            AWS_ENDPOINT: http://localstack:4566
+            AWS_VERSION: 3
+            MAIL_FROM: noreply@hanna-test.com
+            MAIL_USER: hanna@test.com
+            MAIL_HOST:  localhost
+            MAIL_PASSWORD: any_pass
+            MAIL_PORT: 1030
+            MAIL_TRANSPORT: smtp://${MAIL_USER}:${MAIL_PASSWORD}@${MAIL_HOST}
+        depends_on:
+            - db
+            - memorydb
+            - localstack
+        links:
+            - db
+        networks:
+            - hanna-test
+        ports:
+            - 3001:80
+    db:
+        image: custom_mysql_test
+        build: 
+            context: .docker/db
+            args:
+                DB_DATABASE: test
+                DB_USER: hanna_test
+                DB_PASSWORD: test
+        environment:
+            MYSQL_ROOT_PASSWORD: test
+        expose:
+            - 3306
+        command: --init-file=/docker-entrypoint-initdb.d/init.sql
+        networks:
+            - hanna-test
+    memorydb:
+        image: redis:6.2-alpine
+        expose:
+            - 6379
+        command: redis-server --save 20 1 --loglevel warning --requirepass r3dis
+        networks:
+            - hanna-test
+    localstack:
+        image: localstack/localstack
+        environment:
+            SERVICES: secretsmanager
+            DEBUG: 1
+            DATA_DIR: /tmp/localstack/data
+            AWS_ACCESS_KEY_ID: localstack-access-key-id
+            AWS_DEFAULT_REGION: us-east-1
+            AWS_SECRET_ACCESS_KEY: localstack-secret-access-key
+        expose:
+            - "127.0.0.1:4510-4530"
+            - "127.0.0.1:4566"
+            - "127.0.0.1:4571"
+        networks:
+            - hanna-test
+networks:
+    hanna-test:

@@ -11,8 +11,7 @@ export const load = ({ user, password, db, host, port, type, connectTimeout = 0 
             username: user,
             password: password,
             database: db,
-            entities: [join(__dirname, './**/*.entity{.ts,.js}')],
-            connectTimeout: connectTimeout ?  connectTimeout * 60000 : 10000
+            entities: [join(__dirname, './**/*.entity{.ts,.js}')]
         });
     } catch (error) {
         return null

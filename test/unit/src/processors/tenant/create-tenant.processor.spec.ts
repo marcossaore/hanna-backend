@@ -15,12 +15,14 @@ import { CreateTenantProcessor } from '@/processors/tenant/create-tenant.process
 import { SecretsService } from '@/modules/infra/secrets/secrets-service';
 import { MailService } from '@/modules/infra/mail/mail.service';
 import { LoadTenantConnectionService } from '@/modules/application/tenant-connection/load-tenant-connection.service';
+import { AddRole } from '@/modules/application/role/protocols/add-role';
 
 const mockJobData: any = { 
     data: { 
         uuid: 'any_uuid'
     }
 }
+
 describe('Processor: CreateTenant', () => {
     let tenantEntityMock : Tenant;
     let userEntityMock : User;
@@ -322,10 +324,10 @@ describe('Processor: CreateTenant', () => {
 
         it('should call UserService.addRole witth correct values', async () => {
             const userServiceLoaded = userService.load('any_connection' as any);
-            const addAdminRoleServiceLoaded = addAdminRoleService.load('any' as any);
+            const sypAddAdminRoleService = jest.spyOn(addAdminRoleService, 'load')
             await sutCreateTenantProcessor.handleJob(mockJobData);
             expect(userServiceLoaded.addRole).toHaveBeenCalledTimes(1);
-            expect(userServiceLoaded.addRole).toHaveBeenCalledWith(userEntityMock.uuid, addAdminRoleServiceLoaded);
+            expect(userServiceLoaded.addRole).toHaveBeenCalledWith(userEntityMock.uuid, sypAddAdminRoleService.mock.results[0].value);
         });
 
         it('should throws if UserService.addRole throws', async () => {
