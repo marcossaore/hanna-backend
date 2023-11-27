@@ -308,7 +308,7 @@ describe('AuthController', () => {
             });
         });
 
-        it('should return permissions on success ', async () => {
+        it('should return permissions on success', async () => {
             const data = mockLoginDto();
             const response = await sutAuthController.login(data, requestSpy);
             expect(response).toEqual({
@@ -352,4 +352,29 @@ describe('AuthController', () => {
             });
         });
     });
+
+    describe('logout ',  () => {
+
+        beforeEach( () => {
+            requestSpy.session = {
+                destroy: () => {
+    
+                }
+            }
+        });
+
+        it('should not call destroy when auth no exists', async () => {
+            const destroySpy = jest.spyOn(requestSpy.session, 'destroy');
+            await sutAuthController.logout(requestSpy);
+            expect(destroySpy).toHaveBeenCalledTimes(0)
+        });
+
+        it('should call destroy when auth is provided', async () => {
+            const destroySpy = jest.spyOn(requestSpy.session, 'destroy');
+            const data = mockLoginDto();
+            await sutAuthController.login(data, requestSpy);
+            await sutAuthController.logout(requestSpy);
+            expect(destroySpy).toHaveBeenCalledTimes(1)
+        });
+    })
 });
