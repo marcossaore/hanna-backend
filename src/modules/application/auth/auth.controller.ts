@@ -5,6 +5,7 @@ import { TenantService } from '@/modules/application/tenant/tenant.service';
 import { HashService } from '@infra/plugins/hash/hash.service';
 import { UserServiceLazy } from '@/modules/application/user/user.service.lazy';
 import { LoadTenantConnectionService } from '@/modules/application/tenant-connection/load-tenant-connection.service';
+import { appPrefix } from '../app/application.prefixes';
 
 type GrantType = {
     id: number;
@@ -30,7 +31,7 @@ type PermissionType = {
     permissions: ModuleType[];
 };
 
-@Controller('auth')
+@Controller(`${appPrefix}/auth`)
 export class AuthController {
     constructor(
         private readonly tenantService: TenantService,
