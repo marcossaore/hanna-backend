@@ -22,7 +22,7 @@ export class MigrationsCompanyService {
             password: this.dbConfig.password,
             database: databaseName,
             synchronize: false,
-            migrations: [join(process.cwd(), '/infra/db/companies/migrations/*{.ts,.js}')],
+            migrations: [join(__dirname + '../../../../infra/db/companies/migrations/*{.ts,.js}')],
             migrationsRun: true
         });
 

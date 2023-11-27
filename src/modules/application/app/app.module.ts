@@ -25,14 +25,14 @@ import { join } from 'path';
                     type,
                     entities: [
                         join(
-                            process.cwd(),
-                            '/infra/db/app/entities/**/*.entity{.ts,.js}',
+                            __dirname +
+                                '/../../../../infra/db/app/entities/**/*.entity{.ts,.js}',
                         ),
                     ],
                     migrations: [
                         join(
-                            process.cwd(),
-                            '/infra/db/app/migrations/*{.ts,.js}',
+                            __dirname +
+                                '/../../../../infra/db/app/migrations/*{.ts,.js}',
                         ),
                     ],
                 } as any;
@@ -40,17 +40,9 @@ import { join } from 'path';
                 const environment = configService.get('environment');
 
                 if (environment === 'dev') {
-                    // dataSource.entities = [join(__dirname, '/infra/db/app/entities/**/*.entity{.ts,.js}')];
                     dataSource.synchronize = true;
                     dataSource.migrationsRun = false;
                 } else {
-                    if (environment === 'test') {
-                        // dataSource.entities = [join(__dirname, '/infra/db/app/entities/**/*.entity{.ts,.js}')]
-                        // dataSource.migrations = [join(__dirname + '/infra/db/app/migrations/*{.ts,.js}')];
-                    }
-                    // }else {
-                    //     dataSource.migrations = [join('dist/infra/db/app/migrations/*{.ts,.js}')];
-                    // }
                     dataSource.synchronize = false;
                     dataSource.migrationsRun = true;
                 }
