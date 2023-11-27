@@ -25,15 +25,15 @@ services:
             - hanna-web
         volumes:
             - ./data/mysql:/var/lib/mysql
-    # phpmyadmin:
-    #     image: phpmyadmin/phpmyadmin
-    #     environment:
-    #         PMA_HOST: db
-    #         MYSQL_ROOT_PASSWORD: $DB_PASSWORD
-    #     ports:
-    #         - 8080:80
-    #     networks:
-    #         - hanna-web
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        environment:
+            PMA_HOST: db
+            MYSQL_ROOT_PASSWORD: $DB_PASSWORD
+        ports:
+            - 8080:80
+        networks:
+            - hanna-web
     memorydb:
         image: redis:6.2-alpine
         ports:
