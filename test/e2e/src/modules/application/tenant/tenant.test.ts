@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { getAllDatabases } from './helpers/connections';
+import { getAllDatabases } from '../../../../helpers/connections';
 import { AppModule } from '@/modules/application/app/app.module';
 import { faker } from '@faker-js/faker';
 import * as request from 'supertest';
