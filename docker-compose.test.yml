@@ -24,7 +24,7 @@ services:
             REDIS_USER: default
             SESSION_SECRET: s3ssi0n_s3cr3t
             SESSION_PREFIX: hanna_sess_test
-            SESSION_SECURE: 'yes'
+            SESSION_SECURE: 'no'
             AWS_ACCESS_KEY_ID: localstack-access-key-id
             AWS_SECRET_ACCESS_KEY: localstack-secret-access-key
             AWS_DEFAULT_REGION: us-east-1
