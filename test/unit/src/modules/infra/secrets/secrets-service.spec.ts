@@ -31,27 +31,31 @@ describe('Service: SecretsService', () => {
             expect(secretsManager.save).toBeCalledTimes(1);
             expect(secretsManager.save).toBeCalledWith('any_key', 'any_data');
         });
-    
+
         it('should throws if SecretsManager.save throws (get)', async () => {
             jest.spyOn(secretsManager, 'get').mockImplementationOnce(() => {
                 throw new Error();
             });
-            const promise = sutSecretsService.save('any_key', 'any_data')
+            const promise = sutSecretsService.save('any_key', 'any_data');
             await expect(promise).rejects.toThrow();
         });
-    
+
         it('should throws if SecretsManager.save throws (save)', async () => {
             jest.spyOn(secretsManager, 'save').mockImplementationOnce(() => {
                 throw new Error();
             });
-            const promise = sutSecretsService.save('any_key', 'any_data')
+            const promise = sutSecretsService.save('any_key', 'any_data');
             await expect(promise).rejects.toThrow();
         });
-    
+
         it('should throws if SecretsManager.get returns some value', async () => {
-            jest.spyOn(secretsManager, 'get').mockResolvedValueOnce({ key: 'value '});
-            const promise = sutSecretsService.save('any_key', 'any_data')
-            await expect(promise).rejects.toThrow('Secret informed already exists!');
+            jest.spyOn(secretsManager, 'get').mockResolvedValueOnce({
+                key: 'value ',
+            });
+            const promise = sutSecretsService.save('any_key', 'any_data');
+            await expect(promise).rejects.toThrow(
+                'Secret informed already exists!',
+            );
         });
     });
 
@@ -61,12 +65,12 @@ describe('Service: SecretsService', () => {
             expect(secretsManager.get).toBeCalledTimes(1);
             expect(secretsManager.get).toHaveBeenCalledWith('any_key');
         });
-    
+
         it('should throws if SecretsManager.get throws', async () => {
             jest.spyOn(secretsManager, 'get').mockImplementationOnce(() => {
                 throw new Error();
             });
-            const promise = sutSecretsService.save('any_key', 'any_data')
+            const promise = sutSecretsService.save('any_key', 'any_data');
             await expect(promise).rejects.toThrow();
         });
 
@@ -74,18 +78,15 @@ describe('Service: SecretsService', () => {
             const response = await sutSecretsService.get('any_key');
             expect(response).toBeNull();
         });
-    
+
         it('should return data if SecretsManager.get returns', async () => {
             jest.spyOn(secretsManager, 'get').mockResolvedValueOnce({
-                key: 'value'
-            })
+                key: 'value',
+            });
             const response = await sutSecretsService.get('any_key');
-            expect(response).toEqual(
-                {
-                    key: "value"
-                }
-            );
+            expect(response).toEqual({
+                key: 'value',
+            });
         });
     });
-
 });

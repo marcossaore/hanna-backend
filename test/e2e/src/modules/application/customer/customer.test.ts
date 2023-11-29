@@ -28,7 +28,7 @@ describe('CustomerController (e2e)', () => {
         await loginUser(agent, {
             email: tenantData.email,
             document: tenantData.companyDocument,
-            password: tenantData.password
+            password: tenantData.password,
         });
     });
 
@@ -39,7 +39,7 @@ describe('CustomerController (e2e)', () => {
         await app.close();
     });
 
-    describe('/api/customers', () => {        
+    describe('/api/customers', () => {
         it('Create (POST)', async () => {
             const data = {
                 name: faker.person.fullName(),
@@ -50,11 +50,10 @@ describe('CustomerController (e2e)', () => {
                     neighborhood: faker.location.secondaryAddress(),
                     city: faker.location.city(),
                     state: faker.location.state(),
-                    country: faker.location.country()
-                }
-            }
-            const response = await agent.post('/api/customers')
-            .send(data);
+                    country: faker.location.country(),
+                },
+            };
+            const response = await agent.post('/api/customers').send(data);
             expect(response.statusCode).toBe(201);
             const responseBody = response.body;
 
@@ -66,14 +65,18 @@ describe('CustomerController (e2e)', () => {
             expect(responseBody.phone).toEqual(data.phone);
             expect(responseBody.street).toEqual(data.address.street);
             expect(responseBody.number).toEqual(data.address.number);
-            expect(responseBody.neighborhood).toEqual(data.address.neighborhood);
+            expect(responseBody.neighborhood).toEqual(
+                data.address.neighborhood,
+            );
             expect(responseBody.city).toEqual(data.address.city);
             expect(responseBody.state).toEqual(data.address.state);
             expect(responseBody.country).toEqual(data.address.country);
         });
-    
+
         it('Get One (GET)', async () => {
-            const response = await agent.get(`/api/customers/${customerCreated.uuid}`);
+            const response = await agent.get(
+                `/api/customers/${customerCreated.uuid}`,
+            );
             expect(response.statusCode).toBe(200);
             const responseBody = response.body;
             expect(responseBody.uuid).toEqual(customerCreated.uuid);
@@ -93,9 +96,11 @@ describe('CustomerController (e2e)', () => {
 
         it('Update (PATCH)', async () => {
             const newName = faker.person.fullName();
-            const response = await agent.patch(`/api/customers/${customerCreated.uuid}`).send({
-                name: newName
-            })
+            const response = await agent
+                .patch(`/api/customers/${customerCreated.uuid}`)
+                .send({
+                    name: newName,
+                });
             expect(response.statusCode).toBe(200);
             const responseBody = response.body;
 
@@ -105,10 +110,12 @@ describe('CustomerController (e2e)', () => {
         });
 
         it('Remove (DELETE)', async () => {
-            const response = await agent.delete(`/api/customers/${customerCreated.uuid}`);
+            const response = await agent.delete(
+                `/api/customers/${customerCreated.uuid}`,
+            );
             expect(response.statusCode).toBe(200);
             const responseBody = response.body;
             expect(responseBody.deletedAt).toBeTruthy();
         });
-    })
+    });
 });
