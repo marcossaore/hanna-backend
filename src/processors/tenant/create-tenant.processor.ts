@@ -7,21 +7,24 @@ import {
     Processor,
 } from '@nestjs/bull';
 import { SeedRunnerService } from '@infra/db/companies/seeds/seed-runner.service.';
-import { TenantService } from '@/modules/application/tenant/tenant.service';
 import { GenerateDbCredentialsService } from '@infra/plugins/database/generate-db-credentials.service';
 import { CreateDatabaseService } from '@infra/plugins/database/create-database.service';
-import { SecretsService } from '@/modules/infra/secrets/secrets-service';
 import { MigrationsCompanyService } from '@infra/plugins/database/migrations-company.service';
-import { UserServiceLazy } from '@/modules/application/user/user.service.lazy';
-import { AddAdminRoleServiceLazy } from '@/modules/application/role/add-admin-role.service';
 import { GenerateUuidService } from '@infra/plugins/uuid/generate-uuid-service';
+import { TokenServiceAdapter } from '@infra/plugins/token/token-service.adapter';
+import { AddAdminRoleServiceLazy } from '@/modules/application/role/add-admin-role.service';
+import { TenantService } from '@/modules/application/tenant/tenant.service';
+import { UserServiceLazy } from '@/modules/application/user/user.service.lazy';
+import { SecretsService } from '@/modules/infra/secrets/secrets-service';
 import { LoadTenantConnectionService } from '@/modules/application/tenant-connection/load-tenant-connection.service';
 import { MailService } from '@/modules/infra/mail/mail.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 @Processor('create-tenant')
 export class CreateTenantProcessor {
     constructor(
+        private readonly configService: ConfigService,
         private readonly tenantService: TenantService,
         private readonly generateDbCredentialsService: GenerateDbCredentialsService,
         private readonly createDatabaseService: CreateDatabaseService,
@@ -33,6 +36,7 @@ export class CreateTenantProcessor {
         private readonly generateUuidService: GenerateUuidService,
         private readonly adminRoleService: AddAdminRoleServiceLazy,
         private readonly mailService: MailService,
+        private readonly tokenServiceAdapter: TokenServiceAdapter,
     ) {}
 
     @Process()
@@ -78,6 +82,14 @@ export class CreateTenantProcessor {
             const adminRoleService = this.adminRoleService.load(connection);
             await userService.addRole(user.uuid, adminRoleService);
 
+            const token = this.tokenServiceAdapter.sign({
+                companyId: company.uuid,
+                userId: uuid,
+                userName: company.partnerName,
+            });
+
+            const url = this.configService.get('app').getUrl;
+
             await this.mailService.send({
                 to: company.email,
                 subject: 'Conta criada com sucesso!',
@@ -87,6 +99,7 @@ export class CreateTenantProcessor {
                     document: company.document,
                     partnerName: company.partnerName,
                     email: company.email,
+                    link: `${url}/app/tenant/user/new-password?token=${token}`,
                 },
             });
         } catch (error) {

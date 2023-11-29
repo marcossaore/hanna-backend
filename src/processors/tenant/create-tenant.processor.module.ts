@@ -8,6 +8,7 @@ import { CreateDatabaseModule } from '@infra/plugins/database/create-database.mo
 import { MigrationsCompanyModule } from '@infra/plugins/database/migrations-company.module';
 import { GenerateDbCredentialsService } from '@infra/plugins/database/generate-db-credentials.service';
 import { GenerateUuidService } from '@infra/plugins/uuid/generate-uuid-service';
+import { TokenServiceAdapter } from '@infra/plugins/token/token-service.adapter';
 import { MailModule } from '@/modules/infra/mail/mail.module';
 import { SecretsModule } from '@/modules/infra/secrets/secrets.module';
 import { LoadTenantConnectionModule } from '@/modules/application/tenant-connection/tenant-load-connection.module';
@@ -34,6 +35,7 @@ import { CreateTenantProcessor } from './create-tenant.processor';
         UserServiceLazy,
         AddAdminRoleServiceLazy,
         CreateTenantProcessor,
+        TokenServiceAdapter,
     ],
     exports: [CreateTenantProcessor],
 })
