@@ -84,6 +84,7 @@ export class CreateTenantProcessor {
 
             const token = this.tokenServiceAdapter.sign({
                 companyId: company.uuid,
+                companyName: company.name,
                 userId: uuid,
                 userName: company.partnerName,
             });
@@ -99,7 +100,7 @@ export class CreateTenantProcessor {
                     document: company.document,
                     partnerName: company.partnerName,
                     email: company.email,
-                    link: `${url}/app/tenant/user/new-password?token=${token}`,
+                    link: `${url}/app/user/new-password?token=${token}`,
                 },
             });
         } catch (error) {

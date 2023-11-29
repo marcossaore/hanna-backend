@@ -427,6 +427,7 @@ describe('Processor: CreateTenant', () => {
             expect(tokenServiceAdapter.sign).toHaveBeenCalledTimes(1);
             expect(tokenServiceAdapter.sign).toHaveBeenCalledWith({
                 companyId: tenantEntityMock.uuid,
+                companyName: tenantEntityMock.name,
                 userId: 'any_uuid',
                 userName: tenantEntityMock.partnerName,
             });
@@ -468,7 +469,7 @@ describe('Processor: CreateTenant', () => {
                     document: tenantEntityMock.document,
                     partnerName: tenantEntityMock.partnerName,
                     email: tenantEntityMock.email,
-                    link: 'http://any_url/app/tenant/user/new-password?token=any_hash',
+                    link: 'http://any_url/app/user/new-password?token=any_hash',
                 },
             });
         });
