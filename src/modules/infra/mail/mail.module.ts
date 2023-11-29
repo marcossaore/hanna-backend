@@ -25,7 +25,7 @@ import { MailService } from './mail.service';
                         from: `"No Reply" <${smtp.from}`,
                     },
                     template: {
-                        dir: join(__dirname, 'templates'),
+                        dir: join(__dirname, '../../../templates'),
                         adapter: new HandlebarsAdapter(), // or new PugAdapter() or new EjsAdapter()
                         options: {
                             strict: true,
