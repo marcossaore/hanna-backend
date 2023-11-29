@@ -18,4 +18,8 @@ export class TokenServiceAdapter {
         });
         return token;
     }
+
+    verify(token: string) {
+        return jsonwebtoken.verify(token, this.options.secret);
+    }
 }
