@@ -1,20 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
 import { mockCompanyEntity } from '../../../mock/company.mock';
 import { mockUserEntity } from '../../../mock/user.mock';
 import { Tenant } from '@infra/db/app/entities/tenant/tenant.entity';
 import { User } from '@infra/db/companies/entities/user/user.entity';
 import { MigrationsCompanyService } from '@infra/plugins/database/migrations-company.service';
-import { AddAdminRoleServiceLazy } from '@/modules/application/role/add-admin-role.service';
-import { UserServiceLazy } from '@/modules/application/user/user.service.lazy';
 import { GenerateUuidService } from '@infra/plugins/uuid/generate-uuid-service';
 import { SeedRunnerService } from '@infra/db/companies/seeds/seed-runner.service.';
 import { CreateDatabaseService } from '@infra/plugins/database/create-database.service';
 import { GenerateDbCredentialsService } from '@infra/plugins/database/generate-db-credentials.service';
+import { TokenServiceAdapter } from '@infra/plugins/token/token-service.adapter';
+import { UserServiceLazy } from '@/modules/application/user/user.service.lazy';
 import { TenantService } from '@/modules/application/tenant/tenant.service';
-import { CreateTenantProcessor } from '@/processors/tenant/create-tenant.processor';
 import { SecretsService } from '@/modules/infra/secrets/secrets-service';
 import { MailService } from '@/modules/infra/mail/mail.service';
+import { AddAdminRoleServiceLazy } from '@/modules/application/role/add-admin-role.service';
 import { LoadTenantConnectionService } from '@/modules/application/tenant-connection/load-tenant-connection.service';
+import { CreateTenantProcessor } from '@/processors/tenant/create-tenant.processor';
 
 const mockJobData: any = {
     data: {
@@ -25,6 +27,7 @@ const mockJobData: any = {
 describe('Processor: CreateTenant', () => {
     let tenantEntityMock: Tenant;
     let userEntityMock: User;
+    let configService: ConfigService;
     let sutCreateTenantProcessor: CreateTenantProcessor;
     let tenantService: TenantService;
     let generateDbCredentialsService: GenerateDbCredentialsService;
@@ -37,6 +40,7 @@ describe('Processor: CreateTenant', () => {
     let migrationsCompanyService: MigrationsCompanyService;
     let userService: UserServiceLazy;
     let addAdminRoleService: AddAdminRoleServiceLazy;
+    let tokenServiceAdapter: TokenServiceAdapter;
 
     beforeEach(async () => {
         tenantEntityMock = mockCompanyEntity();
@@ -45,6 +49,14 @@ describe('Processor: CreateTenant', () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 CreateTenantProcessor,
+                {
+                    provide: ConfigService,
+                    useValue: {
+                        get: jest.fn().mockReturnValue({
+                            getUrl: 'http://any_url',
+                        }),
+                    },
+                },
                 {
                     provide: TenantService,
                     useValue: {
@@ -124,6 +136,12 @@ describe('Processor: CreateTenant', () => {
                     },
                 },
                 {
+                    provide: TokenServiceAdapter,
+                    useValue: {
+                        sign: jest.fn().mockReturnValue('any_hash'),
+                    },
+                },
+                {
                     provide: MailService,
                     useValue: {
                         send: jest.fn().mockResolvedValue(true),
@@ -132,6 +150,7 @@ describe('Processor: CreateTenant', () => {
             ],
         }).compile();
 
+        configService = module.get<ConfigService>(ConfigService);
         sutCreateTenantProcessor = module.get<CreateTenantProcessor>(
             CreateTenantProcessor,
         );
@@ -156,6 +175,8 @@ describe('Processor: CreateTenant', () => {
         addAdminRoleService = module.get<AddAdminRoleServiceLazy>(
             AddAdminRoleServiceLazy,
         );
+        tokenServiceAdapter =
+            module.get<TokenServiceAdapter>(TokenServiceAdapter);
         mailService = module.get<MailService>(MailService);
     });
 
@@ -337,7 +358,7 @@ describe('Processor: CreateTenant', () => {
             await expect(promise).rejects.toThrow();
         });
 
-        it('should call UserService.save witth correct values', async () => {
+        it('should call UserService.save with correct values', async () => {
             const userServiceLoaded = userService.load('any_connection' as any);
             await sutCreateTenantProcessor.handleJob(mockJobData);
             expect(userServiceLoaded.save).toHaveBeenCalledTimes(1);
@@ -401,6 +422,40 @@ describe('Processor: CreateTenant', () => {
             await expect(promise).rejects.toThrow();
         });
 
+        it('should call TokenServiceAdapter.sign with correct value', async () => {
+            await sutCreateTenantProcessor.handleJob(mockJobData);
+            expect(tokenServiceAdapter.sign).toHaveBeenCalledTimes(1);
+            expect(tokenServiceAdapter.sign).toHaveBeenCalledWith({
+                companyId: tenantEntityMock.uuid,
+                userId: 'any_uuid',
+                userName: tenantEntityMock.partnerName,
+            });
+        });
+
+        it('should throws if TokenServiceAdapter.run throws', async () => {
+            jest.spyOn(tokenServiceAdapter, 'sign').mockImplementationOnce(
+                () => {
+                    throw new Error();
+                },
+            );
+            const promise = sutCreateTenantProcessor.handleJob(mockJobData);
+            await expect(promise).rejects.toThrow();
+        });
+
+        it('should call ConfigService.get with correct value', async () => {
+            await sutCreateTenantProcessor.handleJob(mockJobData);
+            expect(configService.get).toHaveBeenCalledTimes(1);
+            expect(configService.get).toHaveBeenCalledWith('app');
+        });
+
+        it('should throws if ConfigService.get throws', async () => {
+            jest.spyOn(configService, 'get').mockImplementationOnce(() => {
+                throw new Error();
+            });
+            const promise = sutCreateTenantProcessor.handleJob(mockJobData);
+            await expect(promise).rejects.toThrow();
+        });
+
         it('should call MailService.send with correct values', async () => {
             await sutCreateTenantProcessor.handleJob(mockJobData);
             expect(mailService.send).toHaveBeenCalledTimes(1);
@@ -413,6 +468,7 @@ describe('Processor: CreateTenant', () => {
                     document: tenantEntityMock.document,
                     partnerName: tenantEntityMock.partnerName,
                     email: tenantEntityMock.email,
+                    link: 'http://any_url/app/tenant/user/new-password?token=any_hash',
                 },
             });
         });
