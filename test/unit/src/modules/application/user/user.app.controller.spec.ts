@@ -88,7 +88,7 @@ describe('Controller: UserAppController', () => {
             expect(responseSpy.render).toBeCalledWith('user-new-password', {
                 name: 'any_user_name',
                 companyName: 'any_company_name',
-                postUrl: 'http://any_url/api/auth/new-password',
+                postUrl: 'http://any_url/api/auth/new-password?token=any_token',
             });
             expect(responseSpy.render).toBeCalledTimes(1);
         });

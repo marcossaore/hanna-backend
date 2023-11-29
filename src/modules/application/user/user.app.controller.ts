@@ -21,7 +21,7 @@ export class UserAppController {
         return res.render('user-new-password', {
             name: userData.userName,
             companyName: userData.companyName,
-            postUrl: `${this.postUrl}/api/auth/new-password`,
+            postUrl: `${this.postUrl}/api/auth/new-password?token=${query.token}`,
         });
     }
 }
