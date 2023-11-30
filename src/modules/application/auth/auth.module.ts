@@ -6,6 +6,7 @@ import { HashService } from '@infra/plugins/hash/hash.service';
 import { UserServiceLazy } from '@/modules/application/user/user.service.lazy';
 import { AuthController } from './auth.controller';
 import { TenantService } from '@/modules/application/tenant/tenant.service';
+import { TokenServiceAdapter } from '@infra/plugins/token/token-service.adapter';
 
 @Module({
     imports: [
@@ -31,7 +32,12 @@ import { TenantService } from '@/modules/application/tenant/tenant.service';
         }),
         TypeOrmModule.forFeature([Tenant]),
     ],
-    providers: [TenantService, UserServiceLazy, HashService],
+    providers: [
+        TenantService,
+        UserServiceLazy,
+        HashService,
+        TokenServiceAdapter,
+    ],
     controllers: [AuthController],
 })
 export class AuthModule {}

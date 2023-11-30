@@ -63,4 +63,14 @@ export class UserService {
         });
         return user;
     }
+
+    async savePassword(uuid: string, hashedPassword: string): Promise<void> {
+        const user = await this.userRepository.findOne({
+            where: {
+                uuid,
+            },
+        });
+        user.password = hashedPassword;
+        await this.userRepository.save(user);
+    }
 }

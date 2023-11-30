@@ -1,4 +1,13 @@
-import { Controller, Post, Body, Req, HttpCode } from '@nestjs/common';
+import {
+    Controller,
+    Post,
+    Body,
+    Req,
+    HttpCode,
+    Query,
+    UseInterceptors,
+    ClassSerializerInterceptor,
+} from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { userUnauthorized } from '@/factories/errors';
 import { TenantService } from '@/modules/application/tenant/tenant.service';
@@ -6,6 +15,9 @@ import { HashService } from '@infra/plugins/hash/hash.service';
 import { UserServiceLazy } from '@/modules/application/user/user.service.lazy';
 import { LoadTenantConnectionService } from '@/modules/application/tenant-connection/load-tenant-connection.service';
 import { appPrefix } from '../app/application.prefixes';
+import { UserCreatePasswordDto } from './dto/user-create-password.dto';
+import { TokenServiceAdapter } from '@infra/plugins/token/token-service.adapter';
+import { InfoMessageInterceptor } from '@/adapters/interceptors/info-message-interceptor';
 
 type GrantType = {
     id: number;
@@ -35,9 +47,10 @@ type PermissionType = {
 export class AuthController {
     constructor(
         private readonly tenantService: TenantService,
-        private readonly loadTenantConnectionService: LoadTenantConnectionService,
         private readonly userService: UserServiceLazy,
         private readonly hashService: HashService,
+        private readonly loadTenantConnectionService: LoadTenantConnectionService,
+        private readonly tokenServiceAdapter: TokenServiceAdapter,
     ) {}
 
     @Post('/login')
@@ -113,5 +126,34 @@ export class AuthController {
         if (request.session.auth) {
             request.session.destroy();
         }
+    }
+
+    @UseInterceptors(
+        new InfoMessageInterceptor(
+            'Senha criada com sucesso, agora você pode acessar a plataforma Hanna!',
+        ),
+        ClassSerializerInterceptor,
+    )
+    @Post('/new-password')
+    @HttpCode(200)
+    async newPassword(
+        @Body() userCreatePasswordDto: UserCreatePasswordDto,
+        @Query() query,
+    ): Promise<void> {
+        const { companyId, userId } = this.tokenServiceAdapter.verify(
+            query.token,
+        );
+        const company = await this.tenantService.findByUuid(companyId);
+
+        const connection = await this.loadTenantConnectionService.load(
+            company.companyIdentifier,
+        );
+
+        const hashPassword = await this.hashService.hash(
+            userCreatePasswordDto.password,
+        );
+
+        const userService = this.userService.load(connection);
+        await userService.savePassword(userId, hashPassword);
     }
 }
