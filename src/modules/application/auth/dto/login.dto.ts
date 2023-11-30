@@ -34,9 +34,7 @@ export class LoginDto {
     })
     readonly email: string;
 
-    @IsStrongPass(
-        'A senha deve conter no mínimo 8 caracteres, com ao menos 1 letra maíuscula, 1 minúscula, 1 digit e 1 caracteres especial (*?!...)',
-    )
+    @IsStrongPass()
     @IsString({
         message: JSON.stringify({
             message: 'A senha deve ser "string"!',
