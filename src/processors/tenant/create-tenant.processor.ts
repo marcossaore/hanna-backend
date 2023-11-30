@@ -82,12 +82,17 @@ export class CreateTenantProcessor {
             const adminRoleService = this.adminRoleService.load(connection);
             await userService.addRole(user.uuid, adminRoleService);
 
-            const token = this.tokenServiceAdapter.sign({
-                companyId: company.uuid,
-                companyName: company.name,
-                userId: uuid,
-                userName: company.partnerName,
-            });
+            const expiresIn10Minutes = 10 * 60;
+
+            const token = this.tokenServiceAdapter.sign(
+                {
+                    companyId: company.uuid,
+                    companyName: company.name,
+                    userId: uuid,
+                    userName: company.partnerName,
+                },
+                expiresIn10Minutes,
+            );
 
             const url = this.configService.get('app').getUrl;
 

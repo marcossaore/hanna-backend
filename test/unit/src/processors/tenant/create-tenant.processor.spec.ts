@@ -423,14 +423,18 @@ describe('Processor: CreateTenant', () => {
         });
 
         it('should call TokenServiceAdapter.sign with correct value', async () => {
+            const expiresIn10Minutes = 10 * 60;
             await sutCreateTenantProcessor.handleJob(mockJobData);
             expect(tokenServiceAdapter.sign).toHaveBeenCalledTimes(1);
-            expect(tokenServiceAdapter.sign).toHaveBeenCalledWith({
-                companyId: tenantEntityMock.uuid,
-                companyName: tenantEntityMock.name,
-                userId: 'any_uuid',
-                userName: tenantEntityMock.partnerName,
-            });
+            expect(tokenServiceAdapter.sign).toHaveBeenCalledWith(
+                {
+                    companyId: tenantEntityMock.uuid,
+                    companyName: tenantEntityMock.name,
+                    userId: 'any_uuid',
+                    userName: tenantEntityMock.partnerName,
+                },
+                expiresIn10Minutes,
+            );
         });
 
         it('should throws if TokenServiceAdapter.run throws', async () => {

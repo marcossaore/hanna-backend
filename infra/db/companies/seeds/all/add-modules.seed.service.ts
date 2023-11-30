@@ -1,12 +1,11 @@
-import { Injectable } from "@nestjs/common";
-import { Connection } from "typeorm";
-import { Module } from "../../entities/module/module.entity";
-import { Grant } from "../../entities/module/grant.entity";
+import { Injectable } from '@nestjs/common';
+import { Connection } from 'typeorm';
+import { Module } from '../../entities/module/module.entity';
+import { Grant } from '../../entities/module/grant.entity';
 
 @Injectable()
 export class AddModulesSeedService implements SeedProtocol<Connection> {
     async seed(connection: Connection) {
-
         const grantRepository = connection.getRepository(Grant);
         const moduleRepository = connection.getRepository(Module);
 
@@ -14,8 +13,8 @@ export class AddModulesSeedService implements SeedProtocol<Connection> {
 
         const salesModule = await moduleRepository.findOne({
             where: {
-                name: 'sales'
-            }
+                name: 'sales',
+            },
         });
 
         if (!salesModule) {
@@ -24,19 +23,19 @@ export class AddModulesSeedService implements SeedProtocol<Connection> {
                 grants: allGrants,
                 options: [
                     {
-                        name: 'pinPass'
+                        name: 'pinPass',
                     },
                     {
-                        name: 'accountMode'
-                    }
-                ]
+                        name: 'accountMode',
+                    },
+                ],
             });
         }
 
         let bathGroomingModule = await moduleRepository.findOne({
             where: {
-                name: 'bathGrooming'
-            }
+                name: 'bathGrooming',
+            },
         });
 
         if (!bathGroomingModule) {
@@ -49,12 +48,12 @@ export class AddModulesSeedService implements SeedProtocol<Connection> {
                 name: 'schedule',
                 grants: allGrants,
             });
-    
+
             await moduleRepository.save({
                 name: 'services',
                 grants: allGrants,
             });
-    
+
             await moduleRepository.save({
                 name: 'plans',
                 grants: allGrants,
@@ -63,20 +62,21 @@ export class AddModulesSeedService implements SeedProtocol<Connection> {
 
         const petsModule = await moduleRepository.findOne({
             where: {
-                name: 'pets'
-            }
+                name: 'pets',
+            },
         });
 
         if (!petsModule) {
             await moduleRepository.save({
-                name: 'pets'
+                name: 'pets',
+                grants: allGrants,
             });
         }
 
         const customersModule = await moduleRepository.findOne({
             where: {
-                name: 'customers'
-            }
+                name: 'customers',
+            },
         });
 
         if (!customersModule) {
@@ -85,13 +85,13 @@ export class AddModulesSeedService implements SeedProtocol<Connection> {
                 grants: allGrants,
                 options: [
                     {
-                        name: 'bill'
+                        name: 'bill',
                     },
                     {
-                        name: 'bindPlan'
-                    }
-                ]
+                        name: 'bindPlan',
+                    },
+                ],
             });
         }
-  }
+    }
 }
