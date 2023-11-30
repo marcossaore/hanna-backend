@@ -31,7 +31,7 @@ describe('Dto:  LoginDto', () => {
             '{"message":"A senha deve ser \\"string\\"!","field":"password"}',
         );
         expect(errors[2].constraints.isStrongPass).toEqual(
-            'A senha deve conter no mínimo 8 caracteres, com ao menos 1 letra maíuscula, 1 minúscula, 1 digit e 1 caracteres especial (*?!...)',
+            '{"message":"A senha deve conter no mínimo 8 caracteres, com ao menos 1 letra maíuscula, 1 minúscula, 1 dígito e 1 caracter especial (*?!...)","field":"password"}',
         );
         expect(errors.length).toEqual(3);
     });
@@ -51,7 +51,7 @@ describe('Dto:  LoginDto', () => {
         const validation = plainToInstance(LoginDto, data);
         const errors = await validate(validation);
         expect(errors[0].constraints.isStrongPass).toEqual(
-            'A senha deve conter no mínimo 8 caracteres, com ao menos 1 letra maíuscula, 1 minúscula, 1 digit e 1 caracteres especial (*?!...)',
+            '{"message":"A senha deve conter no mínimo 8 caracteres, com ao menos 1 letra maíuscula, 1 minúscula, 1 dígito e 1 caracter especial (*?!...)","field":"password"}',
         );
         expect(errors.length).toEqual(1);
     });
@@ -61,7 +61,7 @@ describe('Dto:  LoginDto', () => {
         const validation = plainToInstance(LoginDto, data);
         const errors = await validate(validation);
         expect(errors[0].constraints.isStrongPass).toEqual(
-            'A senha deve conter no mínimo 8 caracteres, com ao menos 1 letra maíuscula, 1 minúscula, 1 digit e 1 caracteres especial (*?!...)',
+            '{"message":"A senha deve conter no mínimo 8 caracteres, com ao menos 1 letra maíuscula, 1 minúscula, 1 dígito e 1 caracter especial (*?!...)","field":"password"}',
         );
         expect(errors.length).toEqual(1);
     });
@@ -71,7 +71,7 @@ describe('Dto:  LoginDto', () => {
         const validation = plainToInstance(LoginDto, data);
         const errors = await validate(validation);
         expect(errors[0].constraints.isStrongPass).toEqual(
-            'A senha deve conter no mínimo 8 caracteres, com ao menos 1 letra maíuscula, 1 minúscula, 1 digit e 1 caracteres especial (*?!...)',
+            '{"message":"A senha deve conter no mínimo 8 caracteres, com ao menos 1 letra maíuscula, 1 minúscula, 1 dígito e 1 caracter especial (*?!...)","field":"password"}',
         );
         expect(errors.length).toEqual(1);
     });

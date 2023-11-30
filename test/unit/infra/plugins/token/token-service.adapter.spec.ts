@@ -38,9 +38,12 @@ describe('Service: TokenServiceAdapter', () => {
 
         it('should call jsonwebtoken.sign with correct values includes expiresIn provided', async () => {
             const expiresIn5Minutes = 5 * 60;
-            sutTokenServiceAdapter.sign({
-                key: 'value',
-            }, expiresIn5Minutes);
+            sutTokenServiceAdapter.sign(
+                {
+                    key: 'value',
+                },
+                expiresIn5Minutes,
+            );
             expect(jsonwebtoken.sign).toBeCalledWith(
                 {
                     key: 'value',
