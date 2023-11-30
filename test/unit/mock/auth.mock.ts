@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { LoginDto } from '@/modules/application/auth/dto/login.dto';
-import { NewPasswordDto } from '@/modules/application/auth/dto/new-password.dto';
+import { UserCreatePasswordDto } from '@/modules/application/auth/dto/user-create-password.dto';
 
 export const mockLoginDto = ({
     document = null,
@@ -12,10 +12,10 @@ export const mockLoginDto = ({
     email: email || faker.internet.email(),
 });
 
-export const mockNewPasswordDto = ({
+export const mockUserCreatePasswordDto = ({
     password = null,
     confirmPassword = null,
-} = {}): NewPasswordDto => ({
+} = {}): UserCreatePasswordDto => ({
     password: password || 'S0me_pass!',
     confirmPassword: confirmPassword || 'S0me_pass!',
 });
