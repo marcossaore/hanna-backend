@@ -171,7 +171,24 @@ describe('AuthController (e2e)', () => {
             {
                 module: {
                     name: 'pets',
-                    grants: [],
+                    grants: [
+                        {
+                            id: 1,
+                            name: 'read',
+                        },
+                        {
+                            id: 2,
+                            name: 'create',
+                        },
+                        {
+                            id: 3,
+                            name: 'edit',
+                        },
+                        {
+                            id: 4,
+                            name: 'delete',
+                        },
+                    ],
                     options: [],
                 },
             },
