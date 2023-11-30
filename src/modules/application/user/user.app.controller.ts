@@ -4,7 +4,7 @@ import { Response } from 'express';
 import { noApiPrefix } from '../app/application.prefixes';
 import { TokenServiceAdapter } from '@infra/plugins/token/token-service.adapter';
 
-@Controller(`${noApiPrefix}user`)
+@Controller(`${noApiPrefix}/user`)
 export class UserAppController {
     private postUrl: string;
 
