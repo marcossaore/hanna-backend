@@ -1,7 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { mockUserEntity, mockUserPermission } from '../../../../mock/user.mock';
 import { mockCompanyEntity } from '../../../../mock/company.mock';
-import { mockLoginDto } from '../../../../mock/auth.mock';
+import {
+    mockLoginDto,
+    mockUserCreatePasswordDto,
+} from '../../../../mock/auth.mock';
 import { Tenant } from '@infra/db/app/entities/tenant/tenant.entity';
 import { User } from '@infra/db/companies/entities/user/user.entity';
 import { HashService } from '@infra/plugins/hash/hash.service';
@@ -9,6 +12,7 @@ import { LoadTenantConnectionService } from '@/modules/application/tenant-connec
 import { TenantService } from '@/modules/application/tenant/tenant.service';
 import { UserServiceLazy } from '@/modules/application/user/user.service.lazy';
 import { AuthController } from '@/modules/application/auth/auth.controller';
+import { TokenServiceAdapter } from '@infra/plugins/token/token-service.adapter';
 
 const requestSpy: any = {
     session: {},
@@ -23,6 +27,7 @@ describe('AuthController', () => {
     let loadTenantConnectionService: LoadTenantConnectionService;
     let userServiceLazy: UserServiceLazy;
     let hashService: HashService;
+    let tokenServiceAdapter: TokenServiceAdapter;
 
     beforeEach(async () => {
         entityTenantMock = mockCompanyEntity();
@@ -36,6 +41,11 @@ describe('AuthController', () => {
                     provide: TenantService,
                     useValue: {
                         findByDocument: jest
+                            .fn()
+                            .mockResolvedValue(
+                                Promise.resolve(entityTenantMock),
+                            ),
+                        findByUuid: jest
                             .fn()
                             .mockResolvedValue(
                                 Promise.resolve(entityTenantMock),
@@ -64,6 +74,7 @@ describe('AuthController', () => {
                                     },
                                 }),
                             ),
+                            savePassword: jest.fn(),
                         }),
                     },
                 },
@@ -73,6 +84,18 @@ describe('AuthController', () => {
                         verify: jest
                             .fn()
                             .mockResolvedValue(Promise.resolve(true)),
+                        hash: jest
+                            .fn()
+                            .mockResolvedValue(Promise.resolve('any_hash')),
+                    },
+                },
+                {
+                    provide: TokenServiceAdapter,
+                    useValue: {
+                        verify: jest.fn().mockReturnValue({
+                            companyId: 'any_company_id',
+                            userId: 'any_user_id',
+                        }),
                     },
                 },
             ],
@@ -85,6 +108,8 @@ describe('AuthController', () => {
         );
         userServiceLazy = module.get<UserServiceLazy>(UserServiceLazy);
         hashService = module.get<HashService>(HashService);
+        tokenServiceAdapter =
+            module.get<TokenServiceAdapter>(TokenServiceAdapter);
     });
 
     afterEach(() => {
@@ -372,6 +397,132 @@ describe('AuthController', () => {
             await sutAuthController.login(data, requestSpy);
             await sutAuthController.logout(requestSpy);
             expect(destroySpy).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('newPassword', () => {
+        const querySpy = {
+            token: 'any_token',
+        };
+
+        it('should call TokenServiceAdapter.verify with correct token', async () => {
+            const data = mockUserCreatePasswordDto();
+            await sutAuthController.newPassword(data, querySpy as any);
+            expect(tokenServiceAdapter.verify).toHaveBeenCalledWith(
+                querySpy.token,
+            );
+            expect(tokenServiceAdapter.verify).toHaveBeenCalledTimes(1);
+        });
+
+        it('should throws if TokenServiceAdapter.verify throws', async () => {
+            const data = mockUserCreatePasswordDto();
+            jest.spyOn(tokenServiceAdapter, 'verify').mockImplementationOnce(
+                () => {
+                    throw new Error();
+                },
+            );
+            const promise = sutAuthController.newPassword(data, querySpy);
+            await expect(promise).rejects.toThrow();
+        });
+
+        it('should call TenantService.findByUuid with correct company id', async () => {
+            const data = mockUserCreatePasswordDto();
+            await sutAuthController.newPassword(data, querySpy);
+            expect(tenantService.findByUuid).toHaveBeenCalledWith(
+                'any_company_id',
+            );
+            expect(tenantService.findByUuid).toHaveBeenCalledTimes(1);
+        });
+
+        it('should throws if TenantService.findByUuid throws', async () => {
+            const data = mockUserCreatePasswordDto();
+            jest.spyOn(tenantService, 'findByUuid').mockImplementationOnce(
+                () => {
+                    throw new Error();
+                },
+            );
+            const promise = sutAuthController.newPassword(data, querySpy);
+            await expect(promise).rejects.toThrow(new Error());
+        });
+
+        it('should call LoadTenantConnectionService.load with correct document', async () => {
+            const data = mockUserCreatePasswordDto();
+            await sutAuthController.newPassword(data, querySpy);
+            expect(loadTenantConnectionService.load).toHaveBeenCalledWith(
+                entityTenantMock.companyIdentifier,
+            );
+            expect(loadTenantConnectionService.load).toHaveBeenCalledTimes(1);
+        });
+
+        it('should throws if LoadTenantConnectionService.load throws', async () => {
+            const data = mockUserCreatePasswordDto();
+            jest.spyOn(
+                loadTenantConnectionService,
+                'load',
+            ).mockImplementationOnce(() => {
+                throw new Error();
+            });
+            const promise = sutAuthController.newPassword(data, querySpy);
+            await expect(promise).rejects.toThrow(new Error());
+        });
+
+        it('should call HashService.hash with correct values', async () => {
+            const data = mockUserCreatePasswordDto();
+            await sutAuthController.newPassword(data, querySpy);
+            expect(hashService.hash).toHaveBeenCalledWith(data.password);
+            expect(hashService.hash).toHaveBeenCalledTimes(1);
+        });
+
+        it('should throws if HashService.hash throws', async () => {
+            const data = mockUserCreatePasswordDto();
+            jest.spyOn(hashService, 'hash').mockImplementationOnce(() => {
+                throw new Error();
+            });
+            const promise = sutAuthController.newPassword(data, querySpy);
+            await expect(promise).rejects.toThrow(new Error());
+        });
+
+        it('should call UserServiceLazy.load with correct connection', async () => {
+            const data = mockUserCreatePasswordDto();
+            await sutAuthController.newPassword(data, querySpy);
+            expect(userServiceLazy.load).toHaveBeenCalledWith(
+                loadTenantConnectionService.load(
+                    entityTenantMock.companyIdentifier,
+                ),
+            );
+            expect(userServiceLazy.load).toHaveBeenCalledTimes(1);
+        });
+
+        it('should throws if UserServiceLazy.load throws', async () => {
+            const data = mockUserCreatePasswordDto();
+            jest.spyOn(userServiceLazy, 'load').mockImplementationOnce(() => {
+                throw new Error();
+            });
+            const promise = sutAuthController.newPassword(data, querySpy);
+            await expect(promise).rejects.toThrow(new Error());
+        });
+
+        it('should call UserService.savePassword with correct values', async () => {
+            const data = mockUserCreatePasswordDto();
+            const userService = userServiceLazy.load('any_connection' as any);
+            await sutAuthController.newPassword(data, querySpy);
+            expect(userService.savePassword).toHaveBeenCalledWith(
+                'any_user_id',
+                'any_hash',
+            );
+            expect(userService.savePassword).toHaveBeenCalledTimes(1);
+        });
+
+        it('should throws if UserService.savePassword throws', async () => {
+            const data = mockUserCreatePasswordDto();
+            const userService = userServiceLazy.load('any_connection' as any);
+            jest.spyOn(userService, 'savePassword').mockImplementationOnce(
+                () => {
+                    throw new Error();
+                },
+            );
+            const promise = sutAuthController.newPassword(data, querySpy);
+            await expect(promise).rejects.toThrow(new Error());
         });
     });
 });
