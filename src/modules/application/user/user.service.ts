@@ -17,7 +17,7 @@ export class UserService {
         });
     }
 
-    async save(data: any): Promise<User> {
+    async save(data: Partial<User>): Promise<User> {
         const user = await this.userRepository.save(data);
         return user;
     }
