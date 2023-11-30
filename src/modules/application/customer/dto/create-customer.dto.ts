@@ -1,63 +1,62 @@
-import { Type } from 'class-transformer';
+import { Type } from 'class-transformer'
 import {
-    IsEmail,
-    IsNotEmpty,
-    IsOptional,
-    IsString,
-    ValidateNested,
-} from 'class-validator';
-import { IsPhone } from '@/validations/phone.validator';
-import { CreateAddressDto } from '@/modules/application/address/dto/create-address.dto';
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  ValidateNested
+} from 'class-validator'
+import { IsPhone } from '@/validations/phone.validator'
+import { CreateAddressDto } from '@/modules/application/address/dto/create-address.dto'
 
 export class CreateCustomerDto {
-    @IsString({
-        message: JSON.stringify({
-            message: 'O nome do cliente deve ser "string"!',
-            field: 'name',
-        }),
+  @IsString({
+    message: JSON.stringify({
+      message: 'O nome do cliente deve ser "string"!',
+      field: 'name'
     })
-    @IsNotEmpty({
-        message: JSON.stringify({
-            message: 'O nome do cliente deve ser informado!',
-            field: 'name',
-        }),
+  })
+  @IsNotEmpty({
+    message: JSON.stringify({
+      message: 'O nome do cliente deve ser informado!',
+      field: 'name'
     })
-    readonly name: string;
+  })
+  readonly name: string
 
-    @IsPhone({
-        message: JSON.stringify({
-            message:
-                'O telefone do cliente deve ser informado! Ex: 31999999999',
-            field: 'phone',
-        }),
+  @IsPhone({
+    message: JSON.stringify({
+      message: 'O telefone do cliente deve ser informado! Ex: 31999999999',
+      field: 'phone'
     })
-    readonly phone: string;
+  })
+  readonly phone: string
 
-    @IsEmail(
-        {},
-        {
-            message: JSON.stringify({
-                message: 'O email do cliente não é válido!',
-                field: 'email',
-            }),
-        },
-    )
-    @IsString({
-        message: JSON.stringify({
-            message: 'O email do cliente deve ser "string"!',
-            field: 'email',
-        }),
+  @IsEmail(
+    {},
+    {
+      message: JSON.stringify({
+        message: 'O email do cliente não é válido!',
+        field: 'email'
+      })
+    }
+  )
+  @IsString({
+    message: JSON.stringify({
+      message: 'O email do cliente deve ser "string"!',
+      field: 'email'
     })
-    @IsOptional()
-    readonly email: string;
+  })
+  @IsOptional()
+  readonly email: string
 
-    @ValidateNested()
-    @Type(() => CreateAddressDto)
-    @IsNotEmpty({
-        message: JSON.stringify({
-            message: 'O endereço do cliente deve ser informado!',
-            field: 'address',
-        }),
+  @ValidateNested()
+  @Type(() => CreateAddressDto)
+  @IsNotEmpty({
+    message: JSON.stringify({
+      message: 'O endereço do cliente deve ser informado!',
+      field: 'address'
     })
-    address: CreateAddressDto;
+  })
+  address: CreateAddressDto
 }

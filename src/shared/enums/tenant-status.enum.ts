@@ -1,5 +1,5 @@
 export enum TenantStatus {
-    PENDING = 'pending',
-    PROCESSED = 'processed',
-    REJECTED = 'rejected',
+  PENDING = 'pending',
+  PROCESSED = 'processed',
+  REJECTED = 'rejected'
 }

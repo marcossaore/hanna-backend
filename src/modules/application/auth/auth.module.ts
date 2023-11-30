@@ -1,43 +1,35 @@
-import { Module } from '@nestjs/common';
-import { Tenant } from '@infra/db/app/entities/tenant/tenant.entity';
-import { ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { HashService } from '@infra/plugins/hash/hash.service';
-import { UserServiceLazy } from '@/modules/application/user/user.service.lazy';
-import { AuthController } from './auth.controller';
-import { TenantService } from '@/modules/application/tenant/tenant.service';
-import { TokenServiceAdapter } from '@infra/plugins/token/token-service.adapter';
+import { Module } from '@nestjs/common'
+import { Tenant } from '@infra/db/app/entities/tenant/tenant.entity'
+import { ConfigService } from '@nestjs/config'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { HashService } from '@infra/plugins/hash/hash.service'
+import { UserServiceLazy } from '@/modules/application/user/user.service.lazy'
+import { AuthController } from './auth.controller'
+import { TenantService } from '@/modules/application/tenant/tenant.service'
+import { TokenServiceAdapter } from '@infra/plugins/token/token-service.adapter'
 
 @Module({
-    imports: [
-        TypeOrmModule.forRootAsync({
-            useFactory: (configService: ConfigService) => {
-                const { host, port, user, password, db, type } =
-                    configService.get('database');
-                const dataSource = {
-                    host,
-                    port,
-                    username: user,
-                    password,
-                    database: db,
-                    type,
-                    entities: [
-                        __dirname +
-                            '/../../db/app/entities/**/*.entity{.ts,.js}',
-                    ],
-                } as any;
-                return dataSource;
-            },
-            inject: [ConfigService],
-        }),
-        TypeOrmModule.forFeature([Tenant]),
-    ],
-    providers: [
-        TenantService,
-        UserServiceLazy,
-        HashService,
-        TokenServiceAdapter,
-    ],
-    controllers: [AuthController],
+  imports: [
+    TypeOrmModule.forRootAsync({
+      useFactory: (configService: ConfigService) => {
+        const { host, port, user, password, db, type } =
+          configService.get('database')
+        const dataSource = {
+          host,
+          port,
+          username: user,
+          password,
+          database: db,
+          type,
+          entities: [__dirname + '/../../db/app/entities/**/*.entity{.ts,.js}']
+        } as any
+        return dataSource
+      },
+      inject: [ConfigService]
+    }),
+    TypeOrmModule.forFeature([Tenant])
+  ],
+  providers: [TenantService, UserServiceLazy, HashService, TokenServiceAdapter],
+  controllers: [AuthController]
 })
 export class AuthModule {}
