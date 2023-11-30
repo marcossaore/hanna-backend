@@ -3,10 +3,7 @@ import { IsStrongPass } from '@/validations/password.validator';
 import { IsEqual } from '@/validations/IsEqual.validator';
 
 export class UserCreatePasswordDto {
-    // improve this method
-    @IsStrongPass(
-        'A senha deve conter no mínimo 8 caracteres, com ao menos 1 letra maíuscula, 1 minúscula, 1 digit e 1 caracteres especial (*?!...)',
-    )
+    @IsStrongPass()
     @IsString({
         message: JSON.stringify({
             message: 'A senha deve ser "string"!',
@@ -15,7 +12,7 @@ export class UserCreatePasswordDto {
     })
     @IsNotEmpty({
         message: JSON.stringify({
-            message: 'A senha deve ser informado!',
+            message: 'A senha deve ser informada!',
             field: 'password',
         }),
     })
