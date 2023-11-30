@@ -12,9 +12,9 @@ export class TokenServiceAdapter {
         this.options = this.configService.get('jwt');
     }
 
-    sign(data: any) {
+    sign(data: any, expiresIn: any = null) {
         const token = jsonwebtoken.sign(data, this.options.secret, {
-            expiresIn: this.options.expiresIn,
+            expiresIn: expiresIn || this.options.expiresIn,
         });
         return token;
     }

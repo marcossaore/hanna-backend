@@ -20,7 +20,7 @@ describe('Service: TokenServiceAdapter', () => {
     });
 
     describe('sign', () => {
-        it('should call jsonwebtoken.sign with correct key', async () => {
+        it('should call jsonwebtoken.sign with correct values', async () => {
             sutTokenServiceAdapter.sign({
                 key: 'value',
             });
@@ -31,6 +31,23 @@ describe('Service: TokenServiceAdapter', () => {
                 'any_secret',
                 {
                     expiresIn: 'any_expires_in',
+                },
+            );
+            expect(jsonwebtoken.sign).toBeCalledTimes(1);
+        });
+
+        it('should call jsonwebtoken.sign with correct values includes expiresIn provided', async () => {
+            const expiresIn5Minutes = 5 * 60;
+            sutTokenServiceAdapter.sign({
+                key: 'value',
+            }, expiresIn5Minutes);
+            expect(jsonwebtoken.sign).toBeCalledWith(
+                {
+                    key: 'value',
+                },
+                'any_secret',
+                {
+                    expiresIn: expiresIn5Minutes,
                 },
             );
             expect(jsonwebtoken.sign).toBeCalledTimes(1);
