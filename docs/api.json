@@ -1,12 +1,12 @@
 {
     "client": "Thunder Client",
     "collectionName": "Hanna Api",
-    "dateExported": "2023-11-06T01:52:32.440Z",
+    "dateExported": "2023-11-30T16:10:31.883Z",
     "version": "1.1",
     "folders": [
         {
             "_id": "35269c22-ce61-436c-b583-91b1e4de5c95",
-            "name": "Companies",
+            "name": "Tenanties",
             "containerId": "",
             "created": "2023-11-06T01:51:23.692Z",
             "sortNum": 10000
@@ -31,17 +31,17 @@
             "_id": "84d18ed8-4269-491c-adc6-5c24bc42156f",
             "colId": "2d4318e1-b56a-4405-aa8e-1bda1ccd5209",
             "containerId": "35269c22-ce61-436c-b583-91b1e4de5c95",
-            "name": "Create Company",
-            "url": "http://localhost:3000/api/app/companies",
+            "name": "Create Tenant",
+            "url": "http://localhost:3000/api/app/tenanties",
             "method": "POST",
             "sortNum": 10000,
             "created": "2023-11-06T01:51:23.693Z",
-            "modified": "2023-11-06T01:51:23.693Z",
+            "modified": "2023-11-30T03:35:34.071Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"name\": \"Grazi Pet\",\n  \"document\": \"76974716000151\",\n  \"partnerName\": \"Grazielle Chaves\",\n  \"partnerDocument\": \"64761332093\",\n  \"companyIdentifier\": \"grazipet\",\n  \"phone\": \"31984536721\",\n  \"email\": \"test@test.com\"\n}",
+                "raw": "{\n  \"name\": \"Company\",\n  \"document\": \"07962434000111\",\n  \"partnerName\": \"Armênia Rodrigues Castro\",\n  \"partnerDocument\": \"43905610060\",\n  \"companyIdentifier\": \"company\",\n  \"phone\": \"31984536721\",\n  \"email\": \"test@test.com\"\n}",
                 "form": []
             },
             "tests": []
@@ -50,17 +50,17 @@
             "_id": "1b88c934-3386-4c88-83b2-414fd99a34b8",
             "colId": "2d4318e1-b56a-4405-aa8e-1bda1ccd5209",
             "containerId": "db2ed18c-8d8b-462a-960d-fd8205e5fd2a",
-            "name": "Auth",
-            "url": "http://localhost:3000/auth/login",
+            "name": "Login",
+            "url": "http://localhost:3000/api/auth/login",
             "method": "POST",
             "sortNum": 10000,
             "created": "2023-11-06T01:51:23.694Z",
-            "modified": "2023-11-06T01:51:27.866Z",
+            "modified": "2023-11-30T15:19:21.717Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"document\": \"59186089000175\",\n  \"email\": \"test@test.com\",\n  \"password\": \"my pass\"\n}",
+                "raw": "{\n  \"document\": \"07962434000111\",\n  \"email\": \"test@test.com\",\n  \"password\": \"S0mePass!\"\n}",
                 "form": []
             },
             "tests": []
@@ -115,15 +115,29 @@
             "tests": []
         },
         {
+            "_id": "dfd0ccbd-ee65-44e9-ab32-5756f5cf95b4",
+            "colId": "2d4318e1-b56a-4405-aa8e-1bda1ccd5209",
+            "containerId": "db2ed18c-8d8b-462a-960d-fd8205e5fd2a",
+            "name": "Logout",
+            "url": "http://localhost:3000/api/auth/logout",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2023-11-22T20:00:16.432Z",
+            "modified": "2023-11-27T14:42:41.962Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
             "_id": "155fd830-3f45-4d07-bf26-d4a0abecf6a2",
             "colId": "2d4318e1-b56a-4405-aa8e-1bda1ccd5209",
             "containerId": "bc3790f2-f626-4846-b467-daead821d787",
             "name": "Get One",
-            "url": "http://localhost:3000/api/customers/01HE9MERTV011MYD20RR0P8E34",
+            "url": "http://localhost:3000/api/customers/01HFW9GPSH5T2Z094H5Y08CTSG",
             "method": "GET",
             "sortNum": 25000,
             "created": "2023-11-06T01:51:23.698Z",
-            "modified": "2023-11-06T01:51:23.698Z",
+            "modified": "2023-11-22T19:55:14.272Z",
             "headers": [],
             "params": [],
             "body": {
@@ -138,11 +152,11 @@
             "colId": "2d4318e1-b56a-4405-aa8e-1bda1ccd5209",
             "containerId": "bc3790f2-f626-4846-b467-daead821d787",
             "name": "Update",
-            "url": "http://localhost:3000/api/customers/01HE9MERTV011MYD20RR0P8E34",
+            "url": "http://localhost:3000/api/customers/01HFW9GPSH5T2Z094H5Y08CTSG",
             "method": "PATCH",
             "sortNum": 30000,
             "created": "2023-11-06T01:51:23.697Z",
-            "modified": "2023-11-06T01:51:23.697Z",
+            "modified": "2023-11-22T19:55:34.727Z",
             "headers": [],
             "params": [],
             "body": {
@@ -157,11 +171,11 @@
             "colId": "2d4318e1-b56a-4405-aa8e-1bda1ccd5209",
             "containerId": "bc3790f2-f626-4846-b467-daead821d787",
             "name": "Delete",
-            "url": "http://localhost:3000/api/customers/01HE9MERTV011MYD20RR0P8E34",
+            "url": "http://localhost:3000/api/customers/01HFW9GPSH5T2Z094H5Y08CTSG",
             "method": "DELETE",
             "sortNum": 40000,
             "created": "2023-11-06T01:51:23.699Z",
-            "modified": "2023-11-06T01:51:23.699Z",
+            "modified": "2023-11-22T19:55:48.418Z",
             "headers": [],
             "params": [],
             "tests": []
