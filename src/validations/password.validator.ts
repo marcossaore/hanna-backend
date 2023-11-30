@@ -6,6 +6,7 @@ import {
 } from 'class-validator';
 
 interface StrongPassOptions {
+    message?: string;
     minLength?: number;
     requireUppercase?: boolean;
     requireLowercase?: boolean;
@@ -43,18 +44,29 @@ export class IsStrongPassConstraint implements ValidatorConstraintInterface {
             (!requireSpecialChar || hasSpecialChar)
         );
     }
+
+    defaultMessage(args: ValidationArguments) {
+        return JSON.stringify({
+            message: args.constraints[0].message,
+            field: args.property,
+        });
+    }
 }
 
-export function IsStrongPass(message: string, options?: StrongPassOptions) {
+export function IsStrongPass(options?: StrongPassOptions) {
+    if (!options?.message) {
+        options = {
+            ...options,
+            message:
+                'A senha deve conter no mínimo 8 caracteres, com ao menos 1 letra maíuscula, 1 minúscula, 1 dígito e 1 caracter especial (*?!...)',
+        };
+    }
     return function (object: unknown, propertyName: string) {
         registerDecorator({
             name: 'isStrongPass',
             target: object.constructor,
             propertyName: propertyName,
             constraints: [options],
-            options: {
-                message,
-            },
             validator: IsStrongPassConstraint,
         });
     };
