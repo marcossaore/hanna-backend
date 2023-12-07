@@ -9,6 +9,10 @@ import { join } from 'path'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(InitModule)
+  app.enableCors({
+    origin: '*',
+    credentials: true
+  })
   app.useGlobalPipes(new ValidationPipe())
   app.use(new AddRequestTimeMiddleware().use)
   app.useGlobalFilters(new HttpExceptionFilter())
