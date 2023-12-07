@@ -40,189 +40,74 @@ describe('AuthController (e2e)', () => {
     expect(responseBody).toHaveProperty('name', tenantData.partnerName)
     expect(responseBody.permissions).toEqual([
       {
-        module: {
-          name: 'sales',
-          grants: [
-            {
-              id: 1,
-              name: 'read'
-            },
-            {
-              id: 2,
-              name: 'create'
-            },
-            {
-              id: 3,
-              name: 'edit'
-            },
-            {
-              id: 4,
-              name: 'delete'
-            }
-          ],
-          options: [
-            {
-              id: 1,
-              name: 'pinPass'
-            },
-            {
-              id: 2,
-              name: 'accountMode'
-            }
-          ]
+        name: 'sales',
+        grants: {
+          read: true,
+          edit: true,
+          create: true,
+          delete: true
+        },
+        options: {
+          accountMode: false,
+          pinPass: false
         }
       },
       {
-        module: {
-          name: 'bathGrooming',
-          grants: [
-            {
-              id: 1,
-              name: 'read'
+        name: 'bathGrooming',
+        modules: [
+          {
+            name: 'schedule',
+            grants: {
+              read: true,
+              edit: true,
+              create: true,
+              delete: true
             },
-            {
-              id: 2,
-              name: 'create'
+            options: {}
+          },
+          {
+            name: 'services',
+            grants: {
+              read: true,
+              edit: true,
+              create: true,
+              delete: true
             },
-            {
-              id: 3,
-              name: 'edit'
+            options: {}
+          },
+          {
+            name: 'plans',
+            grants: {
+              read: true,
+              edit: true,
+              create: true,
+              delete: true
             },
-            {
-              id: 4,
-              name: 'delete'
-            }
-          ],
-          options: []
-        }
+            options: {}
+          }
+        ]
       },
       {
-        module: {
-          name: 'schedule',
-          grants: [
-            {
-              id: 1,
-              name: 'read'
-            },
-            {
-              id: 2,
-              name: 'create'
-            },
-            {
-              id: 3,
-              name: 'edit'
-            },
-            {
-              id: 4,
-              name: 'delete'
-            }
-          ],
-          options: []
-        }
+        name: 'pets',
+        grants: {
+          read: true,
+          edit: true,
+          create: true,
+          delete: true
+        },
+        options: {}
       },
       {
-        module: {
-          name: 'services',
-          grants: [
-            {
-              id: 1,
-              name: 'read'
-            },
-            {
-              id: 2,
-              name: 'create'
-            },
-            {
-              id: 3,
-              name: 'edit'
-            },
-            {
-              id: 4,
-              name: 'delete'
-            }
-          ],
-          options: []
-        }
-      },
-      {
-        module: {
-          name: 'plans',
-          grants: [
-            {
-              id: 1,
-              name: 'read'
-            },
-            {
-              id: 2,
-              name: 'create'
-            },
-            {
-              id: 3,
-              name: 'edit'
-            },
-            {
-              id: 4,
-              name: 'delete'
-            }
-          ],
-          options: []
-        }
-      },
-      {
-        module: {
-          name: 'pets',
-          grants: [
-            {
-              id: 1,
-              name: 'read'
-            },
-            {
-              id: 2,
-              name: 'create'
-            },
-            {
-              id: 3,
-              name: 'edit'
-            },
-            {
-              id: 4,
-              name: 'delete'
-            }
-          ],
-          options: []
-        }
-      },
-      {
-        module: {
-          name: 'customers',
-          grants: [
-            {
-              id: 1,
-              name: 'read'
-            },
-            {
-              id: 2,
-              name: 'create'
-            },
-            {
-              id: 3,
-              name: 'edit'
-            },
-            {
-              id: 4,
-              name: 'delete'
-            }
-          ],
-          options: [
-            {
-              id: 3,
-              name: 'bill'
-            },
-            {
-              id: 4,
-              name: 'bindPlan'
-            }
-          ]
+        name: 'customers',
+        grants: {
+          read: true,
+          edit: true,
+          create: true,
+          delete: true
+        },
+        options: {
+          bindPlan: false,
+          bill: false
         }
       }
     ])

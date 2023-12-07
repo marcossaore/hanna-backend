@@ -31,11 +31,8 @@ export class PermissionsGuard implements CanActivate {
     const request = context.switchToHttp().getRequest()
 
     const moduleIsAllowed = request.session.auth.user.permissions.filter(
-      ({ module }) => {
-        return (
-          metadata.module === module.name &&
-          module.grants.filter(({ name }) => name === metadata.action)
-        )
+      ({ name, grants }) => {
+        return metadata.module === name && grants[metadata.action]
       }
     )
 
