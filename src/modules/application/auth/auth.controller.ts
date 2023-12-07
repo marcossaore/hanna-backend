@@ -20,27 +20,32 @@ import { TokenServiceAdapter } from '@infra/plugins/token/token-service.adapter'
 import { InfoMessageInterceptor } from '@/adapters/interceptors/info-message-interceptor'
 
 type GrantType = {
-  id: number
-  name: string
+  read: boolean
+  edit: boolean
+  create: boolean
+  delete: boolean
 }
 
 type OptionType = {
-  id: number
-  name: string
+  [key: string]: boolean
 }
 
 type ModuleType = {
-  module: {
-    name: string
-    grants: GrantType[]
-    options: OptionType[]
-  }
+  name: string
+  grants: GrantType
+  options: OptionType
+}
+
+type ModulesType = {
+  name: string
+  modules: ModuleType[]
 }
 
 type PermissionType = {
   uuid: string
   name: string
-  permissions: ModuleType[]
+  expiresIn: string
+  permissions: ModuleType[] | ModulesType[]
 }
 
 @Controller(`${appPrefix}/auth`)
@@ -86,16 +91,7 @@ export class AuthController {
       throw userUnauthorized()
     }
 
-    const userPermissions = await userService.getRoles(user.uuid)
-    const permissions = userPermissions.role.permissions.map(({ module }) => {
-      return {
-        module: {
-          name: module.name,
-          grants: module.grants,
-          options: module.options
-        }
-      }
-    })
+    const permissions = await userService.getRolesGrouped(user.uuid)
 
     request.session.auth = {
       tenant: {
@@ -112,6 +108,7 @@ export class AuthController {
     return {
       uuid: user.uuid,
       name: user.name,
+      expiresIn: request.session.cookie._expires,
       permissions
     }
   }

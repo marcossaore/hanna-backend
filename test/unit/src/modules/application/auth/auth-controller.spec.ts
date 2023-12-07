@@ -14,10 +14,6 @@ import { UserServiceLazy } from '@/modules/application/user/user.service.lazy'
 import { AuthController } from '@/modules/application/auth/auth.controller'
 import { TokenServiceAdapter } from '@infra/plugins/token/token-service.adapter'
 
-const requestSpy: any = {
-  session: {}
-}
-
 describe('AuthController', () => {
   let entityTenantMock: Tenant
   let entityUserMock: User
@@ -28,8 +24,17 @@ describe('AuthController', () => {
   let userServiceLazy: UserServiceLazy
   let hashService: HashService
   let tokenServiceAdapter: TokenServiceAdapter
+  const requestSpy: any = {
+    session: {
+      cookie: {
+        _expires: 'any_expires'
+      },
+      destroy: () => {}
+    }
+  }
 
   beforeEach(async () => {
+    requestSpy.session.auth = undefined
     entityTenantMock = mockCompanyEntity()
     entityUserMock = mockUserEntity()
     userPermissionMock = mockUserPermission()
@@ -61,13 +66,9 @@ describe('AuthController', () => {
               findByEmail: jest
                 .fn()
                 .mockResolvedValue(Promise.resolve(entityUserMock)),
-              getRoles: jest.fn().mockResolvedValue(
-                Promise.resolve({
-                  role: {
-                    permissions: userPermissionMock
-                  }
-                })
-              ),
+              getRolesGrouped: jest
+                .fn()
+                .mockResolvedValue(Promise.resolve(userPermissionMock)),
               savePassword: jest.fn()
             })
           }
@@ -246,14 +247,16 @@ describe('AuthController', () => {
       const data = mockLoginDto()
       const userService = userServiceLazy.load('any_connection' as any)
       await sutAuthController.login(data, requestSpy)
-      expect(userService.getRoles).toHaveBeenCalledWith(entityUserMock.uuid)
-      expect(userService.getRoles).toHaveBeenCalledTimes(1)
+      expect(userService.getRolesGrouped).toHaveBeenCalledWith(
+        entityUserMock.uuid
+      )
+      expect(userService.getRolesGrouped).toHaveBeenCalledTimes(1)
     })
 
     it('should throws if UserService.getRoles throws', async () => {
       const data = mockLoginDto()
       const userService = userServiceLazy.load('any_connection' as any)
-      jest.spyOn(userService, 'getRoles').mockImplementationOnce(() => {
+      jest.spyOn(userService, 'getRolesGrouped').mockImplementationOnce(() => {
         throw new Error()
       })
       const promise = sutAuthController.login(data, requestSpy)
@@ -273,37 +276,52 @@ describe('AuthController', () => {
           uuid: entityUserMock.uuid,
           permissions: [
             {
-              module: {
-                name: 'sales',
-                grants: [
-                  {
-                    id: 1,
-                    name: 'read'
-                  },
-                  {
-                    id: 2,
-                    name: 'create'
-                  },
-                  {
-                    id: 3,
-                    name: 'edit'
-                  },
-                  {
-                    id: 4,
-                    name: 'delete'
-                  }
-                ],
-                options: [
-                  {
-                    id: 1,
-                    name: 'pinPass'
-                  },
-                  {
-                    id: 2,
-                    name: 'accountMode'
-                  }
-                ]
+              name: 'sales',
+              grants: {
+                read: true,
+                edit: true,
+                create: true,
+                delete: true
+              },
+              options: {
+                accountMode: false,
+                pinPass: false
               }
+            },
+            {
+              name: 'bathGrooming',
+              modules: [
+                {
+                  name: 'schedule',
+                  grants: {
+                    read: true,
+                    edit: true,
+                    create: true,
+                    delete: true
+                  },
+                  options: {}
+                },
+                {
+                  name: 'services',
+                  grants: {
+                    read: true,
+                    edit: true,
+                    create: true,
+                    delete: true
+                  },
+                  options: {}
+                },
+                {
+                  name: 'plans',
+                  grants: {
+                    read: true,
+                    edit: true,
+                    create: true,
+                    delete: true
+                  },
+                  options: {}
+                }
+              ]
             }
           ]
         }
@@ -316,39 +334,55 @@ describe('AuthController', () => {
       expect(response).toEqual({
         name: entityUserMock.name,
         uuid: entityUserMock.uuid,
+        expiresIn: 'any_expires',
         permissions: [
           {
-            module: {
-              name: 'sales',
-              grants: [
-                {
-                  id: 1,
-                  name: 'read'
-                },
-                {
-                  id: 2,
-                  name: 'create'
-                },
-                {
-                  id: 3,
-                  name: 'edit'
-                },
-                {
-                  id: 4,
-                  name: 'delete'
-                }
-              ],
-              options: [
-                {
-                  id: 1,
-                  name: 'pinPass'
-                },
-                {
-                  id: 2,
-                  name: 'accountMode'
-                }
-              ]
+            name: 'sales',
+            grants: {
+              read: true,
+              edit: true,
+              create: true,
+              delete: true
+            },
+            options: {
+              accountMode: false,
+              pinPass: false
             }
+          },
+          {
+            name: 'bathGrooming',
+            modules: [
+              {
+                name: 'schedule',
+                grants: {
+                  read: true,
+                  edit: true,
+                  create: true,
+                  delete: true
+                },
+                options: {}
+              },
+              {
+                name: 'services',
+                grants: {
+                  read: true,
+                  edit: true,
+                  create: true,
+                  delete: true
+                },
+                options: {}
+              },
+              {
+                name: 'plans',
+                grants: {
+                  read: true,
+                  edit: true,
+                  create: true,
+                  delete: true
+                },
+                options: {}
+              }
+            ]
           }
         ]
       })
@@ -356,12 +390,6 @@ describe('AuthController', () => {
   })
 
   describe('logout ', () => {
-    beforeEach(() => {
-      requestSpy.session = {
-        destroy: () => {}
-      }
-    })
-
     it('should not call destroy when auth no exists', async () => {
       const destroySpy = jest.spyOn(requestSpy.session, 'destroy')
       await sutAuthController.logout(requestSpy)

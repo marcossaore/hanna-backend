@@ -31,8 +31,9 @@ export class UserService {
   async getRoles(uuid: string): Promise<User> {
     const user = await this.userRepository.findOne({
       relations: [
-        'role.permissions.module.grants',
-        'role.permissions.module.options'
+        'role.permissions.grants',
+        'role.permissions.module',
+        'role.permissions.roleOptions.option'
       ],
       where: {
         uuid
@@ -40,28 +41,70 @@ export class UserService {
       select: {
         id: true,
         uuid: true,
-        name: true,
-        role: {
-          id: true,
-          permissions: {
-            id: true,
-            module: {
-              id: true,
-              name: true,
-              grants: {
-                id: true,
-                name: true
-              },
-              options: {
-                id: true,
-                name: true
-              }
-            }
-          }
-        }
+        name: true
       }
     })
     return user
+  }
+
+  async getRolesGrouped(uuid: string): Promise<any> {
+    const user = await this.getRoles(uuid)
+    const permissions = []
+    for (const { module, roleOptions, grants } of user.role.permissions) {
+      let hasBelongsTo = -1
+
+      for (let index = 0; index < permissions.length; index++) {
+        const permission = permissions[index]
+        if (module.belongsTo && permission.name === module.belongsTo) {
+          hasBelongsTo = index
+        }
+      }
+
+      const options = {}
+
+      for (const { isActive, option } of roleOptions) {
+        options[option.name] = isActive
+      }
+
+      const grantsAsObj = {
+        read: false,
+        edit: false,
+        create: false,
+        delete: false
+      }
+
+      for (const { name } of grants) {
+        grantsAsObj[name] = true
+      }
+
+      if (hasBelongsTo >= 0) {
+        permissions[hasBelongsTo].modules.push({
+          name: module.name,
+          grants: grantsAsObj,
+          options: options
+        })
+      } else {
+        if (!module.belongsTo) {
+          permissions.push({
+            name: module.name,
+            grants: grantsAsObj,
+            options: options
+          })
+        } else {
+          permissions.push({
+            name: module.belongsTo,
+            modules: [
+              {
+                name: module.name,
+                grants: grantsAsObj,
+                options: options
+              }
+            ]
+          })
+        }
+      }
+    }
+    return permissions
   }
 
   async savePassword(uuid: string, hashedPassword: string): Promise<void> {

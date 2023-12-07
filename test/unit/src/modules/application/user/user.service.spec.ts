@@ -1,5 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { mockUserEntity, mockUserPermission } from '../../../../mock/user.mock'
+import {
+  mockUserEntity,
+  mockUserPermissionForRoleGrouped
+} from '../../../../mock/user.mock'
 import { User } from '@infra/db/companies/entities/user/user.entity'
 import { UserService } from '@/modules/application/user/user.service'
 import { faker } from '@faker-js/faker'
@@ -12,7 +15,7 @@ describe('Service: UserService', () => {
 
   beforeEach(async () => {
     userMock = mockUserEntity()
-    permissionMock = mockUserPermission()
+    permissionMock = mockUserPermissionForRoleGrouped()
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
@@ -173,8 +176,9 @@ describe('Service: UserService', () => {
       await sutUserService.getRoles('any_uuid')
       expect(userRepository.findOne).toBeCalledWith({
         relations: [
-          'role.permissions.module.grants',
-          'role.permissions.module.options'
+          'role.permissions.grants',
+          'role.permissions.module',
+          'role.permissions.roleOptions.option'
         ],
         where: {
           uuid: 'any_uuid'
@@ -182,25 +186,7 @@ describe('Service: UserService', () => {
         select: {
           id: true,
           uuid: true,
-          name: true,
-          role: {
-            id: true,
-            permissions: {
-              id: true,
-              module: {
-                id: true,
-                name: true,
-                grants: {
-                  id: true,
-                  name: true
-                },
-                options: {
-                  id: true,
-                  name: true
-                }
-              }
-            }
-          }
+          name: true
         }
       })
       expect(userRepository.findOne).toBeCalledTimes(1)
@@ -217,6 +203,59 @@ describe('Service: UserService', () => {
     it('should return modules on success', async () => {
       const response = await sutUserService.getRoles('any_uuid')
       expect(response).toEqual(permissionMock)
+    })
+  })
+
+  describe('getRolesGrouped', () => {
+    it('should call getRoles from service with correct value', async () => {
+      const getRolesSpy = jest.spyOn(sutUserService as any, 'getRoles')
+      await sutUserService.getRolesGrouped('any_uuid')
+      expect(getRolesSpy).toBeCalledTimes(1)
+      expect(getRolesSpy).toHaveBeenCalledWith('any_uuid')
+    })
+
+    it('should throws if getRoles throws', async () => {
+      jest
+        .spyOn(sutUserService as any, 'getRoles')
+        .mockImplementationOnce(() => {
+          throw new Error()
+        })
+      const promise = sutUserService.getRolesGrouped('any_uuid')
+      await expect(promise).rejects.toThrow()
+    })
+
+    it('should return modules on success', async () => {
+      const response = await sutUserService.getRolesGrouped('any_uuid')
+      expect(response).toEqual([
+        {
+          grants: {
+            create: true,
+            delete: true,
+            edit: true,
+            read: true
+          },
+          name: 'sales',
+          options: {
+            accountMode: false,
+            pinPass: true
+          }
+        },
+        {
+          modules: [
+            {
+              grants: {
+                create: true,
+                delete: true,
+                edit: true,
+                read: true
+              },
+              name: 'schedule',
+              options: {}
+            }
+          ],
+          name: 'bathGrooming'
+        }
+      ])
     })
   })
 
