@@ -4,8 +4,10 @@ import { DataSource } from 'typeorm'
 import { InitModule } from '@/modules/application/app/init.module'
 import { createTenant } from '../../../../helpers/create-tenant'
 import { loginUser, logoutUser } from '../../../../../e2e/helpers/login-user'
+import { createAppBucket } from '../../../../../e2e/helpers/create-app-bucket'
 import { faker } from '@faker-js/faker'
 import * as request from 'supertest'
+import { resolve } from 'path'
 
 jest.mock('@/modules/infra/mail/mail.service')
 
@@ -15,14 +17,17 @@ describe('CustomerController (e2e)', () => {
   let tenantData: any
   let agent: request.SuperTest<request.Test>
   let customerCreated: any
+  let customerCreatedWithThumb: any
 
   beforeAll(async () => {
+    await createAppBucket()
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [InitModule]
     }).compile()
     app = moduleFixture.createNestApplication()
     dataSource = moduleFixture.get<DataSource>(DataSource)
     await app.init()
+    await dataSource.query('truncate table tenant')
     tenantData = await createTenant(app)
     agent = request.agent(app.getHttpServer())
     await loginUser(agent, {
@@ -69,6 +74,32 @@ describe('CustomerController (e2e)', () => {
       expect(responseBody.city).toEqual(data.address.city)
       expect(responseBody.state).toEqual(data.address.state)
       expect(responseBody.country).toEqual(data.address.country)
+      expect(responseBody.thumb).toBeNull()
+    })
+
+    it('Create (POST) with thumb ', async () => {
+      const relativeFilePath = './test.png'
+      const absoluteFilePath = resolve(__dirname, relativeFilePath)
+      const response = await agent
+        .post('/api/customers')
+        .field('name', faker.person.fullName())
+        .field('phone', faker.phone.number())
+        .field('address[street]', faker.location.street())
+        .field('address[number]', faker.location.buildingNumber())
+        .field('address[neighborhood]', faker.location.secondaryAddress())
+        .field('address[city]', faker.location.city())
+        .field('address[state]', faker.location.state())
+        .field('address[country]', faker.location.country())
+        .attach('thumb', absoluteFilePath)
+
+      expect(response.statusCode).toBe(201)
+
+      const responseBody = response.body
+      customerCreatedWithThumb = responseBody
+
+      expect(responseBody.uuid).toBeTruthy()
+      expect(response.body.id).toBeTruthy()
+      expect(response.body.thumb).toBeTruthy()
     })
 
     it('Get One (GET)', async () => {
@@ -77,17 +108,34 @@ describe('CustomerController (e2e)', () => {
       const responseBody = response.body
       expect(responseBody.uuid).toEqual(customerCreated.uuid)
       expect(responseBody.name).toEqual(customerCreated.name)
+      expect(responseBody.thumb).toBeNull()
       expect(responseBody.deletedAt).toBeNull()
+    })
+
+    it('Get One thumb (GET)', async () => {
+      const response = await agent.get(
+        `/api/customers/${customerCreatedWithThumb.uuid}`
+      )
+      expect(response.statusCode).toBe(200)
+      const responseBody = response.body
+      expect(responseBody.uuid).toEqual(customerCreatedWithThumb.uuid)
+      expect(responseBody.name).toEqual(customerCreatedWithThumb.name)
+      expect(responseBody.thumb).toBeTruthy()
+      expect(responseBody.deletedAt).toBeNull()
+      expect(responseBody.thumb).toBeTruthy()
     })
 
     it('List (GET)', async () => {
       const response = await agent.get(`/api/customers`)
       expect(response.statusCode).toBe(200)
       const responseBody = response.body
-      expect(responseBody.length).toBe(1)
-      expect(responseBody[0].uuid).toEqual(customerCreated.uuid)
-      expect(responseBody[0].name).toEqual(customerCreated.name)
-      expect(responseBody[0].deletedAt).toBeNull()
+      expect(responseBody.page).toBe(1)
+      expect(responseBody.totalPage).toBe(1)
+      expect(responseBody.items.length).toBe(2)
+      expect(responseBody.items[0].uuid).toEqual(customerCreated.uuid)
+      expect(responseBody.items[0].thumb).toBeNull()
+      expect(responseBody.items[1].uuid).toEqual(customerCreatedWithThumb.uuid)
+      expect(responseBody.items[1].thumb).toBeTruthy()
     })
 
     it('Update (PATCH)', async () => {
@@ -103,6 +151,18 @@ describe('CustomerController (e2e)', () => {
       customerCreated.name = newName
 
       expect(responseBody.name).toEqual(newName)
+    })
+
+    it('Update (PATCH) thumb', async () => {
+      const relativeFilePath = './test.png'
+      const absoluteFilePath = resolve(__dirname, relativeFilePath)
+      await agent
+        .patch(`/api/customers/${customerCreated.uuid}`)
+        .attach('thumb', absoluteFilePath)
+        .expect(200)
+        .then((response) => {
+          expect(response.body.thumb).toBeTruthy()
+        })
     })
 
     it('Remove (DELETE)', async () => {

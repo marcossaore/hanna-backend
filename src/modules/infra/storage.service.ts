@@ -5,7 +5,7 @@ export class StorageService {
   constructor(@Inject('STORAGE_MANAGER') private readonly storageManager) {}
 
   async upload(buffer: Buffer, key: string): Promise<string> {
-    const isUploaded = this.storageManager.upload(buffer, key)
+    const isUploaded = await this.storageManager.upload(buffer, key)
     if (isUploaded) {
       return await this.getUrl(key)
     }

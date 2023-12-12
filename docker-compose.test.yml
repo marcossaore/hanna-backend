@@ -36,6 +36,7 @@ services:
             MAIL_PASSWORD: any_pass
             MAIL_PORT: 1030
             MAIL_TRANSPORT: smtp://hanna@test.com:any_pass@$localhost
+            S3_BUCKET: test
         depends_on:
             - db
             - memorydb
@@ -71,7 +72,7 @@ services:
     localstack:
         image: localstack/localstack
         environment:
-            SERVICES: secretsmanager
+            SERVICES: secretsmanager,s3
             DEBUG: 1
             DATA_DIR: /tmp/localstack/data
             AWS_ACCESS_KEY_ID: localstack-access-key-id
