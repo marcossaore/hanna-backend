@@ -175,6 +175,14 @@ export class CustomerController {
       data.email = null
     }
 
+    if (!address.complement) {
+      address.complement = null
+    }
+
+    if (!address.number) {
+      address.number = null
+    }
+
     let joinData = {
       ...data,
       uuid: id
