@@ -8,6 +8,7 @@ import {
 } from 'class-validator'
 import { IsPhone } from '@/validations/phone.validator'
 import { CreateAddressDto } from '@/modules/application/address/dto/create-address.dto'
+import { HasMimeType, IsFile, MemoryStoredFile } from 'nestjs-form-data'
 
 export class CreateCustomerDto {
   @IsString({
@@ -49,6 +50,12 @@ export class CreateCustomerDto {
   })
   @IsOptional()
   readonly email: string
+
+  @IsFile()
+  // @MaxFileSize(1e6)
+  @HasMimeType(['image/jpeg', 'image/png'])
+  @IsOptional()
+  readonly thumb: MemoryStoredFile
 
   @ValidateNested()
   @Type(() => CreateAddressDto)

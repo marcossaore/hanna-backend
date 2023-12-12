@@ -5,11 +5,13 @@ import { Customer } from '@infra/db/companies/entities/customer/customer.entity'
 
 export const mockCreateCustomerWithAddressDto = ({
   complement = null,
-  email = null
+  email = null,
+  thumb = null
 } = {}): CreateCustomerDto => ({
   name: faker.company.name(),
   email: email || faker.internet.email(),
   phone: faker.string.numeric({ length: 11 }),
+  thumb,
   address: {
     street: faker.location.streetAddress(),
     neighborhood: faker.location.secondaryAddress(),

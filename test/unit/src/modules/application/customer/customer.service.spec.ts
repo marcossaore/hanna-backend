@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
+import { Like } from 'typeorm'
 import {
   mockCreateCustomerToEntityWithAddressDto,
   mockCustomerEntity
@@ -127,13 +128,36 @@ describe('CustomerService', () => {
   })
 
   describe('findAll', () => {
-    it('should call CustomerRepository.find with correct values', async () => {
+    it('should call CustomerRepository.find with default values', async () => {
       await sutCustomerService.findAll(pageOptions)
       expect(customerRepository.find).toHaveBeenCalledWith({
         take: pageOptions.limit,
         skip: pageOptions.page - 1,
         order: {
           createdAt: 'DESC'
+        },
+        where: {}
+      })
+      expect(customerRepository.find).toHaveBeenCalledTimes(1)
+    })
+
+    it('should call CustomerRepository.find with provided values', async () => {
+      await sutCustomerService.findAll({
+        ...pageOptions,
+        name: 'any_name',
+        email: 'any_email',
+        phone: 'any_phone'
+      })
+      expect(customerRepository.find).toHaveBeenCalledWith({
+        take: pageOptions.limit,
+        skip: pageOptions.page - 1,
+        order: {
+          createdAt: 'DESC'
+        },
+        where: {
+          name: Like('%any_name%'),
+          email: Like('%any_email%'),
+          phone: Like('%any_phone%')
         }
       })
       expect(customerRepository.find).toHaveBeenCalledTimes(1)

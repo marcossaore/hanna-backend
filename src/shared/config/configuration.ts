@@ -36,7 +36,8 @@ export default () => {
       secret: process.env.AWS_SECRET_ACCESS_KEY,
       region: process.env.AWS_DEFAULT_REGION || 'us-east-1',
       version: process.env.AWS_VERSION,
-      endpoint: process.env.AWS_ENDPOINT || null
+      endpoint: process.env.AWS_ENDPOINT || null,
+      bucket: process.env.S3_BUCKET
     },
     smtp: {
       from: process.env.MAIL_FROM,
