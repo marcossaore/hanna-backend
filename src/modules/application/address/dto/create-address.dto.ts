@@ -27,7 +27,8 @@ export class CreateAddressDto {
       field: 'number'
     })
   })
-  number: string
+  @IsOptional()
+  number?: string
 
   @IsString({
     message: JSON.stringify({

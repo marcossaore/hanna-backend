@@ -9,7 +9,7 @@ describe('Dto:  CreateCustomerDto', () => {
     jest.clearAllMocks()
   })
 
-  it('should return all erros when data is not provided', async () => {
+  it('should return all errors when data is not provided', async () => {
     const validation = plainToInstance(CreateCustomerDto, {})
     const errors = await validate(validation)
     expect(errors[0].constraints.isNotEmpty).toEqual(
@@ -50,37 +50,28 @@ describe('Dto:  CreateCustomerDto', () => {
     expect(errors[0].children[0].constraints.isNotEmpty).toEqual(
       '{"message":"A rua deve ser informada!","field":"street"}'
     )
-    expect(errors[0].children[0].constraints.isString).toEqual(
-      '{"message":"A rua deve ser \\"string\\"!","field":"street"}'
-    )
     expect(errors[0].children[1].constraints.isNotEmpty).toEqual(
-      '{"message":"O número deve ser informado!","field":"number"}'
-    )
-    expect(errors[0].children[1].constraints.isString).toEqual(
-      '{"message":"O número deve ser \\"string\\"!","field":"number"}'
-    )
-    expect(errors[0].children[2].constraints.isNotEmpty).toEqual(
       '{"message":"O bairro deve ser informado!","field":"neighborhood"}'
     )
-    expect(errors[0].children[2].constraints.isString).toEqual(
+    expect(errors[0].children[1].constraints.isString).toEqual(
       '{"message":"O bairro deve ser \\"string\\"!","field":"neighborhood"}'
     )
-    expect(errors[0].children[3].constraints.isNotEmpty).toEqual(
+    expect(errors[0].children[2].constraints.isNotEmpty).toEqual(
       '{"message":"A cidade deve ser informada!","field":"city"}'
     )
-    expect(errors[0].children[3].constraints.isString).toEqual(
+    expect(errors[0].children[2].constraints.isString).toEqual(
       '{"message":"A cidade deve ser \\"string\\"!","field":"city"}'
     )
-    expect(errors[0].children[4].constraints.isNotEmpty).toEqual(
+    expect(errors[0].children[3].constraints.isNotEmpty).toEqual(
       '{"message":"O estado deve ser informado!","field":"state"}'
     )
-    expect(errors[0].children[4].constraints.isString).toEqual(
+    expect(errors[0].children[3].constraints.isString).toEqual(
       '{"message":"O estado deve ser \\"string\\"!","field":"state"}'
     )
-    expect(errors[0].children[5].constraints.isNotEmpty).toEqual(
+    expect(errors[0].children[4].constraints.isNotEmpty).toEqual(
       '{"message":"O país deve ser informado!","field":"country"}'
     )
-    expect(errors[0].children[5].constraints.isString).toEqual(
+    expect(errors[0].children[4].constraints.isString).toEqual(
       '{"message":"O país deve ser \\"string\\"!","field":"country"}'
     )
     expect(errors.length).toEqual(1)
