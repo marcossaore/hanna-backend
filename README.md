@@ -8,6 +8,24 @@
 $ npm install
 ```
 
+## Rode o docker compose
+
+```bash
+$ docker-compose up -d
+```
+
+## Rode os scripts
+Sobre o script `load-secrets`, leia antes sobre [neste tópico](#sobre-o-ambiente-de-desenvolvimento).
+
+```bash
+$ npm run load-bucket
+$ npm run load-secret
+```
+
+```bash
+$ docker-compose up -d
+```
+
 ## Rodando o app
 
 ```bash
@@ -28,8 +46,11 @@ $ npm run start:prod
 
 O ambiente de desenvolvimento usa o docker-compose para gerenciar o app e os serviços de apoio sendo eles: `mysql`, `redis`, `mailhog`, `localstack`
 
-**Localstack:** O único serviço utilizado no Localstack no momento é o `secrets` da aws. No caso, quando é criado a empresa na rota [Criação de empresa](http://localhost:3000/api/app/tenanties) é criado também um usuário para gerenciar este banco, portanto, estas credenciais são armazenadas neste serviço. Porém quando o serviço é encerrado estas mesmas credencias são perdidas. </br>
-Para evitar este problema, antes de criar a empresa, faça:
+**Localstack:** Os serviços utilizados no Localstack são o `secrets` e `s3` da aws. 
+***secrets:*** Quando acionada a rota [Criação de empresa](http://localhost:3000/api/app/tenanties) é criado um banco de dados para a nova empresa e também um usuário para gerenciar esta nova base de dados no mysql, as credenciais são armazenadas neste serviço `(secrets)`. Porém quando o serviço é encerrado (docker-compose stop ou docker-compose down ou ao desligar o computador) estas credencias são perdidas. </br>
+o serviço `db` tem o volume mapeado com as bases de dados das empresas criadas ao acionar a rota, mas para acessá-las é necessário saber o usuário e senha de acesso do banco de dados gerado no momento de execução do endpoint. 
+Para não perder os dados, antes de criar a empresa, faça os passos descritos abaixo:
+***s3:*** O mesmo ocorre para este serviços, todos os arquivos serão perdidos mas não há script para carregar arquivos.
 
 1 - Neste [arquivo](src/processors/tenant/create-tenant.processor.ts)
 
