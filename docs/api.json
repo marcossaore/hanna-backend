@@ -1,42 +1,42 @@
 {
     "client": "Thunder Client",
     "collectionName": "Hanna Api",
-    "dateExported": "2023-11-30T16:10:31.883Z",
+    "dateExported": "2023-12-12T22:20:47.068Z",
     "version": "1.1",
     "folders": [
         {
-            "_id": "35269c22-ce61-436c-b583-91b1e4de5c95",
+            "_id": "5ea268b0-5f65-4c6b-9ab7-1e39fcb8b408",
             "name": "Tenanties",
             "containerId": "",
-            "created": "2023-11-06T01:51:23.692Z",
+            "created": "2023-12-07T17:29:20.182Z",
             "sortNum": 10000
         },
         {
-            "_id": "bc3790f2-f626-4846-b467-daead821d787",
+            "_id": "2a55e229-c987-47d2-9950-d7ad5901eaf6",
             "name": "Customers",
             "containerId": "",
-            "created": "2023-11-06T01:51:23.695Z",
+            "created": "2023-12-07T17:29:20.185Z",
             "sortNum": 15000
         },
         {
-            "_id": "db2ed18c-8d8b-462a-960d-fd8205e5fd2a",
+            "_id": "50315b51-c14d-43d9-b0cd-75d091ea3c4f",
             "name": "Auth",
             "containerId": "",
-            "created": "2023-11-06T01:51:23.694Z",
+            "created": "2023-12-07T17:29:20.183Z",
             "sortNum": 20000
         }
     ],
     "requests": [
         {
-            "_id": "84d18ed8-4269-491c-adc6-5c24bc42156f",
-            "colId": "2d4318e1-b56a-4405-aa8e-1bda1ccd5209",
-            "containerId": "35269c22-ce61-436c-b583-91b1e4de5c95",
+            "_id": "65d024b9-a108-45a9-956c-31b1bf9a0efe",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "5ea268b0-5f65-4c6b-9ab7-1e39fcb8b408",
             "name": "Create Tenant",
             "url": "http://localhost:3000/api/app/tenanties",
             "method": "POST",
             "sortNum": 10000,
-            "created": "2023-11-06T01:51:23.693Z",
-            "modified": "2023-11-30T03:35:34.071Z",
+            "created": "2023-12-07T17:29:20.183Z",
+            "modified": "2023-12-07T17:29:20.183Z",
             "headers": [],
             "params": [],
             "body": {
@@ -47,15 +47,15 @@
             "tests": []
         },
         {
-            "_id": "1b88c934-3386-4c88-83b2-414fd99a34b8",
-            "colId": "2d4318e1-b56a-4405-aa8e-1bda1ccd5209",
-            "containerId": "db2ed18c-8d8b-462a-960d-fd8205e5fd2a",
+            "_id": "4084e1b0-8b48-4bf3-b868-e69fbd3deae7",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "50315b51-c14d-43d9-b0cd-75d091ea3c4f",
             "name": "Login",
             "url": "http://localhost:3000/api/auth/login",
             "method": "POST",
             "sortNum": 10000,
-            "created": "2023-11-06T01:51:23.694Z",
-            "modified": "2023-11-30T15:19:21.717Z",
+            "created": "2023-12-07T17:29:20.184Z",
+            "modified": "2023-12-07T17:29:20.184Z",
             "headers": [],
             "params": [],
             "body": {
@@ -66,15 +66,15 @@
             "tests": []
         },
         {
-            "_id": "c407a139-2877-46ba-b41b-8f48df8349e2",
-            "colId": "2d4318e1-b56a-4405-aa8e-1bda1ccd5209",
-            "containerId": "bc3790f2-f626-4846-b467-daead821d787",
+            "_id": "26b040f5-90ea-4593-bcc2-f9928ac43e8c",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "2a55e229-c987-47d2-9950-d7ad5901eaf6",
             "name": "Create",
             "url": "http://localhost:3000/api/customers",
             "method": "POST",
             "sortNum": 10000,
-            "created": "2023-11-06T01:51:23.695Z",
-            "modified": "2023-11-06T01:51:23.695Z",
+            "created": "2023-12-07T17:29:20.185Z",
+            "modified": "2023-12-07T17:29:20.185Z",
             "headers": [],
             "params": [],
             "body": {
@@ -85,15 +85,97 @@
             "tests": []
         },
         {
-            "_id": "241b85c0-3fbf-41d3-8eaa-418a5ea29c83",
-            "colId": "2d4318e1-b56a-4405-aa8e-1bda1ccd5209",
-            "containerId": "bc3790f2-f626-4846-b467-daead821d787",
+            "_id": "3e546b4d-41b9-4359-a08b-72be8b8fceae",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "50315b51-c14d-43d9-b0cd-75d091ea3c4f",
+            "name": "Auth pin",
+            "url": "http://localhost:3000/api/auth/pin",
+            "method": "POST",
+            "sortNum": 15000,
+            "created": "2023-12-09T15:57:10.887Z",
+            "modified": "2023-12-09T15:57:33.807Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "4e3f4143-c892-4668-97a8-fe4865e78717",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "2a55e229-c987-47d2-9950-d7ad5901eaf6",
+            "name": "Create With Thumb",
+            "url": "http://localhost:3000/api/customers",
+            "method": "POST",
+            "sortNum": 15000,
+            "created": "2023-12-11T19:42:19.647Z",
+            "modified": "2023-12-12T18:07:43.621Z",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "multipart/form-data; boundary:{}",
+                    "isDisabled": true
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "formdata",
+                "raw": "",
+                "form": [
+                    {
+                        "name": "name",
+                        "value": "Mário Jorge Santos"
+                    },
+                    {
+                        "name": "phone",
+                        "value": "31962738512"
+                    },
+                    {
+                        "name": "address[street]",
+                        "value": "Julio kominscki Anício"
+                    },
+                    {
+                        "name": "address[number]",
+                        "value": "45"
+                    },
+                    {
+                        "name": "address[complement]",
+                        "value": "casa"
+                    },
+                    {
+                        "name": "address[city]",
+                        "value": "MG"
+                    },
+                    {
+                        "name": "address[state]",
+                        "value": "MG"
+                    },
+                    {
+                        "name": "address[neighborhood]",
+                        "value": "Belo Novo Vale"
+                    },
+                    {
+                        "name": "address[country]",
+                        "value": "Brasil"
+                    }
+                ],
+                "files": [
+                    {
+                        "name": "thumb",
+                        "value": "/home/ubuntu/projects/hanna-backend/test/e2e/src/modules/application/customer/test.png"
+                    }
+                ]
+            },
+            "tests": []
+        },
+        {
+            "_id": "cab8c228-ed9c-4e5c-a6b9-cc330c2df1c4",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "2a55e229-c987-47d2-9950-d7ad5901eaf6",
             "name": "Get All ",
             "url": "http://localhost:3000/api/customers?limit=1&page=1",
             "method": "GET",
             "sortNum": 20000,
-            "created": "2023-11-06T01:51:23.696Z",
-            "modified": "2023-11-06T01:51:23.696Z",
+            "created": "2023-12-07T17:29:20.186Z",
+            "modified": "2023-12-07T17:29:20.186Z",
             "headers": [],
             "params": [
                 {
@@ -115,29 +197,29 @@
             "tests": []
         },
         {
-            "_id": "dfd0ccbd-ee65-44e9-ab32-5756f5cf95b4",
-            "colId": "2d4318e1-b56a-4405-aa8e-1bda1ccd5209",
-            "containerId": "db2ed18c-8d8b-462a-960d-fd8205e5fd2a",
+            "_id": "86660df7-bfb9-4eb1-a660-4f202d1f9c40",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "50315b51-c14d-43d9-b0cd-75d091ea3c4f",
             "name": "Logout",
             "url": "http://localhost:3000/api/auth/logout",
             "method": "POST",
             "sortNum": 20000,
-            "created": "2023-11-22T20:00:16.432Z",
-            "modified": "2023-11-27T14:42:41.962Z",
+            "created": "2023-12-07T17:29:20.190Z",
+            "modified": "2023-12-07T17:29:20.190Z",
             "headers": [],
             "params": [],
             "tests": []
         },
         {
-            "_id": "155fd830-3f45-4d07-bf26-d4a0abecf6a2",
-            "colId": "2d4318e1-b56a-4405-aa8e-1bda1ccd5209",
-            "containerId": "bc3790f2-f626-4846-b467-daead821d787",
+            "_id": "e5c7d678-93af-4447-9c46-133a606182dd",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "2a55e229-c987-47d2-9950-d7ad5901eaf6",
             "name": "Get One",
             "url": "http://localhost:3000/api/customers/01HFW9GPSH5T2Z094H5Y08CTSG",
             "method": "GET",
             "sortNum": 25000,
-            "created": "2023-11-06T01:51:23.698Z",
-            "modified": "2023-11-22T19:55:14.272Z",
+            "created": "2023-12-07T17:29:20.188Z",
+            "modified": "2023-12-07T17:29:20.188Z",
             "headers": [],
             "params": [],
             "body": {
@@ -148,15 +230,15 @@
             "tests": []
         },
         {
-            "_id": "a5880d72-8b82-4632-a61e-83be820e4404",
-            "colId": "2d4318e1-b56a-4405-aa8e-1bda1ccd5209",
-            "containerId": "bc3790f2-f626-4846-b467-daead821d787",
+            "_id": "0565444a-88fd-4f39-9a11-b894813c41a8",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "2a55e229-c987-47d2-9950-d7ad5901eaf6",
             "name": "Update",
-            "url": "http://localhost:3000/api/customers/01HFW9GPSH5T2Z094H5Y08CTSG",
+            "url": "http://localhost:3000/api/customers/01HHDMHNMET95H5KSFAQGB68SK",
             "method": "PATCH",
             "sortNum": 30000,
-            "created": "2023-11-06T01:51:23.697Z",
-            "modified": "2023-11-22T19:55:34.727Z",
+            "created": "2023-12-07T17:29:20.187Z",
+            "modified": "2023-12-12T01:30:32.764Z",
             "headers": [],
             "params": [],
             "body": {
@@ -167,15 +249,15 @@
             "tests": []
         },
         {
-            "_id": "c5349a2a-7a5b-4d49-8964-c686d969dc38",
-            "colId": "2d4318e1-b56a-4405-aa8e-1bda1ccd5209",
-            "containerId": "bc3790f2-f626-4846-b467-daead821d787",
+            "_id": "c197dd15-1b3a-46df-89cf-2b7f51e66f30",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "2a55e229-c987-47d2-9950-d7ad5901eaf6",
             "name": "Delete",
             "url": "http://localhost:3000/api/customers/01HFW9GPSH5T2Z094H5Y08CTSG",
             "method": "DELETE",
             "sortNum": 40000,
-            "created": "2023-11-06T01:51:23.699Z",
-            "modified": "2023-11-22T19:55:48.418Z",
+            "created": "2023-12-07T17:29:20.189Z",
+            "modified": "2023-12-07T17:29:20.189Z",
             "headers": [],
             "params": [],
             "tests": []
