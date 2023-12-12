@@ -22,10 +22,6 @@ $ npm run load-bucket
 $ npm run load-secret
 ```
 
-```bash
-$ docker-compose up -d
-```
-
 ## Rodando o app
 
 ```bash
