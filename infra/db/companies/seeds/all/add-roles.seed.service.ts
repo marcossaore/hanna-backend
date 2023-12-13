@@ -1,3 +1,4 @@
+import { SeedProtocol } from '../protocols/seed.protocol'
 import { Injectable } from '@nestjs/common'
 import { Connection, Repository } from 'typeorm'
 import { Module } from '../../entities/module/module.entity'

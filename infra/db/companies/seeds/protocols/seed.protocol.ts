@@ -1,3 +1,3 @@
-interface SeedProtocol<T> {
-    seed (param: T): Promise<void>
+export interface SeedProtocol<T> {
+  seed(param: T): Promise<void>
 }

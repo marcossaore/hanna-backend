@@ -28,6 +28,15 @@ export class TenantService {
     return this.tenantRepository.save(createCompanyDto)
   }
 
+  async getFirstTenant(skip: number = 1): Promise<Tenant> {
+    skip = (skip - 1) * 1
+    const tenant = await this.tenantRepository.find({
+      take: 1,
+      skip
+    })
+    return tenant.length > 0 ? tenant[0] : null
+  }
+
   async findByUuid(uuid: string): Promise<Tenant> {
     return this.tenantRepository.findOne({ where: { uuid } })
   }
