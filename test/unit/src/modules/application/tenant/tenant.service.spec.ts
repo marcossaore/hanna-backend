@@ -30,6 +30,7 @@ describe('Service: tenant', () => {
           useValue: {
             findOneBy: jest.fn().mockResolvedValue(companyEntityMock),
             findOne: jest.fn().mockResolvedValue(companyEntityMock),
+            find: jest.fn().mockResolvedValue([companyEntityMock]),
             save: jest.fn().mockResolvedValue(companyEntityMock)
           }
         }
@@ -254,6 +255,45 @@ describe('Service: tenant', () => {
       expect(tenantRepository.save).toHaveBeenCalledWith(companyEntityMock)
       expect(companyEntityMock.status).toBe('rejected')
       expect(companyEntityMock.error).toBe(error.stack)
+    })
+  })
+
+  describe('getFirstTenant', () => {
+    it('should call RepositoryTenant.find with correct values when skip default is 1', async () => {
+      await sutTenantService.getFirstTenant()
+      expect(tenantRepository.find).toHaveBeenCalledTimes(1)
+      expect(tenantRepository.find).toHaveBeenCalledWith({
+        take: 1,
+        skip: 0
+      })
+    })
+
+    it('should call RepositoryTenant.find with correct values when skip value is 5', async () => {
+      await sutTenantService.getFirstTenant(5)
+      expect(tenantRepository.find).toHaveBeenCalledTimes(1)
+      expect(tenantRepository.find).toHaveBeenCalledWith({
+        take: 1,
+        skip: 4
+      })
+    })
+
+    it('should throws if RepositoryTenant.find throws', async () => {
+      jest.spyOn(tenantRepository, 'find').mockImplementationOnce(async () => {
+        throw new Error()
+      })
+      const promise = sutTenantService.getFirstTenant()
+      await expect(promise).rejects.toThrow()
+    })
+
+    it('should return null if no exists any company', async () => {
+      jest.spyOn(tenantRepository, 'find').mockResolvedValueOnce([])
+      const response = await sutTenantService.getFirstTenant()
+      expect(response).toEqual(null)
+    })
+
+    it('should return a company when succeds', async () => {
+      const response = await sutTenantService.getFirstTenant()
+      expect(response).toEqual(companyEntityMock)
     })
   })
 })
