@@ -92,5 +92,18 @@ export class AddModulesSeedService implements SeedProtocol<Connection> {
         ]
       })
     }
+
+    const productsModule = await moduleRepository.findOne({
+      where: {
+        name: 'products'
+      }
+    })
+
+    if (!productsModule) {
+      await moduleRepository.save({
+        name: 'products',
+        grants: allGrants
+      })
+    }
   }
 }
