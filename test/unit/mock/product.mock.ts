@@ -7,13 +7,15 @@ export const mockCreateProductDto = ({
   price = null,
   description = null,
   bulkPrice = null,
-  code = null
+  code = null,
+  thumb = null
 } = {}): CreateProductDto => ({
   name: name || faker.string.sample(),
   price: price || faker.number.int(),
   description,
   bulkPrice,
-  code
+  code,
+  thumb
 })
 
 export const mockProductEntity = ({
