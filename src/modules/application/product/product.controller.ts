@@ -115,6 +115,7 @@ export class ProductController {
   }
 
   @Patch(':id')
+  @FormDataRequest()
   @Permissions('products', 'edit')
   @UseGuards(AuthenticatedGuard)
   @UseGuards(PermissionsGuard)

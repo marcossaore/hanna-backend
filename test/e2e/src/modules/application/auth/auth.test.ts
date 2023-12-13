@@ -27,7 +27,7 @@ describe('AuthController (e2e)', () => {
     await app.close()
   })
 
-  it('/api/auth/login (Post)', async () => {
+  it('/api/auth/login as admin (Post)', async () => {
     const response = await request(app.getHttpServer())
       .post('/api/auth/login')
       .send({
@@ -109,6 +109,16 @@ describe('AuthController (e2e)', () => {
           bindPlan: false,
           bill: false
         }
+      },
+      {
+        name: 'products',
+        grants: {
+          read: true,
+          edit: true,
+          create: true,
+          delete: true
+        },
+        options: {}
       }
     ])
     expect(responseBody.uuid).toBeTruthy()
