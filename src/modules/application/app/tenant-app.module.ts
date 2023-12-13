@@ -6,6 +6,29 @@ import { LoadTenantConnectionModule } from '../tenant-connection/tenant-load-con
 import { LoadTenantConnectionService } from '../tenant-connection/load-tenant-connection.service'
 import { Request } from 'express'
 import { AuthModule } from '../auth/auth.module'
+import { ProductModule } from '../product/product.module'
+
+const injectConnectionProvider = () => {
+  return {
+    provide: 'CONNECTION',
+    scope: Scope.REQUEST,
+    useFactory: async (
+      request: Request,
+      loadTenantConnectionService: LoadTenantConnectionService
+    ) => {
+      const tenantName = request?.session?.auth?.tenant?.identifier
+      if (!tenantName) {
+        throw new UnauthorizedException()
+      }
+      try {
+        return await loadTenantConnectionService.load(tenantName)
+      } catch (error) {
+        throw new UnauthorizedException()
+      }
+    },
+    inject: [REQUEST, LoadTenantConnectionService]
+  }
+}
 
 @Module({
   imports: [
@@ -13,27 +36,13 @@ import { AuthModule } from '../auth/auth.module'
     {
       imports: [LoadTenantConnectionModule],
       module: CustomerModule,
-      providers: [
-        {
-          provide: 'CONNECTION',
-          scope: Scope.REQUEST,
-          useFactory: async (
-            request: Request,
-            loadTenantConnectionService: LoadTenantConnectionService
-          ) => {
-            const tenantName = request?.session?.auth?.tenant?.identifier
-            if (!tenantName) {
-              throw new UnauthorizedException()
-            }
-            try {
-              return await loadTenantConnectionService.load(tenantName)
-            } catch (error) {
-              throw new UnauthorizedException()
-            }
-          },
-          inject: [REQUEST, LoadTenantConnectionService]
-        }
-      ],
+      providers: [injectConnectionProvider()],
+      exports: ['CONNECTION']
+    },
+    {
+      imports: [LoadTenantConnectionModule],
+      module: ProductModule,
+      providers: [injectConnectionProvider()],
       exports: ['CONNECTION']
     },
     {

@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator'
+import { HasMimeType, IsFile, MemoryStoredFile } from 'nestjs-form-data'
 export class CreateProductDto {
   @IsString({
     message: JSON.stringify({
@@ -24,9 +25,7 @@ export class CreateProductDto {
   readonly description: string
 
   @IsNumber(
-    {
-      allowInfinity: false
-    },
+    {},
     {
       message: JSON.stringify({
         message: 'O preço do produto deve ser "number"!',
@@ -70,4 +69,10 @@ export class CreateProductDto {
   })
   @IsOptional()
   readonly code: string
+
+  @IsFile()
+  // @MaxFileSize(1e6)
+  @HasMimeType(['image/jpeg', 'image/png'])
+  @IsOptional()
+  readonly thumb: MemoryStoredFile
 }
