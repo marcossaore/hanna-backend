@@ -100,3 +100,10 @@ $ npm run test:ci
 # run as continuous integration inside docker
 $ npm run test:ci:docker
 ```
+
+## Utilitários
+Rodar migrations e seeders para todas as empresas
+
+```bash
+npx nestjs-command tenanties:migraseed
+```
