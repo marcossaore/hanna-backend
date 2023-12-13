@@ -16,8 +16,8 @@ export class RunMigrationsAndSeedersToTenantiesService {
   ) {}
 
   @Command({
-    command: 'example:create-something',
-    describe: 'create a example with something'
+    command: 'tenanties:migraseed',
+    describe: 'run for all tenanties, migrations and seeders'
   })
   async run(skip = 1) {
     const tenant = await this.tenantService.getFirstTenant(skip)
