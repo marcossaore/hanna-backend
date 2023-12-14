@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "Hanna Api",
-    "dateExported": "2023-12-12T22:20:47.068Z",
+    "dateExported": "2023-12-14T02:23:54.941Z",
     "version": "1.1",
     "folders": [
         {
@@ -17,6 +17,13 @@
             "containerId": "",
             "created": "2023-12-07T17:29:20.185Z",
             "sortNum": 15000
+        },
+        {
+            "_id": "bb42a8d4-70c6-4c47-af1e-929409733853",
+            "name": "Products",
+            "containerId": "",
+            "created": "2023-12-13T17:37:40.544Z",
+            "sortNum": 17500
         },
         {
             "_id": "50315b51-c14d-43d9-b0cd-75d091ea3c4f",
@@ -80,6 +87,44 @@
             "body": {
                 "type": "json",
                 "raw": "{\n  \"name\": \"Mário Jorge Santos\",\n  \"phone\": \"31962738512\",\n  \"address\": {\n    \"street\": \"rua Julio kominscki Anício\",\n    \"number\": \"45\",\n    \"neighborhood\": \"Belo Novo Vale\",\n    \"city\": \"Belo Horizonte\",\n    \"state\": \"MG\",\n    \"country\": \"Brasil\"\n  }\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "479d623b-dd7d-4314-9121-20d0b5058c7e",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "bb42a8d4-70c6-4c47-af1e-929409733853",
+            "name": "Create with Bulk",
+            "url": "http://localhost:3000/api/products",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2023-12-13T17:37:40.544Z",
+            "modified": "2023-12-13T17:45:19.537Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Raçao Quatree Supreme\",\n  \"description\": \"Ração Seca Quatree Supreme Frango e Batata Doce Cães Filhotes Raças Médias e Grandes\",\n  \"price\": 24561,\n  \"bulkPrice\": 3250,\n  \"code\": \"1234567890123\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "ffacc5aa-9806-4194-b0c5-6b1f17134481",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "bb42a8d4-70c6-4c47-af1e-929409733853",
+            "name": "Create",
+            "url": "http://localhost:3000/api/products",
+            "method": "POST",
+            "sortNum": 12500,
+            "created": "2023-12-13T17:45:47.770Z",
+            "modified": "2023-12-13T17:47:57.776Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Brinquedo de Puxar p/ Cachorro Kong Jaxx Triple Barrel G\",\n  \"price\": 14000\n}",
                 "form": []
             },
             "tests": []
@@ -167,6 +212,46 @@
             "tests": []
         },
         {
+            "_id": "cbce15f7-8f09-4db6-9e7f-12d008d5a16c",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "bb42a8d4-70c6-4c47-af1e-929409733853",
+            "name": "Create With Thumb",
+            "url": "http://localhost:3000/api/products",
+            "method": "POST",
+            "sortNum": 15000,
+            "created": "2023-12-13T17:37:40.545Z",
+            "modified": "2023-12-13T17:55:16.339Z",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "multipart/form-data; boundary:{}",
+                    "isDisabled": true
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "formdata",
+                "raw": "",
+                "form": [
+                    {
+                        "name": "name",
+                        "value": "Brinquedo Para Pet Cachorro De Pelúcia"
+                    },
+                    {
+                        "name": "price",
+                        "value": "6430"
+                    }
+                ],
+                "files": [
+                    {
+                        "name": "thumb",
+                        "value": "/home/ubuntu/projects/hanna-backend/test2.jpeg"
+                    }
+                ]
+            },
+            "tests": []
+        },
+        {
             "_id": "cab8c228-ed9c-4e5c-a6b9-cc330c2df1c4",
             "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
             "containerId": "2a55e229-c987-47d2-9950-d7ad5901eaf6",
@@ -211,6 +296,31 @@
             "tests": []
         },
         {
+            "_id": "6cb874ee-7313-4a2c-a665-77e7d9bd4541",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "bb42a8d4-70c6-4c47-af1e-929409733853",
+            "name": "Get All ",
+            "url": "http://localhost:3000/api/products?limit=10&page=1",
+            "method": "GET",
+            "sortNum": 20000,
+            "created": "2023-12-13T17:37:40.546Z",
+            "modified": "2023-12-13T17:55:56.690Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "limit",
+                    "value": "10",
+                    "isPath": false
+                },
+                {
+                    "name": "page",
+                    "value": "1",
+                    "isPath": false
+                }
+            ],
+            "tests": []
+        },
+        {
             "_id": "e5c7d678-93af-4447-9c46-133a606182dd",
             "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
             "containerId": "2a55e229-c987-47d2-9950-d7ad5901eaf6",
@@ -219,14 +329,23 @@
             "method": "GET",
             "sortNum": 25000,
             "created": "2023-12-07T17:29:20.188Z",
-            "modified": "2023-12-07T17:29:20.188Z",
+            "modified": "2023-12-13T17:56:40.748Z",
             "headers": [],
             "params": [],
-            "body": {
-                "type": "json",
-                "raw": "{\n  \"name\": \"Maria Rita\",\n  \"phone\": \"31984536728\",\n  \"address\": {\n    \"street\": \"rua Julio kominscki Anício\",\n    \"number\": \"45\",\n    \"neighborhood\": \"Belo Novo Vale\",\n    \"city\": \"Belo Horizonte\",\n    \"state\": \"MG\",\n    \"country\": \"Brasil\"\n  }\n}",
-                "form": []
-            },
+            "tests": []
+        },
+        {
+            "_id": "86383ddf-58ca-47b0-baaa-50d1a4a29c5b",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "bb42a8d4-70c6-4c47-af1e-929409733853",
+            "name": "Get One",
+            "url": "http://localhost:3000/api/products/1",
+            "method": "GET",
+            "sortNum": 25000,
+            "created": "2023-12-13T17:37:40.547Z",
+            "modified": "2023-12-13T17:56:31.258Z",
+            "headers": [],
+            "params": [],
             "tests": []
         },
         {
@@ -249,6 +368,25 @@
             "tests": []
         },
         {
+            "_id": "df755982-9106-4eab-8adf-90f6f2b0bc5c",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "bb42a8d4-70c6-4c47-af1e-929409733853",
+            "name": "Update",
+            "url": "http://localhost:3000/api/products/1",
+            "method": "PATCH",
+            "sortNum": 30000,
+            "created": "2023-12-13T17:37:40.548Z",
+            "modified": "2023-12-13T17:58:19.619Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Raçao Quatree Supreme\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
             "_id": "c197dd15-1b3a-46df-89cf-2b7f51e66f30",
             "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
             "containerId": "2a55e229-c987-47d2-9950-d7ad5901eaf6",
@@ -258,6 +396,20 @@
             "sortNum": 40000,
             "created": "2023-12-07T17:29:20.189Z",
             "modified": "2023-12-07T17:29:20.189Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "bd17f923-8d98-482a-9631-49202dfb5507",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "bb42a8d4-70c6-4c47-af1e-929409733853",
+            "name": "Delete",
+            "url": "http://localhost:3000/api/products/1",
+            "method": "DELETE",
+            "sortNum": 40000,
+            "created": "2023-12-13T17:37:40.549Z",
+            "modified": "2023-12-13T17:58:52.046Z",
             "headers": [],
             "params": [],
             "tests": []
