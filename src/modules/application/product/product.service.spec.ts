@@ -32,7 +32,7 @@ describe('Service: Product', () => {
         .mockResolvedValue([[productEntityMock, productEntityMock], 2]),
       findOneBy: jest.fn().mockResolvedValue(productEntityMock),
       save: jest.fn().mockResolvedValue(productEntityMock),
-      remmove: jest.fn().mockResolvedValue(productEntityMock)
+      remove: jest.fn().mockResolvedValue(productEntityMock)
     }
   })
 
@@ -91,9 +91,9 @@ describe('Service: Product', () => {
     })
   })
 
-  describe('findAll', () => {
+  describe('find', () => {
     it('should call ProductRepository.findAndCount with values', async () => {
-      await sutProductService.findAll(pageOptions)
+      await sutProductService.find(pageOptions)
       expect(productRepository.findAndCount).toHaveBeenCalledWith({
         take: pageOptions.limit,
         skip: pageOptions.page - 1,
@@ -110,7 +110,7 @@ describe('Service: Product', () => {
         .mockImplementationOnce(async () => {
           throw new Error()
         })
-      const promise = sutProductService.findAll(pageOptions)
+      const promise = sutProductService.find(pageOptions)
       await expect(promise).rejects.toThrow()
     })
 
@@ -118,19 +118,19 @@ describe('Service: Product', () => {
       jest
         .spyOn(productRepository, 'findAndCount')
         .mockResolvedValueOnce(Promise.resolve([]))
-      const response = await sutProductService.findAll(pageOptions)
+      const response = await sutProductService.find(pageOptions)
       expect(response).toEqual([])
     })
 
     it('should return products on success', async () => {
-      const response = await sutProductService.findAll(pageOptions)
+      const response = await sutProductService.find(pageOptions)
       expect(response.length).toEqual(2)
     })
   })
 
-  describe('findOne', () => {
+  describe('findOneBy', () => {
     it('should call ProductRepository.findOneBy with correct values', async () => {
-      await sutProductService.findOne(2)
+      await sutProductService.findById(2)
       expect(productRepository.findOneBy).toHaveBeenCalledWith({ id: 2 })
       expect(productRepository.findOneBy).toHaveBeenCalledTimes(1)
     })
@@ -141,7 +141,7 @@ describe('Service: Product', () => {
         .mockImplementationOnce(async () => {
           throw new Error()
         })
-      const promise = sutProductService.findOne(1)
+      const promise = sutProductService.findById(1)
       await expect(promise).rejects.toThrow()
     })
 
@@ -149,12 +149,12 @@ describe('Service: Product', () => {
       jest
         .spyOn(productRepository, 'findOneBy')
         .mockResolvedValueOnce(Promise.resolve(null))
-      const response = await sutProductService.findOne(1)
+      const response = await sutProductService.findById(1)
       expect(response).toEqual(null)
     })
 
     it('should return a product on success', async () => {
-      const response = await sutProductService.findOne(1)
+      const response = await sutProductService.findById(1)
       expect(response).toEqual(productEntityMock)
     })
   })

@@ -68,12 +68,12 @@ export class ProductController {
   @Permissions('products', 'read')
   @UseGuards(AuthenticatedGuard)
   @UseGuards(PermissionsGuard)
-  async findAll(
+  async list(
     @Session() session,
     @Query('limit') limit: number = 10,
     @Query('page') page: number = 1
   ): Promise<{ page: number; totalPage: number; items: ProductDto[] }> {
-    const [products, count] = await this.productService.findAll({ limit, page })
+    const [products, count] = await this.productService.find({ limit, page })
 
     let totalPage = 1
     if (count > limit) {
@@ -100,11 +100,8 @@ export class ProductController {
   @Permissions('products', 'read')
   @UseGuards(AuthenticatedGuard)
   @UseGuards(PermissionsGuard)
-  async findOne(
-    @Session() session,
-    @Param('id') id: string
-  ): Promise<ProductDto> {
-    const product = await this.productService.findOne(+id)
+  async get(@Session() session, @Param('id') id: string): Promise<ProductDto> {
+    const product = await this.productService.findById(+id)
     if (!product) {
       throw new NotFoundException('Produto não encontrado!')
     }
@@ -124,7 +121,7 @@ export class ProductController {
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto
   ): Promise<ProductDto> {
-    const product = await this.productService.findOne(+id)
+    const product = await this.productService.findById(+id)
     if (!product) {
       throw new NotFoundException('Produto não encontrado!')
     }
@@ -173,7 +170,7 @@ export class ProductController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     // colocar uma regra para não deletar produto com vendas realizadas
-    const product = await this.productService.findOne(+id)
+    const product = await this.productService.findById(+id)
     if (!product) {
       throw new NotFoundException('Produto não encontrado!')
     }

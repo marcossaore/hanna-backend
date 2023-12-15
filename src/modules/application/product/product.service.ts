@@ -23,7 +23,7 @@ export class ProductService {
     return exists ? true : false
   }
 
-  async findAll({
+  async find({
     limit,
     page
   }: {
@@ -40,7 +40,7 @@ export class ProductService {
     })
   }
 
-  findOne(id: number) {
+  findById(id: number) {
     return this.productRepository.findOneBy({ id })
   }
 

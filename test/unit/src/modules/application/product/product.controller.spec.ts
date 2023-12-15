@@ -38,13 +38,13 @@ describe('Controller: Product', () => {
           useValue: {
             create: jest.fn().mockResolvedValue(productEntityMock),
             existsCode: jest.fn().mockResolvedValue(false),
-            findAll: jest
+            find: jest
               .fn()
               .mockResolvedValue([
                 [mockProductEntity(), mockProductEntity()],
                 2
               ]),
-            findOne: jest.fn().mockResolvedValue(productEntityMock),
+            findById: jest.fn().mockResolvedValue(productEntityMock),
             save: jest.fn().mockResolvedValue(productEntityMock),
             remove: jest.fn().mockResolvedValue(productEntityMock)
           }
@@ -144,26 +144,26 @@ describe('Controller: Product', () => {
     })
   })
 
-  describe('findAll', () => {
+  describe('list', () => {
     it('should call ProductService.findAll with correct values', async () => {
-      await sutProductController.findAll(sessionSpy)
-      expect(productService.findAll).toHaveBeenCalledWith({
+      await sutProductController.list(sessionSpy)
+      expect(productService.find).toHaveBeenCalledWith({
         limit: 10,
         page: 1
       })
-      expect(productService.findAll).toHaveBeenCalledTimes(1)
+      expect(productService.find).toHaveBeenCalledTimes(1)
     })
 
     it('should throw if ProductService.findAll throws', async () => {
-      jest.spyOn(productService, 'findAll').mockImplementationOnce(() => {
+      jest.spyOn(productService, 'find').mockImplementationOnce(() => {
         throw new Error()
       })
-      const promise = sutProductController.findAll(sessionSpy)
+      const promise = sutProductController.list(sessionSpy)
       await expect(promise).rejects.toThrow()
     })
 
     it('should call StorageService.getUrl if', async () => {
-      await sutProductController.findAll(sessionSpy)
+      await sutProductController.list(sessionSpy)
       expect(storageService.getUrl).toHaveBeenCalledTimes(2)
     })
 
@@ -171,12 +171,12 @@ describe('Controller: Product', () => {
       jest.spyOn(storageService, 'getUrl').mockImplementationOnce(() => {
         throw new Error()
       })
-      const promise = sutProductController.findAll(sessionSpy)
+      const promise = sutProductController.list(sessionSpy)
       await expect(promise).rejects.toThrow()
     })
 
     it('should return products when succeds', async () => {
-      const response = await sutProductController.findAll(sessionSpy)
+      const response = await sutProductController.list(sessionSpy)
       expect(response.page).toBe(1)
       expect(response.totalPage).toBe(1)
       expect(response.items.length).toBe(2)
@@ -184,29 +184,29 @@ describe('Controller: Product', () => {
     })
   })
 
-  describe('findOne', () => {
-    it('should call ProductService.findOne with correct value', async () => {
-      await sutProductController.findOne(sessionSpy, '4')
-      expect(productService.findOne).toHaveBeenCalledWith(4)
-      expect(productService.findOne).toHaveBeenCalledTimes(1)
+  describe('get', () => {
+    it('should call ProductService.findById with correct value', async () => {
+      await sutProductController.get(sessionSpy, '4')
+      expect(productService.findById).toHaveBeenCalledWith(4)
+      expect(productService.findById).toHaveBeenCalledTimes(1)
     })
 
-    it('should throw if ProductService.findOne returns null', async () => {
-      jest.spyOn(productService, 'findOne').mockResolvedValueOnce(null)
-      const promise = sutProductController.findOne(sessionSpy, '1')
+    it('should throw if ProductService.findById returns null', async () => {
+      jest.spyOn(productService, 'findById').mockResolvedValueOnce(null)
+      const promise = sutProductController.get(sessionSpy, '1')
       await expect(promise).rejects.toThrow('Produto não encontrado!')
     })
 
-    it('should throw if ProductService.findOne throws', async () => {
-      jest.spyOn(productService, 'findOne').mockImplementationOnce(() => {
+    it('should throw if ProductService.findById throws', async () => {
+      jest.spyOn(productService, 'findById').mockImplementationOnce(() => {
         throw new Error()
       })
-      const promise = sutProductController.findOne(sessionSpy, '3')
+      const promise = sutProductController.get(sessionSpy, '3')
       await expect(promise).rejects.toThrow()
     })
 
     it('should call StorageService.getUrl with correct value', async () => {
-      await sutProductController.findOne(sessionSpy, '1')
+      await sutProductController.get(sessionSpy, '1')
       expect(storageService.getUrl).toHaveBeenCalledWith(
         `${sessionSpy.auth.tenant.identifier}/products/${productEntityMock.id}`
       )
@@ -217,12 +217,12 @@ describe('Controller: Product', () => {
       jest.spyOn(storageService, 'getUrl').mockImplementationOnce(() => {
         throw new Error()
       })
-      const promise = sutProductController.findOne(sessionSpy, '1')
+      const promise = sutProductController.get(sessionSpy, '1')
       await expect(promise).rejects.toThrow()
     })
 
     it('should return a product when succeds', async () => {
-      const response = await sutProductController.findOne(sessionSpy, '1')
+      const response = await sutProductController.get(sessionSpy, '1')
       expect(response).toEqual(
         new ProductDto({ ...productEntityMock, thumb: 'http://any_url' })
       )
@@ -230,22 +230,22 @@ describe('Controller: Product', () => {
   })
 
   describe('update', () => {
-    it('should call ProductService.findOne with correct value', async () => {
+    it('should call ProductService.findById with correct value', async () => {
       const data = mockCreateProductDto()
       await sutProductController.update(sessionSpy, '4', data)
-      expect(productService.findOne).toHaveBeenCalledWith(4)
-      expect(productService.findOne).toHaveBeenCalledTimes(1)
+      expect(productService.findById).toHaveBeenCalledWith(4)
+      expect(productService.findById).toHaveBeenCalledTimes(1)
     })
 
-    it('should throw if ProductService.findOne returns null', async () => {
-      jest.spyOn(productService, 'findOne').mockResolvedValueOnce(null)
+    it('should throw if ProductService.findById returns null', async () => {
+      jest.spyOn(productService, 'findById').mockResolvedValueOnce(null)
       const data = mockCreateProductDto()
       const promise = sutProductController.update(sessionSpy, '4', data)
       await expect(promise).rejects.toThrow('Produto não encontrado!')
     })
 
-    it('should throw if ProductService.findOne throws', async () => {
-      jest.spyOn(productService, 'findOne').mockImplementationOnce(() => {
+    it('should throw if ProductService.findById throws', async () => {
+      jest.spyOn(productService, 'findById').mockImplementationOnce(() => {
         throw new Error()
       })
       const data = mockCreateProductDto()
@@ -333,20 +333,20 @@ describe('Controller: Product', () => {
   })
 
   describe('remove', () => {
-    it('should call ProductService.findOne with correct value', async () => {
+    it('should call ProductService.findById with correct value', async () => {
       await sutProductController.remove('1')
-      expect(productService.findOne).toHaveBeenCalledWith(1)
-      expect(productService.findOne).toHaveBeenCalledTimes(1)
+      expect(productService.findById).toHaveBeenCalledWith(1)
+      expect(productService.findById).toHaveBeenCalledTimes(1)
     })
 
     it('should throw if ProductService.findOne returns null', async () => {
-      jest.spyOn(productService, 'findOne').mockResolvedValueOnce(null)
+      jest.spyOn(productService, 'findById').mockResolvedValueOnce(null)
       const promise = sutProductController.remove('4')
       await expect(promise).rejects.toThrow('Produto não encontrado!')
     })
 
-    it('should throw if ProductService.findOne throws', async () => {
-      jest.spyOn(productService, 'findOne').mockImplementationOnce(() => {
+    it('should throw if ProductService.findById throws', async () => {
+      jest.spyOn(productService, 'findById').mockImplementationOnce(() => {
         throw new Error()
       })
       const promise = sutProductController.remove('4')
