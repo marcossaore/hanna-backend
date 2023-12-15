@@ -27,7 +27,7 @@ export class AddModulesSeedService implements SeedProtocol<Connection> {
             name: 'pinPass'
           },
           {
-            name: 'accountMode'
+            name: 'billMode'
           }
         ]
       })

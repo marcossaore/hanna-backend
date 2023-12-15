@@ -3,8 +3,11 @@ import {
   Column,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn
 } from 'typeorm'
+import { Sale } from '../sale/sale.entity'
+import { Bill } from '../sale/bill.entity'
 
 @Entity('customer')
 export class Customer extends AddDateColumns {
@@ -40,6 +43,12 @@ export class Customer extends AddDateColumns {
 
   @Column({ nullable: false })
   country: string
+
+  @OneToMany(() => Sale, (sale) => sale.customer)
+  sales: Sale[]
+
+  @OneToMany(() => Bill, (bill) => bill.customer)
+  bills: Bill[]
 
   @DeleteDateColumn({ type: 'timestamp', default: null, nullable: true })
   deletedAt: Date

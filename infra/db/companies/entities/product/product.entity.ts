@@ -3,8 +3,10 @@ import {
   Column,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn
 } from 'typeorm'
+import { Order } from '../sale/order.entity'
 
 @Entity('product')
 export class Product extends AddDateColumns {
@@ -25,6 +27,9 @@ export class Product extends AddDateColumns {
 
   @Column({ nullable: true })
   code?: string
+
+  @OneToMany(() => Order, (order: Order) => order.id)
+  order: Order[]
 
   @DeleteDateColumn({ type: 'timestamp', default: null, nullable: true })
   deletedAt: Date
