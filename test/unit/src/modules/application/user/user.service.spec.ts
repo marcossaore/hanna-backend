@@ -118,10 +118,10 @@ describe('Service: UserService', () => {
       }
     }
 
-    it('should call UserRepository.findOneBy with correct uuid', async () => {
-      await sutUserService.addRole('any_uuid', roleSpy as any)
+    it('should call UserRepository.findOneBy with correct id', async () => {
+      await sutUserService.addRole('any_id', roleSpy as any)
       expect(userRepository.findOneBy).toBeCalledWith({
-        uuid: 'any_uuid'
+        id: 'any_id'
       })
       expect(userRepository.findOneBy).toBeCalledTimes(1)
     })
@@ -130,13 +130,13 @@ describe('Service: UserService', () => {
       jest.spyOn(userRepository, 'findOneBy').mockImplementationOnce(() => {
         throw new Error()
       })
-      const promise = sutUserService.addRole('any_uuid', roleSpy as any)
+      const promise = sutUserService.addRole('any_id', roleSpy as any)
       await expect(promise).rejects.toThrow()
     })
 
     it('should call AddRole.add with correct user', async () => {
       const addRoleSpy = jest.spyOn(roleSpy, 'add')
-      await sutUserService.addRole('any_uuid', roleSpy as any)
+      await sutUserService.addRole('any_id', roleSpy as any)
       expect(addRoleSpy).toBeCalledWith(userMock)
       expect(addRoleSpy).toBeCalledTimes(1)
     })
@@ -145,12 +145,12 @@ describe('Service: UserService', () => {
       jest.spyOn(roleSpy, 'add').mockImplementationOnce(() => {
         throw new Error()
       })
-      const promise = sutUserService.addRole('any_uuid', roleSpy as any)
+      const promise = sutUserService.addRole('any_id', roleSpy as any)
       await expect(promise).rejects.toThrow()
     })
 
     it('should call UserRepository.save user with roles', async () => {
-      await sutUserService.addRole('any_uuid', roleSpy as any)
+      await sutUserService.addRole('any_id', roleSpy as any)
       expect((userMock as any).role).toBeTruthy()
       expect((userMock as any).role.permissions.length).toBe(2)
       expect(userRepository.save).toBeCalledWith(userMock)
@@ -161,7 +161,7 @@ describe('Service: UserService', () => {
       jest.spyOn(userRepository, 'save').mockImplementationOnce(() => {
         throw new Error()
       })
-      const promise = sutUserService.addRole('any_uuid', roleSpy as any)
+      const promise = sutUserService.addRole('any_id', roleSpy as any)
       await expect(promise).rejects.toThrow()
     })
 
@@ -173,7 +173,7 @@ describe('Service: UserService', () => {
 
   describe('getRoles', () => {
     it('should call UserRepository.findOne with correct value', async () => {
-      await sutUserService.getRoles('any_uuid')
+      await sutUserService.getRoles('any_id')
       expect(userRepository.findOne).toBeCalledWith({
         relations: [
           'role.permissions.grants',
@@ -181,11 +181,10 @@ describe('Service: UserService', () => {
           'role.permissions.roleOptions.option'
         ],
         where: {
-          uuid: 'any_uuid'
+          id: 'any_id'
         },
         select: {
           id: true,
-          uuid: true,
           name: true
         }
       })
@@ -196,12 +195,12 @@ describe('Service: UserService', () => {
       jest.spyOn(userRepository, 'findOne').mockImplementationOnce(() => {
         throw new Error()
       })
-      const promise = sutUserService.getRoles('any_uuid')
+      const promise = sutUserService.getRoles('any_id')
       await expect(promise).rejects.toThrow()
     })
 
     it('should return modules on success', async () => {
-      const response = await sutUserService.getRoles('any_uuid')
+      const response = await sutUserService.getRoles('any_id')
       expect(response).toEqual(permissionMock)
     })
   })
@@ -209,9 +208,9 @@ describe('Service: UserService', () => {
   describe('getRolesGrouped', () => {
     it('should call getRoles from service with correct value', async () => {
       const getRolesSpy = jest.spyOn(sutUserService as any, 'getRoles')
-      await sutUserService.getRolesGrouped('any_uuid')
+      await sutUserService.getRolesGrouped('any_id')
       expect(getRolesSpy).toBeCalledTimes(1)
-      expect(getRolesSpy).toHaveBeenCalledWith('any_uuid')
+      expect(getRolesSpy).toHaveBeenCalledWith('any_id')
     })
 
     it('should throws if getRoles throws', async () => {
@@ -220,12 +219,12 @@ describe('Service: UserService', () => {
         .mockImplementationOnce(() => {
           throw new Error()
         })
-      const promise = sutUserService.getRolesGrouped('any_uuid')
+      const promise = sutUserService.getRolesGrouped('any_id')
       await expect(promise).rejects.toThrow()
     })
 
     it('should return modules on success', async () => {
-      const response = await sutUserService.getRolesGrouped('any_uuid')
+      const response = await sutUserService.getRolesGrouped('any_id')
       expect(response).toEqual([
         {
           grants: {
@@ -261,10 +260,10 @@ describe('Service: UserService', () => {
 
   describe('savePassword', () => {
     it('should call UserRepository.findOne with correct values', async () => {
-      await sutUserService.savePassword('any_uuid', 'any_pass')
+      await sutUserService.savePassword('any_id', 'any_pass')
       expect(userRepository.findOne).toBeCalledWith({
         where: {
-          uuid: 'any_uuid'
+          id: 'any_id'
         }
       })
       expect(userRepository.findOne).toBeCalledTimes(1)
@@ -274,13 +273,13 @@ describe('Service: UserService', () => {
       jest.spyOn(userRepository, 'findOne').mockImplementationOnce(() => {
         throw new Error()
       })
-      const promise = sutUserService.savePassword('any_uuid', 'any_pass')
+      const promise = sutUserService.savePassword('any_id', 'any_pass')
       await expect(promise).rejects.toThrow()
     })
 
     it('should call UserRepository.save user with new password', async () => {
       jest.spyOn(userRepository, 'findOne').mockResolvedValueOnce(userMock)
-      await sutUserService.savePassword('any_uuid', 'any_pass')
+      await sutUserService.savePassword('any_id', 'any_pass')
       expect(userMock.password).toBe('any_pass')
       expect(userRepository.save).toBeCalledWith(userMock)
       expect(userRepository.save).toBeCalledTimes(1)
@@ -290,12 +289,12 @@ describe('Service: UserService', () => {
       jest.spyOn(userRepository, 'save').mockImplementationOnce(() => {
         throw new Error()
       })
-      const promise = sutUserService.savePassword('any_uuid', 'any_pass')
+      const promise = sutUserService.savePassword('any_id', 'any_pass')
       await expect(promise).rejects.toThrow()
     })
 
     it('should not return on success', async () => {
-      const response = await sutUserService.savePassword('any_uuid', 'any_pass')
+      const response = await sutUserService.savePassword('any_id', 'any_pass')
       expect(response).toBeUndefined()
     })
   })

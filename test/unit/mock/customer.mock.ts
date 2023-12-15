@@ -1,6 +1,5 @@
 import { faker } from '@faker-js/faker'
 import { CreateCustomerDto } from '@/modules/application/customer/dto/create-customer.dto'
-import { CreateCustomerToEntity } from '@/modules/application/customer/dto/create-customer-to-entity.dto'
 import { Customer } from '@infra/db/companies/entities/customer/customer.entity'
 
 export const mockCreateCustomerWithAddressDto = ({
@@ -23,19 +22,12 @@ export const mockCreateCustomerWithAddressDto = ({
   }
 })
 
-export const mockCreateCustomerToEntityWithAddressDto =
-  (): CreateCustomerToEntity => ({
-    ...mockCreateCustomerWithAddressDto(),
-    uuid: faker.string.uuid()
-  })
-
 export const mockCustomerEntity = ({
   email = null,
   complement = null
 } = {}): Customer => {
   const customer: Customer = {
-    id: faker.number.int(),
-    uuid: faker.string.uuid(),
+    id: faker.string.uuid(),
     name: faker.company.name(),
     phone: faker.phone.number(),
     street: faker.location.streetAddress(),

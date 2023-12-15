@@ -7,7 +7,6 @@ import { SeedRunnerModule } from '@infra/db/companies/seeds/seed-runner.module'
 import { CreateDatabaseModule } from '@infra/plugins/database/create-database.module'
 import { MigrationsCompanyModule } from '@infra/plugins/database/migrations-company.module'
 import { GenerateDbCredentialsService } from '@infra/plugins/database/generate-db-credentials.service'
-import { GenerateUuidService } from '@infra/plugins/uuid/generate-uuid-service'
 import { TokenServiceAdapter } from '@infra/plugins/token/token-service.adapter'
 import { MailModule } from '@/modules/infra/mail/mail.module'
 import { SecretsModule } from '@/modules/infra/secrets/secrets.module'
@@ -31,7 +30,6 @@ import { CreateTenantProcessor } from './create-tenant.processor'
     ConfigService,
     TenantService,
     GenerateDbCredentialsService,
-    GenerateUuidService,
     UserServiceLazy,
     AddAdminRoleServiceLazy,
     CreateTenantProcessor,

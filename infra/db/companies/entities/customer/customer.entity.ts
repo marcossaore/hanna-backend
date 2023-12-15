@@ -8,11 +8,8 @@ import {
 
 @Entity('customer')
 export class Customer extends AddDateColumns {
-  @PrimaryGeneratedColumn()
-  id: number
-
-  @Column({ unique: true })
-  uuid: string
+  @PrimaryGeneratedColumn('uuid')
+  id: string
 
   @Column({ nullable: false })
   name: string

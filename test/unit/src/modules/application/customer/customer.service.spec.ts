@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { Like } from 'typeorm'
 import {
-  mockCreateCustomerToEntityWithAddressDto,
-  mockCustomerEntity
+  mockCustomerEntity,
+  mockCreateCustomerWithAddressDto
 } from '../../../../mock/customer.mock'
 import { CustomerService } from '@/modules/application/customer/customer.service'
 
@@ -11,7 +11,6 @@ const pageOptions = { limit: 1, page: 1 }
 describe('CustomerService', () => {
   let sutCustomerService: CustomerService
   let customerRepository: any
-  const customerToEntityMock = mockCreateCustomerToEntityWithAddressDto()
   const customerMock = mockCustomerEntity()
 
   beforeEach(async () => {
@@ -28,7 +27,9 @@ describe('CustomerService', () => {
     }).compile()
     sutCustomerService = module.get<CustomerService>(CustomerService)
     customerRepository = (sutCustomerService as any).customerRepository = {
-      find: jest.fn().mockResolvedValue([customerMock, customerMock]),
+      findAndCount: jest
+        .fn()
+        .mockResolvedValue([[customerMock, customerMock], 2]),
       findOneBy: jest.fn().mockResolvedValue(customerMock),
       save: jest.fn().mockResolvedValue(customerMock)
     }
@@ -106,8 +107,13 @@ describe('CustomerService', () => {
 
   describe('create', () => {
     it('should call CustomerRepository.create with correct values', async () => {
-      await sutCustomerService.create(customerToEntityMock)
-      expect(customerRepository.save).toHaveBeenCalledWith(customerToEntityMock)
+      const data = mockCreateCustomerWithAddressDto()
+      await sutCustomerService.create(data)
+      const { address, ...all } = data
+      expect(customerRepository.save).toHaveBeenCalledWith({
+        ...all,
+        ...address
+      })
       expect(customerRepository.save).toHaveBeenCalledTimes(1)
     })
 
@@ -117,20 +123,24 @@ describe('CustomerService', () => {
         .mockImplementationOnce(async () => {
           throw new Error()
         })
-      const promise = sutCustomerService.create(customerToEntityMock)
+      const promise = sutCustomerService.create(
+        mockCreateCustomerWithAddressDto()
+      )
       await expect(promise).rejects.toThrow()
     })
 
     it('should return a customer on success', async () => {
-      const response = await sutCustomerService.create(customerToEntityMock)
+      const response = await sutCustomerService.create(
+        mockCreateCustomerWithAddressDto()
+      )
       expect(response).toEqual(customerMock)
     })
   })
 
   describe('findAll', () => {
-    it('should call CustomerRepository.find with default values', async () => {
+    it('should call CustomerRepository.findAndCount with default values', async () => {
       await sutCustomerService.findAll(pageOptions)
-      expect(customerRepository.find).toHaveBeenCalledWith({
+      expect(customerRepository.findAndCount).toHaveBeenCalledWith({
         take: pageOptions.limit,
         skip: pageOptions.page - 1,
         order: {
@@ -138,17 +148,17 @@ describe('CustomerService', () => {
         },
         where: {}
       })
-      expect(customerRepository.find).toHaveBeenCalledTimes(1)
+      expect(customerRepository.findAndCount).toHaveBeenCalledTimes(1)
     })
 
-    it('should call CustomerRepository.find with provided values', async () => {
+    it('should call CustomerRepository.findAndCount with provided values', async () => {
       await sutCustomerService.findAll({
         ...pageOptions,
         name: 'any_name',
         email: 'any_email',
         phone: 'any_phone'
       })
-      expect(customerRepository.find).toHaveBeenCalledWith({
+      expect(customerRepository.findAndCount).toHaveBeenCalledWith({
         take: pageOptions.limit,
         skip: pageOptions.page - 1,
         order: {
@@ -160,12 +170,12 @@ describe('CustomerService', () => {
           phone: Like('%any_phone%')
         }
       })
-      expect(customerRepository.find).toHaveBeenCalledTimes(1)
+      expect(customerRepository.findAndCount).toHaveBeenCalledTimes(1)
     })
 
-    it('should throws if CustomerRepository.find throws', async () => {
+    it('should throws if CustomerRepository.findAndCount throws', async () => {
       jest
-        .spyOn(customerRepository, 'find')
+        .spyOn(customerRepository, 'findAndCount')
         .mockImplementationOnce(async () => {
           throw new Error()
         })
@@ -175,7 +185,7 @@ describe('CustomerService', () => {
 
     it('should return array if do not have any customer', async () => {
       jest
-        .spyOn(customerRepository, 'find')
+        .spyOn(customerRepository, 'findAndCount')
         .mockResolvedValueOnce(Promise.resolve([]))
       const response = await sutCustomerService.findAll(pageOptions)
       expect(response).toEqual([])
@@ -187,11 +197,11 @@ describe('CustomerService', () => {
     })
   })
 
-  describe('findByUuid', () => {
+  describe('findById', () => {
     it('should call CustomerRepository.findOneBy with correct values', async () => {
-      await sutCustomerService.findByUuid('any_uuid')
+      await sutCustomerService.findById('any_id')
       expect(customerRepository.findOneBy).toHaveBeenCalledWith({
-        uuid: 'any_uuid'
+        id: 'any_id'
       })
       expect(customerRepository.findOneBy).toHaveBeenCalledTimes(1)
     })
@@ -202,7 +212,7 @@ describe('CustomerService', () => {
         .mockImplementationOnce(async () => {
           throw new Error()
         })
-      const promise = sutCustomerService.findByUuid('any_uuid')
+      const promise = sutCustomerService.findById('any_id')
       await expect(promise).rejects.toThrow()
     })
 
@@ -210,25 +220,25 @@ describe('CustomerService', () => {
       jest
         .spyOn(customerRepository, 'findOneBy')
         .mockResolvedValueOnce(Promise.resolve(null))
-      const response = await sutCustomerService.findByUuid('any_uuid')
+      const response = await sutCustomerService.findById('any_id')
       expect(response).toEqual(null)
     })
 
     it('should return a customer on success', async () => {
-      const response = await sutCustomerService.findByUuid('any_uuid')
+      const response = await sutCustomerService.findById('any_id')
       expect(response).toEqual(customerMock)
     })
   })
 
   describe('save', () => {
     it('should call CustomerRepository.save with correct values', async () => {
-      const data = mockCreateCustomerToEntityWithAddressDto()
+      const data = customerMock
       await sutCustomerService.save(data)
       expect(customerRepository.save).toHaveBeenCalledWith(data)
       expect(customerRepository.save).toHaveBeenCalledTimes(1)
     })
     it('should throws if CustomerRepository.save throws', async () => {
-      const data = mockCreateCustomerToEntityWithAddressDto()
+      const data = customerMock
       jest
         .spyOn(customerRepository, 'save')
         .mockImplementationOnce(async () => {
@@ -238,17 +248,17 @@ describe('CustomerService', () => {
       await expect(promise).rejects.toThrow()
     })
     it('should return a customer on success', async () => {
-      const data = mockCreateCustomerToEntityWithAddressDto()
+      const data = customerMock
       const response = await sutCustomerService.save(data)
       expect(response).toEqual(customerMock)
     })
   })
 
-  describe('removeByUuid', () => {
+  describe('removeById', () => {
     it('should call CustomerRepository.findOneBy with correct values', async () => {
-      await sutCustomerService.removeByUuid('any_uuid')
+      await sutCustomerService.removeById('any_id')
       expect(customerRepository.findOneBy).toHaveBeenCalledWith({
-        uuid: 'any_uuid'
+        id: 'any_id'
       })
       expect(customerRepository.findOneBy).toHaveBeenCalledTimes(1)
     })
@@ -258,7 +268,7 @@ describe('CustomerService', () => {
         .mockImplementationOnce(async () => {
           throw new Error()
         })
-      const promise = sutCustomerService.removeByUuid('any_uuid')
+      const promise = sutCustomerService.removeById('any_id')
       await expect(promise).rejects.toThrow()
     })
     it('should call CustomerRepository.save with correct deletedAt', async () => {
@@ -267,12 +277,12 @@ describe('CustomerService', () => {
         .spyOn(customerRepository, 'findOneBy')
         .mockResolvedValueOnce(Promise.resolve(data))
       expect(data.deletedAt).toBe(null)
-      const response = await sutCustomerService.removeByUuid('any_uuid')
+      const response = await sutCustomerService.removeById('any_id')
       expect(customerRepository.save).toHaveBeenCalledTimes(1)
       expect(response.deletedAt).toBeTruthy()
     })
     it('should return a customer on success', async () => {
-      const response = await sutCustomerService.removeByUuid('any_uuid')
+      const response = await sutCustomerService.removeById('any_id')
       expect(response).toEqual(customerMock)
     })
   })

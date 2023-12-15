@@ -1,8 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import {
-  mockCompanyEntity,
-  mockCreateCompanyToEntityDto
-} from '../../../../mock/company.mock'
+import { mockCompanyEntity } from '../../../../mock/company.mock'
 import { Repository } from 'typeorm'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { Tenant } from '@infra/db/app/entities/tenant/tenant.entity'
@@ -110,7 +107,7 @@ describe('Service: tenant', () => {
 
   describe('Create', () => {
     it('should call RepositoryTenant.save with correct values', async () => {
-      const data = mockCreateCompanyToEntityDto()
+      const data = mockCompanyEntity()
       await sutTenantService.create(data)
       expect(tenantRepository.save).toHaveBeenCalledTimes(1)
       expect(tenantRepository.save).toHaveBeenCalledWith(data)
@@ -120,25 +117,25 @@ describe('Service: tenant', () => {
       jest.spyOn(tenantRepository, 'save').mockImplementationOnce(async () => {
         throw new Error()
       })
-      const data = mockCreateCompanyToEntityDto()
+      const data = mockCompanyEntity()
       const promise = sutTenantService.create(data)
       await expect(promise).rejects.toThrow()
     })
 
     it('should return a company when succeds', async () => {
-      const data = mockCreateCompanyToEntityDto()
+      const data = mockCompanyEntity()
       const response = await sutTenantService.create(data)
       expect(response).toEqual(companyEntityMock)
     })
   })
 
-  describe('FindByUuid', () => {
+  describe('findById', () => {
     it('should call RepositoryTenant.findOne with correct values', async () => {
-      await sutTenantService.findByUuid('any_uuid')
+      await sutTenantService.findById('any_id')
       expect(tenantRepository.findOne).toHaveBeenCalledTimes(1)
       expect(tenantRepository.findOne).toHaveBeenCalledWith({
         where: {
-          uuid: 'any_uuid'
+          id: 'any_id'
         }
       })
     })
@@ -149,18 +146,18 @@ describe('Service: tenant', () => {
         .mockImplementationOnce(async () => {
           throw new Error()
         })
-      const promise = sutTenantService.findByUuid('any_uuid')
+      const promise = sutTenantService.findById('any_id')
       await expect(promise).rejects.toThrow()
     })
 
     it('should return null if company not exists', async () => {
       jest.spyOn(tenantRepository, 'findOne').mockResolvedValueOnce(null)
-      const response = await sutTenantService.findByUuid('any_uuid')
+      const response = await sutTenantService.findById('any_id')
       expect(response).toEqual(null)
     })
 
     it('should return a company when succeds', async () => {
-      const response = await sutTenantService.findByUuid('any_uuid')
+      const response = await sutTenantService.findById('any_id')
       expect(response).toEqual(companyEntityMock)
     })
   })
@@ -200,11 +197,11 @@ describe('Service: tenant', () => {
 
   describe('markAsProcessed', () => {
     it('should call RepositoryTenant.findOne with correct values', async () => {
-      await sutTenantService.markAsProcessed('any_uuid')
+      await sutTenantService.markAsProcessed('any_id')
       expect(tenantRepository.findOne).toHaveBeenCalledTimes(1)
       expect(tenantRepository.findOne).toHaveBeenCalledWith({
         where: {
-          uuid: 'any_uuid'
+          id: 'any_id'
         }
       })
     })
@@ -215,12 +212,12 @@ describe('Service: tenant', () => {
         .mockImplementationOnce(async () => {
           throw new Error()
         })
-      const promise = sutTenantService.markAsProcessed('any_uuid')
+      const promise = sutTenantService.markAsProcessed('any_id')
       await expect(promise).rejects.toThrow()
     })
 
     it('should call RepositoryTenant.save with correct values', async () => {
-      await sutTenantService.markAsProcessed('any_uuid')
+      await sutTenantService.markAsProcessed('any_id')
       expect(tenantRepository.save).toHaveBeenCalledTimes(1)
       expect(tenantRepository.save).toHaveBeenCalledWith(companyEntityMock)
       expect(companyEntityMock.status).toBe('processed')
@@ -229,11 +226,11 @@ describe('Service: tenant', () => {
 
   describe('markAsRejected', () => {
     it('should call RepositoryTenant.findOne with correct values', async () => {
-      await sutTenantService.markAsRejected('any_uuid', mockError())
+      await sutTenantService.markAsRejected('any_id', mockError())
       expect(tenantRepository.findOne).toHaveBeenCalledTimes(1)
       expect(tenantRepository.findOne).toHaveBeenCalledWith({
         where: {
-          uuid: 'any_uuid'
+          id: 'any_id'
         }
       })
     })
@@ -244,13 +241,13 @@ describe('Service: tenant', () => {
         .mockImplementationOnce(async () => {
           throw new Error()
         })
-      const promise = sutTenantService.markAsRejected('any_uuid', mockError())
+      const promise = sutTenantService.markAsRejected('any_id', mockError())
       await expect(promise).rejects.toThrow()
     })
 
     it('should call RepositoryTenant.save with correct values', async () => {
       const error = mockError()
-      await sutTenantService.markAsRejected('any_uuid', error)
+      await sutTenantService.markAsRejected('any_id', error)
       expect(tenantRepository.save).toHaveBeenCalledTimes(1)
       expect(tenantRepository.save).toHaveBeenCalledWith(companyEntityMock)
       expect(companyEntityMock.status).toBe('rejected')

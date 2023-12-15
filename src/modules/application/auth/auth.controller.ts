@@ -42,7 +42,7 @@ type ModulesType = {
 }
 
 type PermissionType = {
-  uuid: string
+  id: string
   name: string
   expiresIn: string
   permissions: ModuleType[] | ModulesType[]
@@ -91,22 +91,22 @@ export class AuthController {
       throw userUnauthorized()
     }
 
-    const permissions = await userService.getRolesGrouped(user.uuid)
+    const permissions = await userService.getRolesGrouped(user.id)
 
     request.session.auth = {
       tenant: {
         identifier: company.companyIdentifier,
-        uuid: company.uuid
+        id: company.id
       },
       user: {
-        uuid: user.uuid,
+        id: user.id,
         name: user.name,
         permissions
       }
     }
 
     return {
-      uuid: user.uuid,
+      id: user.id,
       name: user.name,
       expiresIn: request.session.cookie._expires,
       permissions
@@ -134,7 +134,7 @@ export class AuthController {
     @Query() query
   ): Promise<void> {
     const { companyId, userId } = this.tokenServiceAdapter.verify(query.token)
-    const company = await this.tenantService.findByUuid(companyId)
+    const company = await this.tenantService.findById(companyId)
 
     const connection = await this.loadTenantConnectionService.load(
       company.companyIdentifier

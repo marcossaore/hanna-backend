@@ -121,7 +121,7 @@ describe('AuthController (e2e)', () => {
         options: {}
       }
     ])
-    expect(responseBody.uuid).toBeTruthy()
+    expect(responseBody.id).toBeTruthy()
   })
 
   it('/api/auth/logout (Post)', async () => {

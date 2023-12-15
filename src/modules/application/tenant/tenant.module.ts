@@ -3,7 +3,6 @@ import { BullModule } from '@nestjs/bull'
 import { ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Tenant } from '@infra/db/app/entities/tenant/tenant.entity'
-import { GenerateUuidService } from '@infra/plugins/uuid/generate-uuid-service'
 import { TenantService } from './tenant.service'
 import { TenantController } from './tenant.controller'
 import { CreateTenantProcessorModule } from '@/processors/tenant/create-tenant.processor.module'
@@ -26,6 +25,6 @@ import { CreateTenantProcessorModule } from '@/processors/tenant/create-tenant.p
     CreateTenantProcessorModule
   ],
   controllers: [TenantController],
-  providers: [TenantService, GenerateUuidService]
+  providers: [TenantService]
 })
 export class TenantModule {}

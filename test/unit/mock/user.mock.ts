@@ -2,11 +2,10 @@ import { faker } from '@faker-js/faker'
 import { User } from '@infra/db/companies/entities/user/user.entity'
 
 export const mockUserEntity = (): User => ({
-  id: faker.number.int(),
+  id: faker.string.uuid(),
   name: faker.company.name(),
   phone: faker.string.numeric({ length: 11 }),
   email: faker.internet.email(),
-  uuid: faker.string.uuid(),
   password: faker.string.alphanumeric({ length: 10 }),
   createdAt: faker.date.anytime(),
   updatedAt: faker.date.anytime(),
@@ -68,7 +67,6 @@ export const mockUserPermission = (): any => {
 
 export const mockUserPermissionForRoleGrouped = (): any => ({
   id: 1,
-  uuid: faker.string.uuid(),
   name: faker.company.name(),
   role: {
     createdAt: '2023-12-07T23:41:19.000Z',

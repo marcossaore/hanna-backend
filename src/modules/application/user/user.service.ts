@@ -22,13 +22,13 @@ export class UserService {
     return user
   }
 
-  async addRole(uuid: string, addRole: AddRole): Promise<void> {
-    const user = await this.userRepository.findOneBy({ uuid })
+  async addRole(id: string, addRole: AddRole): Promise<void> {
+    const user = await this.userRepository.findOneBy({ id })
     const userWithRoles = await addRole.add(user)
     await this.userRepository.save(userWithRoles)
   }
 
-  async getRoles(uuid: string): Promise<User> {
+  async getRoles(id: string): Promise<User> {
     const user = await this.userRepository.findOne({
       relations: [
         'role.permissions.grants',
@@ -36,19 +36,18 @@ export class UserService {
         'role.permissions.roleOptions.option'
       ],
       where: {
-        uuid
+        id
       },
       select: {
         id: true,
-        uuid: true,
         name: true
       }
     })
     return user
   }
 
-  async getRolesGrouped(uuid: string): Promise<any> {
-    const user = await this.getRoles(uuid)
+  async getRolesGrouped(id: string): Promise<any> {
+    const user = await this.getRoles(id)
     const permissions = []
     for (const { module, roleOptions, grants } of user.role.permissions) {
       let hasBelongsTo = -1
@@ -107,10 +106,10 @@ export class UserService {
     return permissions
   }
 
-  async savePassword(uuid: string, hashedPassword: string): Promise<void> {
+  async savePassword(id: string, hashedPassword: string): Promise<void> {
     const user = await this.userRepository.findOne({
       where: {
-        uuid
+        id
       }
     })
     user.password = hashedPassword

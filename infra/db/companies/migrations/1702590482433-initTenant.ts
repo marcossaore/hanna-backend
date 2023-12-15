@@ -1,14 +1,11 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
 
-export class InitTenant1702422023136 implements MigrationInterface {
-  name = 'InitTenant1702422023136'
+export class InitTenant1702590482433 implements MigrationInterface {
+  name = 'InitTenant1702590482433'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE \`customer\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`uuid\` varchar(255) NOT NULL, \`name\` varchar(255) NOT NULL, \`phone\` varchar(255) NOT NULL, \`email\` varchar(255) NULL, \`street\` varchar(255) NOT NULL, \`number\` varchar(255) NULL, \`complement\` varchar(255) NULL, \`neighborhood\` varchar(255) NOT NULL, \`city\` varchar(255) NOT NULL, \`state\` varchar(255) NOT NULL, \`country\` varchar(255) NOT NULL, \`deletedAt\` timestamp(6) NULL, UNIQUE INDEX \`IDX_19468a0ccfcf3e76cbb7789cb7\` (\`uuid\`), UNIQUE INDEX \`IDX_03846b4bae9df80f19c76005a8\` (\`phone\`), UNIQUE INDEX \`IDX_fdb2f3ad8115da4c7718109a6e\` (\`email\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`
-    )
-    await queryRunner.query(
-      `CREATE TABLE \`rbac_grant\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`name\` varchar(255) NOT NULL, UNIQUE INDEX \`IDX_b7d73de85b224350d8efabde55\` (\`name\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`
+      `CREATE TABLE \`customer\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` varchar(36) NOT NULL, \`name\` varchar(255) NOT NULL, \`phone\` varchar(255) NOT NULL, \`email\` varchar(255) NULL, \`street\` varchar(255) NOT NULL, \`number\` varchar(255) NULL, \`complement\` varchar(255) NULL, \`neighborhood\` varchar(255) NOT NULL, \`city\` varchar(255) NOT NULL, \`state\` varchar(255) NOT NULL, \`country\` varchar(255) NOT NULL, \`deletedAt\` timestamp(6) NULL, UNIQUE INDEX \`IDX_03846b4bae9df80f19c76005a8\` (\`phone\`), UNIQUE INDEX \`IDX_fdb2f3ad8115da4c7718109a6e\` (\`email\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`
     )
     await queryRunner.query(
       `CREATE TABLE \`rbac_option\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`name\` varchar(255) NOT NULL, UNIQUE INDEX \`IDX_57f4319708594bd3cc28cb4624\` (\`name\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`
@@ -17,7 +14,10 @@ export class InitTenant1702422023136 implements MigrationInterface {
       `CREATE TABLE \`rbac_module\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`name\` varchar(255) NOT NULL, \`belongsTo\` varchar(255) NULL, UNIQUE INDEX \`IDX_955311b0f3f0ff6eea11807971\` (\`name\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`
     )
     await queryRunner.query(
-      `CREATE TABLE \`user\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`uuid\` varchar(255) NOT NULL, \`name\` varchar(255) NOT NULL, \`password\` varchar(255) NULL, \`email\` varchar(255) NOT NULL, \`phone\` varchar(255) NULL, \`roleId\` int NULL, UNIQUE INDEX \`IDX_a95e949168be7b7ece1a2382fe\` (\`uuid\`), UNIQUE INDEX \`IDX_e12875dfb3b1d92d7d7c5377e2\` (\`email\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`
+      `CREATE TABLE \`rbac_grant\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`name\` varchar(255) NOT NULL, UNIQUE INDEX \`IDX_b7d73de85b224350d8efabde55\` (\`name\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`
+    )
+    await queryRunner.query(
+      `CREATE TABLE \`user\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` varchar(36) NOT NULL, \`name\` varchar(255) NOT NULL, \`password\` varchar(255) NULL, \`email\` varchar(255) NOT NULL, \`phone\` varchar(255) NULL, \`roleId\` int NULL, UNIQUE INDEX \`IDX_e12875dfb3b1d92d7d7c5377e2\` (\`email\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`
     )
     await queryRunner.query(
       `CREATE TABLE \`rbac_role\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`name\` varchar(255) NOT NULL, UNIQUE INDEX \`IDX_fce815850f9d9ef177a31aafc0\` (\`name\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`
@@ -27,6 +27,9 @@ export class InitTenant1702422023136 implements MigrationInterface {
     )
     await queryRunner.query(
       `CREATE TABLE \`rbac_role_permission_option\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`isActive\` tinyint NOT NULL DEFAULT 0, \`rolePermissionId\` int NULL, \`optionId\` int NULL, UNIQUE INDEX \`REL_a0011e293c9efdc784c7795f9b\` (\`optionId\`), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`
+    )
+    await queryRunner.query(
+      `CREATE TABLE \`product\` (\`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, \`id\` int NOT NULL AUTO_INCREMENT, \`name\` varchar(255) NOT NULL, \`description\` varchar(255) NULL, \`price\` int NOT NULL, \`bulkPrice\` int NULL, \`code\` varchar(255) NULL, \`deletedAt\` timestamp(6) NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`
     )
     await queryRunner.query(
       `CREATE TABLE \`rbac_module_grants\` (\`moduleId\` int NOT NULL, \`grant\` int NOT NULL, INDEX \`IDX_2fcc53f4d79e835500dc57b029\` (\`moduleId\`), INDEX \`IDX_491a5485d47dbf9189c9448619\` (\`grant\`), PRIMARY KEY (\`moduleId\`, \`grant\`)) ENGINE=InnoDB`
@@ -127,6 +130,7 @@ export class InitTenant1702422023136 implements MigrationInterface {
       `DROP INDEX \`IDX_2fcc53f4d79e835500dc57b029\` ON \`rbac_module_grants\``
     )
     await queryRunner.query(`DROP TABLE \`rbac_module_grants\``)
+    await queryRunner.query(`DROP TABLE \`product\``)
     await queryRunner.query(
       `DROP INDEX \`REL_a0011e293c9efdc784c7795f9b\` ON \`rbac_role_permission_option\``
     )
@@ -139,10 +143,11 @@ export class InitTenant1702422023136 implements MigrationInterface {
     await queryRunner.query(
       `DROP INDEX \`IDX_e12875dfb3b1d92d7d7c5377e2\` ON \`user\``
     )
-    await queryRunner.query(
-      `DROP INDEX \`IDX_a95e949168be7b7ece1a2382fe\` ON \`user\``
-    )
     await queryRunner.query(`DROP TABLE \`user\``)
+    await queryRunner.query(
+      `DROP INDEX \`IDX_b7d73de85b224350d8efabde55\` ON \`rbac_grant\``
+    )
+    await queryRunner.query(`DROP TABLE \`rbac_grant\``)
     await queryRunner.query(
       `DROP INDEX \`IDX_955311b0f3f0ff6eea11807971\` ON \`rbac_module\``
     )
@@ -152,17 +157,10 @@ export class InitTenant1702422023136 implements MigrationInterface {
     )
     await queryRunner.query(`DROP TABLE \`rbac_option\``)
     await queryRunner.query(
-      `DROP INDEX \`IDX_b7d73de85b224350d8efabde55\` ON \`rbac_grant\``
-    )
-    await queryRunner.query(`DROP TABLE \`rbac_grant\``)
-    await queryRunner.query(
       `DROP INDEX \`IDX_fdb2f3ad8115da4c7718109a6e\` ON \`customer\``
     )
     await queryRunner.query(
       `DROP INDEX \`IDX_03846b4bae9df80f19c76005a8\` ON \`customer\``
-    )
-    await queryRunner.query(
-      `DROP INDEX \`IDX_19468a0ccfcf3e76cbb7789cb7\` ON \`customer\``
     )
     await queryRunner.query(`DROP TABLE \`customer\``)
   }

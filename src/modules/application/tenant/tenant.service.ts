@@ -1,9 +1,9 @@
 import { Repository } from 'typeorm'
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { CreateTenantToEntity } from './dto/create-tenant-to-entity.dto'
 import { TenantStatus } from '@/shared/enums/tenant-status.enum'
 import { Tenant } from '@infra/db/app/entities/tenant/tenant.entity'
+import { CreateTenantDto } from './dto/create-tenant.dto'
 
 @Injectable()
 export class TenantService {
@@ -24,7 +24,7 @@ export class TenantService {
     return exists ? true : false
   }
 
-  async create(createCompanyDto: CreateTenantToEntity): Promise<Tenant> {
+  async create(createCompanyDto: CreateTenantDto): Promise<Tenant> {
     return this.tenantRepository.save(createCompanyDto)
   }
 
@@ -37,25 +37,25 @@ export class TenantService {
     return tenant.length > 0 ? tenant[0] : null
   }
 
-  async findByUuid(uuid: string): Promise<Tenant> {
-    return this.tenantRepository.findOne({ where: { uuid } })
+  async findById(id: string): Promise<Tenant> {
+    return this.tenantRepository.findOne({ where: { id } })
   }
 
   async findByDocument(document: string): Promise<Tenant> {
     return this.tenantRepository.findOne({ where: { document } })
   }
 
-  async markAsProcessed(uuid: string): Promise<void> {
+  async markAsProcessed(id: string): Promise<void> {
     const company = await this.tenantRepository.findOne({
-      where: { uuid }
+      where: { id }
     })
     company.status = TenantStatus.PROCESSED
     this.tenantRepository.save(company)
   }
 
-  async markAsRejected(uuid: string, error: Error): Promise<void> {
+  async markAsRejected(id: string, error: Error): Promise<void> {
     const company = await this.tenantRepository.findOne({
-      where: { uuid }
+      where: { id }
     })
     company.status = TenantStatus.REJECTED
     company.error = error.stack

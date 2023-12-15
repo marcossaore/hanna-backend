@@ -5,14 +5,12 @@ import {
 } from '../../../../mock/company.mock'
 import { BullModule, getQueueToken } from '@nestjs/bull'
 import { Queue } from 'bull'
-import { GenerateUuidService } from '@infra/plugins/uuid/generate-uuid-service'
 import { TenantController } from '@/modules/application/tenant/tenant.controller'
 import { TenantService } from '@/modules/application/tenant/tenant.service'
 
 describe('Controller: Tenant', () => {
   let sutTenantController: TenantController
   let tenantService: TenantService
-  let generateUuidService: GenerateUuidService
   let createCompanyQueue: Queue
   const companyEntityMock = mockCompanyEntity()
 
@@ -34,12 +32,6 @@ describe('Controller: Tenant', () => {
               .mockResolvedValue(Promise.resolve(false)),
             create: jest.fn().mockResolvedValue(companyEntityMock)
           }
-        },
-        {
-          provide: GenerateUuidService,
-          useValue: {
-            generate: jest.fn().mockReturnValue('any_uuid')
-          }
         }
       ]
     })
@@ -51,7 +43,6 @@ describe('Controller: Tenant', () => {
 
     sutTenantController = module.get<TenantController>(TenantController)
     tenantService = module.get<TenantService>(TenantService)
-    generateUuidService = module.get<GenerateUuidService>(GenerateUuidService)
     createCompanyQueue = module.get<Queue>(getQueueToken('create-tenant'))
   })
 
@@ -118,20 +109,11 @@ describe('Controller: Tenant', () => {
       await expect(promise).rejects.toThrow(new Error())
     })
 
-    it('should call GenerateUuidService.generate twice: to uuid and apiToken for company entity', async () => {
-      const data = mockCreateCompanyDto()
-      await sutTenantController.create(data)
-      expect(generateUuidService.generate).toHaveBeenCalledTimes(1)
-    })
-
     it('should call TenantService.create with correct values', async () => {
       const data = mockCreateCompanyDto()
       await sutTenantController.create(data)
       expect(tenantService.create).toHaveBeenCalledTimes(1)
-      expect(tenantService.create).toHaveBeenCalledWith({
-        ...data,
-        uuid: 'any_uuid'
-      })
+      expect(tenantService.create).toHaveBeenCalledWith(data)
     })
 
     it('should throws if TenantService.create throws', async () => {
@@ -148,7 +130,7 @@ describe('Controller: Tenant', () => {
       await sutTenantController.create(data)
       expect(createCompanyQueue.add).toHaveBeenCalledTimes(1)
       expect(createCompanyQueue.add).toHaveBeenCalledWith({
-        uuid: 'any_uuid'
+        id: companyEntityMock.id
       })
     })
 

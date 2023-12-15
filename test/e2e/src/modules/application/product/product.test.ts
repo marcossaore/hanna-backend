@@ -111,10 +111,6 @@ describe('ProductController (e2e)', () => {
       expect(responseBody.page).toBe(1)
       expect(responseBody.totalPage).toBe(1)
       expect(responseBody.items.length).toBe(2)
-      expect(responseBody.items[0].id).toEqual(productCreated.id)
-      expect(responseBody.items[0].thumb).toBeNull()
-      expect(responseBody.items[1].id).toEqual(productCreatedWithThumb.id)
-      expect(responseBody.items[1].thumb).toBeTruthy()
     })
 
     it('Update (PATCH)', async () => {

@@ -71,7 +71,7 @@ describe('TenantController (e2e)', () => {
     const userCreated = await connection.query(
       `select * from ${companyIdentifier}.user where email = "${email}"`
     )
-    expect(userCreated[0].uuid).toBeTruthy()
+    expect(userCreated[0].id).toBeTruthy()
     const roleCreated = await connection.query(
       `select * from ${companyIdentifier}.rbac_role where name = "admin"`
     )

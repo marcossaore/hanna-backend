@@ -17,7 +17,7 @@ export class LoadTenantConnectionService {
   }
   async load(
     tenantName: string,
-    timeoutInMinutes: number = 0
+    timeoutInSeconds: number = 0
   ): Promise<Connection> {
     try {
       const credentials = JSON.parse(await this.secretesService.get(tenantName))
@@ -27,7 +27,7 @@ export class LoadTenantConnectionService {
         user: credentials.dbUser,
         password: credentials.dbPass,
         db: tenantName,
-        connectTimeout: timeoutInMinutes,
+        connectTimeout: timeoutInSeconds,
         type: this.dbConfig.type
       })
       return datasource

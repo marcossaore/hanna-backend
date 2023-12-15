@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { Connection, Like, Not, Repository } from 'typeorm'
-import { CreateCustomerToEntity } from './dto/create-customer-to-entity.dto'
 import { UpdateCustomerDto } from './dto/update-customer.dto'
 import { Customer } from '@infra/db/companies/entities/customer/customer.entity'
+import { CreateCustomerDto } from './dto/create-customer.dto'
 
 @Injectable()
 export class CustomerService {
@@ -20,17 +20,21 @@ export class CustomerService {
     return this.customerRepository.findOneBy({ email })
   }
 
-  async verifyByEmail(uuid: string, email: string): Promise<Customer> {
+  async verifyByEmail(id: string, email: string): Promise<Customer> {
     return this.customerRepository.findOne({
       where: {
         email,
-        uuid: Not(uuid)
+        id: Not(id)
       }
     })
   }
 
-  async create(createCustomerDto: CreateCustomerToEntity): Promise<Customer> {
-    return this.customerRepository.save(createCustomerDto)
+  async create(createCustomerDto: CreateCustomerDto): Promise<Customer> {
+    const { address, ...data } = createCustomerDto
+    return this.customerRepository.save({
+      ...data,
+      ...address
+    })
   }
 
   async findAll({
@@ -45,7 +49,7 @@ export class CustomerService {
     name?: string
     phone?: string
     email?: string
-  }): Promise<Customer[]> {
+  }): Promise<[Customer[], number]> {
     const skip = (page - 1) * limit
     const where = {}
 
@@ -61,7 +65,7 @@ export class CustomerService {
       where['email'] = Like(`%${email}%`)
     }
 
-    return this.customerRepository.find({
+    return this.customerRepository.findAndCount({
       take: limit,
       skip,
       order: {
@@ -71,44 +75,16 @@ export class CustomerService {
     })
   }
 
-  async count({
-    name,
-    phone,
-    email
-  }: {
-    name?: string
-    phone?: string
-    email?: string
-  } = {}): Promise<number> {
-    const where = {}
-
-    if (name) {
-      where['name'] = Like(`%${name}%`)
-    }
-
-    if (phone) {
-      where['phone'] = Like(`%${phone}%`)
-    }
-
-    if (email) {
-      where['email'] = Like(`%${email}%`)
-    }
-
-    return this.customerRepository.count({
-      where
-    })
-  }
-
-  async findByUuid(id: string): Promise<Customer> {
-    return this.customerRepository.findOneBy({ uuid: id })
+  async findById(id: string): Promise<Customer> {
+    return this.customerRepository.findOneBy({ id })
   }
 
   async save(updateCustomerDto: UpdateCustomerDto) {
     return this.customerRepository.save(updateCustomerDto)
   }
 
-  async removeByUuid(id: string) {
-    const customer = await this.customerRepository.findOneBy({ uuid: id })
+  async removeById(id: string) {
+    const customer = await this.customerRepository.findOneBy({ id })
     customer.deletedAt = new Date()
     return this.customerRepository.save(customer)
   }

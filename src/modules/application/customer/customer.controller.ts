@@ -16,7 +16,6 @@ import {
 import { CreateCustomerDto } from './dto/create-customer.dto'
 import { UpdateCustomerDto } from './dto/update-customer.dto'
 import { Permissions } from '../auth/permissions/permission.decorator'
-import { GenerateUuidService } from '@infra/plugins/uuid/generate-uuid-service'
 import { AuthenticatedGuard } from '../auth/authenticated.guard'
 import { PermissionsGuard } from '../auth/permissions/permission.guard'
 import { CustomerService } from './customer.service'
@@ -27,7 +26,6 @@ import { CreatedCustomerDto } from './dto/created-customer.dto'
 @Controller(`${appPrefix}/customers`)
 export class CustomerController {
   constructor(
-    private readonly generateUuidService: GenerateUuidService,
     private readonly customerService: CustomerService,
     private readonly storageService: StorageService
   ) {}
@@ -58,20 +56,14 @@ export class CustomerController {
       }
     }
 
-    const uuid = this.generateUuidService.generate()
-    const { address, ...data } = createCustomerDto
-    const customerCreated = await this.customerService.create({
-      ...data,
-      ...address,
-      uuid
-    })
+    const customerCreated = await this.customerService.create(createCustomerDto)
 
     let thumb = null
 
     if (createCustomerDto.thumb) {
       thumb = await this.storageService.upload(
         createCustomerDto.thumb.buffer,
-        `${session.auth.tenant.identifier}/customers/${customerCreated.uuid}`
+        `${session.auth.tenant.identifier}/customers/${customerCreated.id}`
       )
     }
 
@@ -94,10 +86,12 @@ export class CustomerController {
   ): Promise<{ page: number; totalPage: number; items: CreatedCustomerDto[] }> {
     // implementar pets, trazer os pets dos clientes
     // implementar planos e contas
-    const count = await this.customerService.count({
-      email,
+    const [customers, count] = await this.customerService.findAll({
+      limit,
+      page,
       name,
-      phone
+      phone,
+      email
     })
 
     let totalPage = 1
@@ -106,19 +100,11 @@ export class CustomerController {
       totalPage = Math.ceil(count / limit)
     }
 
-    const customers = await this.customerService.findAll({
-      limit,
-      page,
-      name,
-      phone,
-      email
-    })
-
     const customerWithThumb: CreatedCustomerDto[] = []
 
     for await (const customer of customers) {
       const thumb = await this.storageService.getUrl(
-        `${session.auth.tenant.identifier}/customers/${customer.uuid}`
+        `${session.auth.tenant.identifier}/customers/${customer.id}`
       )
       customerWithThumb.push(new CreatedCustomerDto({ ...customer, thumb }))
     }
@@ -134,13 +120,13 @@ export class CustomerController {
   @Permissions('customers', 'read')
   @UseGuards(AuthenticatedGuard)
   @UseGuards(PermissionsGuard)
-  async findByUuid(@Param('id') id: string, @Session() session) {
-    const customer = await this.customerService.findByUuid(id)
+  async findById(@Param('id') id: string, @Session() session) {
+    const customer = await this.customerService.findById(id)
     if (!customer) {
       throw new NotFoundException('Cliente não encontrado!')
     }
     const thumb = await this.storageService.getUrl(
-      `${session.auth.tenant.identifier}/customers/${customer.uuid}`
+      `${session.auth.tenant.identifier}/customers/${customer.id}`
     )
     return new CreatedCustomerDto({ ...customer, thumb })
   }
@@ -150,12 +136,12 @@ export class CustomerController {
   @Permissions('customers', 'edit')
   @UseGuards(AuthenticatedGuard)
   @UseGuards(PermissionsGuard)
-  async updateByUuid(
+  async update(
     @Param('id') id: string,
     @Body() updateCustomerDto: UpdateCustomerDto,
     @Session() session
   ): Promise<CreatedCustomerDto> {
-    const customer = await this.customerService.findByUuid(id)
+    const customer = await this.customerService.findById(id)
     if (!customer) {
       throw new NotFoundException('Cliente não encontrado!')
     }
@@ -177,7 +163,7 @@ export class CustomerController {
 
     let joinData = {
       ...data,
-      uuid: id
+      id
     }
 
     if (address) {
@@ -214,11 +200,11 @@ export class CustomerController {
   @Permissions('customers', 'delete')
   @UseGuards(AuthenticatedGuard)
   @UseGuards(PermissionsGuard)
-  async removeByUuid(@Param('id') id: string) {
-    const customer = await this.customerService.findByUuid(id)
+  async remove(@Param('id') id: string) {
+    const customer = await this.customerService.findById(id)
     if (!customer) {
       throw new NotFoundException('Cliente não encontrado!')
     }
-    return this.customerService.removeByUuid(id)
+    return this.customerService.removeById(id)
   }
 }

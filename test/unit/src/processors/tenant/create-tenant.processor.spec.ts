@@ -5,7 +5,6 @@ import { mockUserEntity } from '../../../mock/user.mock'
 import { Tenant } from '@infra/db/app/entities/tenant/tenant.entity'
 import { User } from '@infra/db/companies/entities/user/user.entity'
 import { MigrationsCompanyService } from '@infra/plugins/database/migrations-company.service'
-import { GenerateUuidService } from '@infra/plugins/uuid/generate-uuid-service'
 import { SeedRunnerService } from '@infra/db/companies/seeds/seed-runner.service.'
 import { CreateDatabaseService } from '@infra/plugins/database/create-database.service'
 import { GenerateDbCredentialsService } from '@infra/plugins/database/generate-db-credentials.service'
@@ -20,7 +19,7 @@ import { CreateTenantProcessor } from '@/processors/tenant/create-tenant.process
 
 const mockJobData: any = {
   data: {
-    uuid: 'any_uuid'
+    id: 'any_id'
   }
 }
 
@@ -36,7 +35,6 @@ describe('Processor: CreateTenant', () => {
   let loadTenantConnectionService: LoadTenantConnectionService
   let seedRunnerService: SeedRunnerService
   let mailService: MailService
-  let generateUuidService: GenerateUuidService
   let migrationsCompanyService: MigrationsCompanyService
   let userService: UserServiceLazy
   let addAdminRoleService: AddAdminRoleServiceLazy
@@ -60,7 +58,7 @@ describe('Processor: CreateTenant', () => {
         {
           provide: TenantService,
           useValue: {
-            findByUuid: jest.fn().mockResolvedValue(tenantEntityMock),
+            findById: jest.fn().mockResolvedValue(tenantEntityMock),
             markAsProcessed: jest.fn(),
             markAsRejected: jest.fn()
           }
@@ -105,24 +103,12 @@ describe('Processor: CreateTenant', () => {
           }
         },
         {
-          provide: GenerateUuidService,
-          useValue: {
-            generate: jest.fn().mockReturnValue('any_uuid')
-          }
-        },
-        {
           provide: UserServiceLazy,
           useValue: {
             load: jest.fn().mockReturnValue({
               save: jest.fn().mockResolvedValue(userEntityMock),
               addRole: jest.fn().mockResolvedValue('any_role')
             })
-          }
-        },
-        {
-          provide: GenerateUuidService,
-          useValue: {
-            generate: jest.fn().mockReturnValue('any_uuid')
           }
         },
         {
@@ -166,7 +152,6 @@ describe('Processor: CreateTenant', () => {
     )
     seedRunnerService = module.get<SeedRunnerService>(SeedRunnerService)
     userService = module.get<UserServiceLazy>(UserServiceLazy)
-    generateUuidService = module.get<GenerateUuidService>(GenerateUuidService)
     addAdminRoleService = module.get<AddAdminRoleServiceLazy>(
       AddAdminRoleServiceLazy
     )
@@ -179,14 +164,14 @@ describe('Processor: CreateTenant', () => {
   })
 
   describe('handleJob', () => {
-    it('should call TenantService.findByUuid with correct uuid', async () => {
+    it('should call TenantService.findById with correct id', async () => {
       await sutCreateTenantProcessor.handleJob(mockJobData)
-      expect(tenantService.findByUuid).toHaveBeenCalledTimes(1)
-      expect(tenantService.findByUuid).toHaveBeenCalledWith('any_uuid')
+      expect(tenantService.findById).toHaveBeenCalledTimes(1)
+      expect(tenantService.findById).toHaveBeenCalledWith('any_id')
     })
 
-    it('should throws if TenantService.findByUuid throws', async () => {
-      jest.spyOn(tenantService, 'findByUuid').mockImplementationOnce(() => {
+    it('should throws if TenantService.findById throws', async () => {
+      jest.spyOn(tenantService, 'findById').mockImplementationOnce(() => {
         throw new Error()
       })
       const promise = sutCreateTenantProcessor.handleJob(mockJobData)
@@ -254,7 +239,7 @@ describe('Processor: CreateTenant', () => {
       expect(loadTenantConnectionService.load).toHaveBeenCalledTimes(1)
       expect(loadTenantConnectionService.load).toHaveBeenCalledWith(
         tenantEntityMock.companyIdentifier,
-        5
+        30
       )
     })
 
@@ -322,25 +307,11 @@ describe('Processor: CreateTenant', () => {
       await expect(promise).rejects.toThrow()
     })
 
-    it('should call GenerateUuidService.generate', async () => {
-      await sutCreateTenantProcessor.handleJob(mockJobData)
-      expect(generateUuidService.generate).toHaveBeenCalledTimes(1)
-    })
-
-    it('should throws if GenerateUuidService.seed throws', async () => {
-      jest.spyOn(generateUuidService, 'generate').mockImplementationOnce(() => {
-        throw new Error()
-      })
-      const promise = sutCreateTenantProcessor.handleJob(mockJobData)
-      await expect(promise).rejects.toThrow()
-    })
-
     it('should call UserService.save with correct values', async () => {
       const userServiceLoaded = userService.load('any_connection' as any)
       await sutCreateTenantProcessor.handleJob(mockJobData)
       expect(userServiceLoaded.save).toHaveBeenCalledTimes(1)
       expect(userServiceLoaded.save).toHaveBeenCalledWith({
-        uuid: 'any_uuid',
         name: tenantEntityMock.partnerName,
         email: tenantEntityMock.email,
         phone: tenantEntityMock.phone
@@ -376,7 +347,7 @@ describe('Processor: CreateTenant', () => {
       await sutCreateTenantProcessor.handleJob(mockJobData)
       expect(userServiceLoaded.addRole).toHaveBeenCalledTimes(1)
       expect(userServiceLoaded.addRole).toHaveBeenCalledWith(
-        userEntityMock.uuid,
+        userEntityMock.id,
         sypAddAdminRoleService.mock.results[0].value
       )
     })
@@ -396,9 +367,9 @@ describe('Processor: CreateTenant', () => {
       expect(tokenServiceAdapter.sign).toHaveBeenCalledTimes(1)
       expect(tokenServiceAdapter.sign).toHaveBeenCalledWith(
         {
-          companyId: tenantEntityMock.uuid,
+          companyId: tenantEntityMock.id,
           companyName: tenantEntityMock.name,
-          userId: 'any_uuid',
+          userId: userEntityMock.id,
           userName: tenantEntityMock.partnerName
         },
         expiresIn10Minutes
@@ -457,7 +428,7 @@ describe('Processor: CreateTenant', () => {
     it('should call TenantService.markAsProcessed with correct values', () => {
       sutCreateTenantProcessor.onCompleted(mockJobData)
       expect(tenantService.markAsProcessed).toHaveBeenCalledTimes(1)
-      expect(tenantService.markAsProcessed).toHaveBeenCalledWith('any_uuid')
+      expect(tenantService.markAsProcessed).toHaveBeenCalledWith('any_id')
     })
   })
 
@@ -469,7 +440,7 @@ describe('Processor: CreateTenant', () => {
       )
       expect(tenantService.markAsRejected).toHaveBeenCalledTimes(1)
       expect(tenantService.markAsRejected).toHaveBeenCalledWith(
-        'any_uuid',
+        'any_id',
         new Error('Some error occurs!')
       )
     })

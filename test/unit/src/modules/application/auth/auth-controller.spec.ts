@@ -48,7 +48,7 @@ describe('AuthController', () => {
             findByDocument: jest
               .fn()
               .mockResolvedValue(Promise.resolve(entityTenantMock)),
-            findByUuid: jest
+            findById: jest
               .fn()
               .mockResolvedValue(Promise.resolve(entityTenantMock))
           }
@@ -243,12 +243,12 @@ describe('AuthController', () => {
       await expect(promise).rejects.toThrow(new Error())
     })
 
-    it('should call UserService.getRoles with correct uuid', async () => {
+    it('should call UserService.getRoles with correct id', async () => {
       const data = mockLoginDto()
       const userService = userServiceLazy.load('any_connection' as any)
       await sutAuthController.login(data, requestSpy)
       expect(userService.getRolesGrouped).toHaveBeenCalledWith(
-        entityUserMock.uuid
+        entityUserMock.id
       )
       expect(userService.getRolesGrouped).toHaveBeenCalledTimes(1)
     })
@@ -269,11 +269,11 @@ describe('AuthController', () => {
       expect(requestSpy.session.auth).toEqual({
         tenant: {
           identifier: entityTenantMock.companyIdentifier,
-          uuid: entityTenantMock.uuid
+          id: entityTenantMock.id
         },
         user: {
           name: entityUserMock.name,
-          uuid: entityUserMock.uuid,
+          id: entityUserMock.id,
           permissions: [
             {
               name: 'sales',
@@ -333,7 +333,7 @@ describe('AuthController', () => {
       const response = await sutAuthController.login(data, requestSpy)
       expect(response).toEqual({
         name: entityUserMock.name,
-        uuid: entityUserMock.uuid,
+        id: entityUserMock.id,
         expiresIn: 'any_expires',
         permissions: [
           {
@@ -426,16 +426,16 @@ describe('AuthController', () => {
       await expect(promise).rejects.toThrow()
     })
 
-    it('should call TenantService.findByUuid with correct company id', async () => {
+    it('should call TenantService.findById with correct company id', async () => {
       const data = mockUserCreatePasswordDto()
       await sutAuthController.newPassword(data, querySpy)
-      expect(tenantService.findByUuid).toHaveBeenCalledWith('any_company_id')
-      expect(tenantService.findByUuid).toHaveBeenCalledTimes(1)
+      expect(tenantService.findById).toHaveBeenCalledWith('any_company_id')
+      expect(tenantService.findById).toHaveBeenCalledTimes(1)
     })
 
-    it('should throws if TenantService.findByUuid throws', async () => {
+    it('should throws if TenantService.findById throws', async () => {
       const data = mockUserCreatePasswordDto()
-      jest.spyOn(tenantService, 'findByUuid').mockImplementationOnce(() => {
+      jest.spyOn(tenantService, 'findById').mockImplementationOnce(() => {
         throw new Error()
       })
       const promise = sutAuthController.newPassword(data, querySpy)

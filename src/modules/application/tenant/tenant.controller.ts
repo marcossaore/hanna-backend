@@ -9,18 +9,16 @@ import {
 } from '@nestjs/common'
 import { Queue } from 'bull'
 import { InjectQueue } from '@nestjs/bull'
-import { CreateTenantDto } from './dto/create-tenant.dto'
-import { CreatedTenantDto } from './dto/created-tenant.dto'
 import { configAppPrefix } from '@/modules/application/app/application.prefixes'
 import { InfoMessageInterceptor } from '@/adapters/interceptors/info-message-interceptor'
-import { GenerateUuidService } from '@infra/plugins/uuid/generate-uuid-service'
 import { TenantService } from './tenant.service'
+import { Tenant } from '@infra/db/app/entities/tenant/tenant.entity'
+import { CreateTenantDto } from './dto/create-tenant.dto'
 
 @Controller(`${configAppPrefix}/tenanties`)
 export class TenantController {
   constructor(
     private readonly tenantService: TenantService,
-    private readonly generateUuidService: GenerateUuidService,
     @InjectQueue('create-tenant') private readonly createTenantQueue: Queue
   ) {}
 
@@ -32,9 +30,7 @@ export class TenantController {
   )
   @Post()
   @HttpCode(202)
-  async create(
-    @Body() createCompanyDto: CreateTenantDto
-  ): Promise<CreatedTenantDto> {
+  async create(@Body() createCompanyDto: CreateTenantDto): Promise<Tenant> {
     const companyAlreadyExists = await this.tenantService.exists(
       createCompanyDto.document
     )
@@ -49,17 +45,12 @@ export class TenantController {
       throw new ConflictException('A identificação já está cadastrada!')
     }
 
-    const uuid = this.generateUuidService.generate()
-
-    const newCompany = await this.tenantService.create({
-      ...createCompanyDto,
-      uuid
-    })
+    const newCompany = await this.tenantService.create(createCompanyDto)
 
     try {
-      this.createTenantQueue.add({ uuid })
+      this.createTenantQueue.add({ id: newCompany.id })
     } catch (error) {}
 
-    return new CreatedTenantDto(newCompany)
+    return newCompany
   }
 }

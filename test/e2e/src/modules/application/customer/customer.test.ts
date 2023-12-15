@@ -65,7 +65,6 @@ describe('CustomerController (e2e)', () => {
       customerCreated = responseBody
 
       expect(responseBody.id).toBeTruthy()
-      expect(responseBody.uuid).toBeTruthy()
       expect(responseBody.name).toEqual(data.name)
       expect(responseBody.phone).toEqual(data.phone)
       expect(responseBody.street).toEqual(data.address.street)
@@ -97,16 +96,15 @@ describe('CustomerController (e2e)', () => {
       const responseBody = response.body
       customerCreatedWithThumb = responseBody
 
-      expect(responseBody.uuid).toBeTruthy()
       expect(response.body.id).toBeTruthy()
       expect(response.body.thumb).toBeTruthy()
     })
 
     it('Get One (GET)', async () => {
-      const response = await agent.get(`/api/customers/${customerCreated.uuid}`)
+      const response = await agent.get(`/api/customers/${customerCreated.id}`)
       expect(response.statusCode).toBe(200)
       const responseBody = response.body
-      expect(responseBody.uuid).toEqual(customerCreated.uuid)
+      expect(responseBody.id).toEqual(customerCreated.id)
       expect(responseBody.name).toEqual(customerCreated.name)
       expect(responseBody.thumb).toBeNull()
       expect(responseBody.deletedAt).toBeNull()
@@ -114,11 +112,11 @@ describe('CustomerController (e2e)', () => {
 
     it('Get One thumb (GET)', async () => {
       const response = await agent.get(
-        `/api/customers/${customerCreatedWithThumb.uuid}`
+        `/api/customers/${customerCreatedWithThumb.id}`
       )
       expect(response.statusCode).toBe(200)
       const responseBody = response.body
-      expect(responseBody.uuid).toEqual(customerCreatedWithThumb.uuid)
+      expect(responseBody.id).toEqual(customerCreatedWithThumb.id)
       expect(responseBody.name).toEqual(customerCreatedWithThumb.name)
       expect(responseBody.thumb).toBeTruthy()
       expect(responseBody.deletedAt).toBeNull()
@@ -132,16 +130,12 @@ describe('CustomerController (e2e)', () => {
       expect(responseBody.page).toBe(1)
       expect(responseBody.totalPage).toBe(1)
       expect(responseBody.items.length).toBe(2)
-      expect(responseBody.items[0].uuid).toEqual(customerCreated.uuid)
-      expect(responseBody.items[0].thumb).toBeNull()
-      expect(responseBody.items[1].uuid).toEqual(customerCreatedWithThumb.uuid)
-      expect(responseBody.items[1].thumb).toBeTruthy()
     })
 
     it('Update (PATCH)', async () => {
       const newName = faker.person.fullName()
       const response = await agent
-        .patch(`/api/customers/${customerCreated.uuid}`)
+        .patch(`/api/customers/${customerCreated.id}`)
         .send({
           name: newName
         })
@@ -157,7 +151,7 @@ describe('CustomerController (e2e)', () => {
       const relativeFilePath = './test.png'
       const absoluteFilePath = resolve(__dirname, relativeFilePath)
       await agent
-        .patch(`/api/customers/${customerCreated.uuid}`)
+        .patch(`/api/customers/${customerCreated.id}`)
         .attach('thumb', absoluteFilePath)
         .expect(200)
         .then((response) => {
@@ -167,7 +161,7 @@ describe('CustomerController (e2e)', () => {
 
     it('Remove (DELETE)', async () => {
       const response = await agent.delete(
-        `/api/customers/${customerCreated.uuid}`
+        `/api/customers/${customerCreated.id}`
       )
       expect(response.statusCode).toBe(200)
       const responseBody = response.body

@@ -10,7 +10,6 @@ import { SeedRunnerService } from '@infra/db/companies/seeds/seed-runner.service
 import { GenerateDbCredentialsService } from '@infra/plugins/database/generate-db-credentials.service'
 import { CreateDatabaseService } from '@infra/plugins/database/create-database.service'
 import { MigrationsCompanyService } from '@infra/plugins/database/migrations-company.service'
-import { GenerateUuidService } from '@infra/plugins/uuid/generate-uuid-service'
 import { TokenServiceAdapter } from '@infra/plugins/token/token-service.adapter'
 import { AddAdminRoleServiceLazy } from '@/modules/application/role/add-admin-role.service'
 import { TenantService } from '@/modules/application/tenant/tenant.service'
@@ -33,7 +32,6 @@ export class CreateTenantProcessor {
     private readonly migrationsCompanyService: MigrationsCompanyService,
     private readonly seedRunnerService: SeedRunnerService,
     private readonly userService: UserServiceLazy,
-    private readonly generateUuidService: GenerateUuidService,
     private readonly adminRoleService: AddAdminRoleServiceLazy,
     private readonly mailService: MailService,
     private readonly tokenServiceAdapter: TokenServiceAdapter
@@ -42,10 +40,11 @@ export class CreateTenantProcessor {
   @Process()
   async handleJob(job: Job) {
     try {
-      const company = await this.tenantService.findByUuid(job.data.uuid)
+      const company = await this.tenantService.findById(job.data.id)
       const credentials = this.generateDbCredentialsService.generate(
         company.name
       )
+
       await this.createDatabaseService.create({
         db: company.companyIdentifier,
         ...credentials
@@ -59,7 +58,7 @@ export class CreateTenantProcessor {
 
       const connection = await this.loadTenantConnectionService.load(
         company.companyIdentifier,
-        5
+        30
       )
 
       if (!connection) {
@@ -70,25 +69,23 @@ export class CreateTenantProcessor {
       await this.seedRunnerService.seed(connection)
 
       const userService = this.userService.load(connection)
-      const uuid = this.generateUuidService.generate()
 
       const user = await userService.save({
-        uuid,
         name: company.partnerName,
         email: company.email,
         phone: company.phone
       })
 
       const adminRoleService = this.adminRoleService.load(connection)
-      await userService.addRole(user.uuid, adminRoleService)
+      await userService.addRole(user.id, adminRoleService)
 
       const expiresIn10Minutes = 10 * 60
 
       const token = this.tokenServiceAdapter.sign(
         {
-          companyId: company.uuid,
+          companyId: company.id,
           companyName: company.name,
-          userId: uuid,
+          userId: user.id,
           userName: company.partnerName
         },
         expiresIn10Minutes
@@ -115,11 +112,11 @@ export class CreateTenantProcessor {
 
   @OnQueueCompleted()
   onCompleted(job: Job) {
-    this.tenantService.markAsProcessed(job.data.uuid)
+    this.tenantService.markAsProcessed(job.data.id)
   }
 
   @OnQueueFailed()
   onFailed(job: Job, error: Error) {
-    this.tenantService.markAsRejected(job.data.uuid, error)
+    this.tenantService.markAsRejected(job.data.id, error)
   }
 }
