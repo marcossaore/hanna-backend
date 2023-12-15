@@ -37,7 +37,7 @@ export class CustomerService {
     })
   }
 
-  async findAll({
+  async find({
     limit,
     page,
     name,
@@ -83,7 +83,7 @@ export class CustomerService {
     return this.customerRepository.save(updateCustomerDto)
   }
 
-  async removeById(id: string) {
+  async remove(id: string) {
     const customer = await this.customerRepository.findOneBy({ id })
     customer.deletedAt = new Date()
     return this.customerRepository.save(customer)

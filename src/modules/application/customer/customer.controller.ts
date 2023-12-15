@@ -74,7 +74,7 @@ export class CustomerController {
   @Permissions('customers', 'read')
   @UseGuards(AuthenticatedGuard)
   @UseGuards(PermissionsGuard)
-  async findAll(
+  async list(
     @Session() session,
     @Query('limit') limit: number = 10,
     @Query('page') page: number = 1,
@@ -86,7 +86,7 @@ export class CustomerController {
   ): Promise<{ page: number; totalPage: number; items: CreatedCustomerDto[] }> {
     // implementar pets, trazer os pets dos clientes
     // implementar planos e contas
-    const [customers, count] = await this.customerService.findAll({
+    const [customers, count] = await this.customerService.find({
       limit,
       page,
       name,
@@ -120,7 +120,7 @@ export class CustomerController {
   @Permissions('customers', 'read')
   @UseGuards(AuthenticatedGuard)
   @UseGuards(PermissionsGuard)
-  async findById(@Param('id') id: string, @Session() session) {
+  async get(@Param('id') id: string, @Session() session) {
     const customer = await this.customerService.findById(id)
     if (!customer) {
       throw new NotFoundException('Cliente não encontrado!')
@@ -205,6 +205,6 @@ export class CustomerController {
     if (!customer) {
       throw new NotFoundException('Cliente não encontrado!')
     }
-    return this.customerService.removeById(id)
+    return this.customerService.remove(id)
   }
 }

@@ -38,7 +38,7 @@ describe('Controller: CustomerController', () => {
           provide: CustomerService,
           useValue: {
             findById: jest.fn().mockResolvedValue(customerEntityMock),
-            findAll: jest
+            find: jest
               .fn()
               .mockResolvedValue(
                 Promise.resolve([
@@ -51,7 +51,7 @@ describe('Controller: CustomerController', () => {
             verifyByEmail: jest.fn().mockResolvedValue(null),
             create: jest.fn().mockResolvedValue(customerEntityMock),
             save: jest.fn().mockResolvedValue(customerEntityMock),
-            removeById: jest.fn().mockResolvedValue(customerEntityMock),
+            remove: jest.fn().mockResolvedValue(customerEntityMock),
             count: jest.fn().mockResolvedValue(10)
           }
         },
@@ -224,33 +224,33 @@ describe('Controller: CustomerController', () => {
     })
   })
 
-  describe('findAll', () => {
+  describe('list', () => {
     it('should call CustomerService.findAll with default values', async () => {
-      await sutCustomerController.findAll(sessionSpy)
-      expect(customerService.findAll).toHaveBeenCalledWith({
+      await sutCustomerController.list(sessionSpy)
+      expect(customerService.find).toHaveBeenCalledWith({
         email: '',
         name: '',
         phone: '',
         limit: 10,
         page: 1
       })
-      expect(customerService.findAll).toHaveBeenCalledTimes(1)
+      expect(customerService.find).toHaveBeenCalledTimes(1)
     })
 
     it('should call CustomerService.findAll with limit and page provided', async () => {
-      await sutCustomerController.findAll(sessionSpy, 20, 2)
-      expect(customerService.findAll).toHaveBeenCalledWith({
+      await sutCustomerController.list(sessionSpy, 20, 2)
+      expect(customerService.find).toHaveBeenCalledWith({
         email: '',
         name: '',
         phone: '',
         limit: 20,
         page: 2
       })
-      expect(customerService.findAll).toHaveBeenCalledTimes(1)
+      expect(customerService.find).toHaveBeenCalledTimes(1)
     })
 
     it('should call CustomerService.findAll with all values provided', async () => {
-      await sutCustomerController.findAll(
+      await sutCustomerController.list(
         sessionSpy,
         10,
         1,
@@ -258,31 +258,31 @@ describe('Controller: CustomerController', () => {
         'any_phone',
         'any_email'
       )
-      expect(customerService.findAll).toHaveBeenCalledWith({
+      expect(customerService.find).toHaveBeenCalledWith({
         email: 'any_email',
         name: 'any_name',
         phone: 'any_phone',
         limit: 10,
         page: 1
       })
-      expect(customerService.findAll).toHaveBeenCalledTimes(1)
+      expect(customerService.find).toHaveBeenCalledTimes(1)
     })
 
-    it('should throws if CustomerService.findAll throws', async () => {
-      jest.spyOn(customerService, 'findAll').mockImplementationOnce(() => {
+    it('should throws if CustomerService.find throws', async () => {
+      jest.spyOn(customerService, 'find').mockImplementationOnce(() => {
         throw new Error()
       })
-      const promise = sutCustomerController.findAll(sessionSpy)
+      const promise = sutCustomerController.list(sessionSpy)
       await expect(promise).rejects.toThrow(new Error())
     })
 
     it('should call StorageService.getUrl with correct values', async () => {
-      await sutCustomerController.findAll(sessionSpy)
+      await sutCustomerController.list(sessionSpy)
       expect(storageService.getUrl).toHaveBeenCalledTimes(2)
     })
 
     it('should return customers when succeds', async () => {
-      const response = await sutCustomerController.findAll(sessionSpy)
+      const response = await sutCustomerController.list(sessionSpy)
       expect(response.page).toEqual(1)
       expect(response.totalPage).toEqual(1)
       expect(response.items.length).toEqual(2)
@@ -290,19 +290,24 @@ describe('Controller: CustomerController', () => {
       expect(response.items[1]).toBeInstanceOf(CreatedCustomerDto)
     })
 
-    // it('should return customers with totalPage equals max of limit', async () => {
-    //   //example: when count has value equal 28 or 30 must return 3, if count has value 41 must return 4
-    //   jest.spyOn(customerService, 'count').mockResolvedValueOnce(28)
-    //   const response = await sutCustomerController.findAll(sessionSpy)
-    //   expect(response.page).toEqual(1)
-    //   expect(response.totalPage).toEqual(3)
-    //   expect(response.items.length).toEqual(2)
-    // })
+    it('should return customers with totalPage equals max of limit', async () => {
+      //example: when count has value equal 28 or 30 must return 3, if count has value 41 must return 4
+      jest
+        .spyOn(customerService, 'find')
+        .mockResolvedValueOnce([
+          [mockCustomerEntity(), mockCustomerEntity()],
+          28
+        ])
+      const response = await sutCustomerController.list(sessionSpy)
+      expect(response.page).toEqual(1)
+      expect(response.totalPage).toEqual(3)
+      expect(response.items.length).toEqual(2)
+    })
   })
 
-  describe('findById', () => {
+  describe('get', () => {
     it('should call CustomerService.findById with correct value', async () => {
-      await sutCustomerController.findById('any_id', sessionSpy)
+      await sutCustomerController.get('any_id', sessionSpy)
       expect(customerService.findById).toHaveBeenCalledWith('any_id')
       expect(customerService.findById).toHaveBeenCalledTimes(1)
     })
@@ -311,7 +316,7 @@ describe('Controller: CustomerController', () => {
       jest
         .spyOn(customerService, 'findById')
         .mockResolvedValueOnce(Promise.resolve(null))
-      const promise = sutCustomerController.findById('any_id', sessionSpy)
+      const promise = sutCustomerController.get('any_id', sessionSpy)
       await expect(promise).rejects.toThrow(
         new Error('Cliente não encontrado!')
       )
@@ -321,12 +326,12 @@ describe('Controller: CustomerController', () => {
       jest.spyOn(customerService, 'findById').mockImplementationOnce(() => {
         throw new Error()
       })
-      const promise = sutCustomerController.findById('any_id', sessionSpy)
+      const promise = sutCustomerController.get('any_id', sessionSpy)
       await expect(promise).rejects.toThrow(new Error())
     })
 
     it('should call StorageService.getUrl with correct values if thumb is provided', async () => {
-      await sutCustomerController.findById('any_id', sessionSpy)
+      await sutCustomerController.get('any_id', sessionSpy)
       expect(storageService.getUrl).toHaveBeenCalledWith(
         `any_tenant/customers/${customerEntityMock.id}`
       )
@@ -337,15 +342,12 @@ describe('Controller: CustomerController', () => {
       jest.spyOn(storageService, 'getUrl').mockImplementationOnce(() => {
         throw new Error()
       })
-      const promise = sutCustomerController.findById('any_id', sessionSpy)
+      const promise = sutCustomerController.get('any_id', sessionSpy)
       await expect(promise).rejects.toThrow(new Error())
     })
 
     it('should return a customer when succeds', async () => {
-      const response = await sutCustomerController.findById(
-        'any_id',
-        sessionSpy
-      )
+      const response = await sutCustomerController.get('any_id', sessionSpy)
       expect(response).toEqual(
         new CreatedCustomerDto({
           ...customerEntityMock,
@@ -525,14 +527,14 @@ describe('Controller: CustomerController', () => {
       await expect(promise).rejects.toThrow(new Error())
     })
 
-    it('should call CustomerService.removeById with correct values', async () => {
+    it('should call CustomerService.remove with correct values', async () => {
       await sutCustomerController.remove('any_id')
-      expect(customerService.removeById).toHaveBeenCalledWith('any_id')
+      expect(customerService.remove).toHaveBeenCalledWith('any_id')
       expect(customerService.findById).toHaveBeenCalledTimes(1)
     })
 
-    it('should throws if CustomerService.removeById throws', async () => {
-      jest.spyOn(customerService, 'removeById').mockImplementationOnce(() => {
+    it('should throws if CustomerService.remove throws', async () => {
+      jest.spyOn(customerService, 'remove').mockImplementationOnce(() => {
         throw new Error()
       })
       const promise = sutCustomerController.remove('any_id')
