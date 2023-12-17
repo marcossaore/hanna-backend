@@ -12,6 +12,18 @@ export class CustomerService {
     this.customerRepository = this.connection.getRepository(Customer)
   }
 
+  async exists(id: string): Promise<boolean> {
+    const user = await this.customerRepository.findOne({
+      where: {
+        id
+      },
+      select: {
+        id: true
+      }
+    })
+    return user ? true : false
+  }
+
   async findByPhone(phone: string): Promise<Customer> {
     return this.customerRepository.findOneBy({ phone })
   }
