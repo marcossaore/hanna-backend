@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator'
+import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator'
 import { HasMimeType, IsFile, MemoryStoredFile } from 'nestjs-form-data'
 export class CreateProductDto {
   @IsString({
@@ -24,15 +24,12 @@ export class CreateProductDto {
   @IsOptional()
   readonly description: string
 
-  @IsNumber(
-    {},
-    {
-      message: JSON.stringify({
-        message: 'O preço do produto deve ser "number"!',
-        field: 'price'
-      })
-    }
-  )
+  @IsInt({
+    message: JSON.stringify({
+      message: 'O preço do produto deve ser "int"!',
+      field: 'price'
+    })
+  })
   @IsNotEmpty({
     message: JSON.stringify({
       message: 'O preço do produto deve ser informado!',
@@ -41,17 +38,12 @@ export class CreateProductDto {
   })
   readonly price: number
 
-  @IsNumber(
-    {
-      allowInfinity: false
-    },
-    {
-      message: JSON.stringify({
-        message: 'O preço a granel do produto deve ser "number"!',
-        field: 'bulkPrice'
-      })
-    }
-  )
+  @IsInt({
+    message: JSON.stringify({
+      message: 'O preço a granel do produto deve ser "number"!',
+      field: 'bulkPrice'
+    })
+  })
   @IsNotEmpty({
     message: JSON.stringify({
       message: 'O preço a granel do produto deve ser informado!',

@@ -45,7 +45,7 @@ describe('Dto:  CreateProduct', () => {
       mockCreateProductDto({ bulkPrice: 'invalid' })
     )
     const errors = await validate(validation)
-    expect(errors[0].constraints.isNumber).toEqual(
+    expect(errors[0].constraints.isInt).toEqual(
       '{"message":"O preço a granel do produto deve ser \\"number\\"!","field":"bulkPrice"}'
     )
     expect(errors.length).toEqual(1)
