@@ -30,7 +30,8 @@ export const createTenant = async (app: INestApplication) => {
         UPDATE ${companyIdentifier}.user
         SET password = "${hashPass}"
         WHERE email = "${email}"
-    `)
+  `)
+  await connection.close()
 
   return {
     email,

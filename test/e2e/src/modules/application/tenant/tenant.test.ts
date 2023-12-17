@@ -77,5 +77,6 @@ describe('TenantController (e2e)', () => {
     )
     expect(roleCreated[0].name === 'admin').toBe(true)
     expect(userCreated[0].roleId === roleCreated[0].id).toBe(true)
+    await connection.close()
   })
 })

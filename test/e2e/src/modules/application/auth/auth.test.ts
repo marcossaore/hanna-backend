@@ -48,7 +48,7 @@ describe('AuthController (e2e)', () => {
           delete: true
         },
         options: {
-          accountMode: false,
+          billMode: false,
           pinPass: false
         }
       },
