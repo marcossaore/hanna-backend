@@ -14,3 +14,14 @@ export const generateRandomString = (length: number) => {
 export const generateRandomInteger = (min: number, max: number) => {
   return Math.round(Math.random() * (max - min) + min)
 }
+
+export const convertToFloatWithTwoDecimals = (value: number): number => {
+  const floatValue = value / 100
+  const formattedValue = floatValue.toFixed(2)
+  return Number(formattedValue)
+}
+
+export const convertFloatToInt = (floatValue: number): number => {
+  const intValue = Math.round(floatValue * 100)
+  return intValue
+}
