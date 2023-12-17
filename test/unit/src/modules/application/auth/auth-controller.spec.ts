@@ -13,6 +13,7 @@ import { TenantService } from '@/modules/application/tenant/tenant.service'
 import { UserServiceLazy } from '@/modules/application/user/user.service.lazy'
 import { AuthController } from '@/modules/application/auth/auth.controller'
 import { TokenServiceAdapter } from '@infra/plugins/token/token-service.adapter'
+import { SecretsService } from '@/modules/infra/secrets/secrets-service'
 
 describe('AuthController', () => {
   let entityTenantMock: Tenant
@@ -24,6 +25,8 @@ describe('AuthController', () => {
   let userServiceLazy: UserServiceLazy
   let hashService: HashService
   let tokenServiceAdapter: TokenServiceAdapter
+  let secretsService: SecretsService
+
   const requestSpy: any = {
     session: {
       cookie: {
@@ -88,6 +91,17 @@ describe('AuthController', () => {
               userId: 'any_user_id'
             })
           }
+        },
+        {
+          provide: SecretsService,
+          useValue: {
+            get: jest.fn().mockReturnValue(
+              JSON.stringify({
+                dbUser: 'any_db_user',
+                dbPass: 'any_db_pass'
+              })
+            )
+          }
         }
       ]
     }).compile()
@@ -100,6 +114,7 @@ describe('AuthController', () => {
     userServiceLazy = module.get<UserServiceLazy>(UserServiceLazy)
     hashService = module.get<HashService>(HashService)
     tokenServiceAdapter = module.get<TokenServiceAdapter>(TokenServiceAdapter)
+    secretsService = module.get<SecretsService>(SecretsService)
   })
 
   afterEach(() => {
@@ -134,11 +149,33 @@ describe('AuthController', () => {
       await expect(promise).rejects.toThrow(new Error())
     })
 
+    it('should call SecretsService.get with correct key', async () => {
+      const data = mockLoginDto()
+      await sutAuthController.login(data, requestSpy)
+      expect(secretsService.get).toHaveBeenCalledWith(
+        entityTenantMock.companyIdentifier
+      )
+      expect(secretsService.get).toHaveBeenCalledTimes(1)
+    })
+
+    it('should throw if SecretsService.get throws', async () => {
+      jest.spyOn(secretsService, 'get').mockImplementationOnce(() => {
+        throw new Error()
+      })
+      const data = mockLoginDto()
+      const promise = sutAuthController.login(data, requestSpy)
+      await expect(promise).rejects.toThrow(
+        'O CNPJ, email ou senha são inválidos!'
+      )
+    })
+
     it('should call LoadTenantConnectionService.load with correct document', async () => {
       const data = mockLoginDto()
       await sutAuthController.login(data, requestSpy)
       expect(loadTenantConnectionService.load).toHaveBeenCalledWith(
-        entityTenantMock.companyIdentifier
+        entityTenantMock.companyIdentifier,
+        'any_db_user',
+        'any_db_pass'
       )
       expect(loadTenantConnectionService.load).toHaveBeenCalledTimes(1)
     })
@@ -169,7 +206,11 @@ describe('AuthController', () => {
       const data = mockLoginDto()
       await sutAuthController.login(data, requestSpy)
       expect(userServiceLazy.load).toHaveBeenCalledWith(
-        loadTenantConnectionService.load(entityTenantMock.companyIdentifier)
+        loadTenantConnectionService.load(
+          entityTenantMock.companyIdentifier,
+          'any_db_user',
+          'any_db_pass'
+        )
       )
       expect(userServiceLazy.load).toHaveBeenCalledTimes(1)
     })
@@ -269,7 +310,11 @@ describe('AuthController', () => {
       expect(requestSpy.session.auth).toEqual({
         tenant: {
           identifier: entityTenantMock.companyIdentifier,
-          id: entityTenantMock.id
+          id: entityTenantMock.id,
+          credentials: {
+            user: 'any_db_user',
+            password: 'any_db_pass'
+          }
         },
         user: {
           name: entityUserMock.name,
@@ -446,7 +491,9 @@ describe('AuthController', () => {
       const data = mockUserCreatePasswordDto()
       await sutAuthController.newPassword(data, querySpy)
       expect(loadTenantConnectionService.load).toHaveBeenCalledWith(
-        entityTenantMock.companyIdentifier
+        entityTenantMock.companyIdentifier,
+        'any_db_user',
+        'any_db_pass'
       )
       expect(loadTenantConnectionService.load).toHaveBeenCalledTimes(1)
     })
@@ -482,7 +529,11 @@ describe('AuthController', () => {
       const data = mockUserCreatePasswordDto()
       await sutAuthController.newPassword(data, querySpy)
       expect(userServiceLazy.load).toHaveBeenCalledWith(
-        loadTenantConnectionService.load(entityTenantMock.companyIdentifier)
+        loadTenantConnectionService.load(
+          entityTenantMock.companyIdentifier,
+          'any_db_user',
+          'any_db_pass'
+        )
       )
       expect(userServiceLazy.load).toHaveBeenCalledTimes(1)
     })

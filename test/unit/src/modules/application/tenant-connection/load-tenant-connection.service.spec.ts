@@ -7,7 +7,6 @@ import { ConfigService } from '@nestjs/config'
 
 describe('Service: LoadTenantConnectionService', () => {
   let sutLoadTenantConnectionService: LoadTenantConnectionService
-  let secretsService: SecretsService
   let loadTenantDataSourceService: LoadTenantDataSourceService
   let tenantName: string
 
@@ -46,7 +45,6 @@ describe('Service: LoadTenantConnectionService', () => {
     sutLoadTenantConnectionService = module.get<LoadTenantConnectionService>(
       LoadTenantConnectionService
     )
-    secretsService = module.get<SecretsService>(SecretsService)
     loadTenantDataSourceService = module.get<LoadTenantDataSourceService>(
       LoadTenantDataSourceService
     )
@@ -64,28 +62,12 @@ describe('Service: LoadTenantConnectionService', () => {
   })
 
   describe('load', () => {
-    it('should call SecretsService.get with correct value', async () => {
-      await sutLoadTenantConnectionService.load(tenantName)
-      expect(secretsService.get).toBeCalledWith(tenantName)
-      expect(secretsService.get).toBeCalledTimes(1)
-    })
-
-    it('should returns null if SecretsService.get returns null', async () => {
-      jest.spyOn(secretsService, 'get').mockReturnValueOnce(null)
-      const response = await sutLoadTenantConnectionService.load(tenantName)
-      expect(response).toBe(null)
-    })
-
-    it('should returns null if SecretsService.get throws', async () => {
-      jest.spyOn(secretsService, 'get').mockImplementationOnce(() => {
-        throw new Error()
-      })
-      const response = await sutLoadTenantConnectionService.load(tenantName)
-      expect(response).toBe(null)
-    })
-
     it('should call LoadTenantDataSourceService.load with correct values (connectTimeout default 0)', async () => {
-      await sutLoadTenantConnectionService.load(tenantName)
+      await sutLoadTenantConnectionService.load(
+        tenantName,
+        'any_user',
+        'any_pass'
+      )
       expect(loadTenantDataSourceService.load).toBeCalledWith({
         host: 'any_host',
         port: 'any_port',
@@ -99,7 +81,12 @@ describe('Service: LoadTenantConnectionService', () => {
     })
 
     it('should call LoadTenantDataSourceService.load with correct values (connectTimeout set 5)', async () => {
-      await sutLoadTenantConnectionService.load(tenantName, 5)
+      await sutLoadTenantConnectionService.load(
+        tenantName,
+        'any_user',
+        'any_pass',
+        5
+      )
       expect(loadTenantDataSourceService.load).toBeCalledWith({
         host: 'any_host',
         port: 'any_port',
@@ -118,12 +105,20 @@ describe('Service: LoadTenantConnectionService', () => {
         .mockImplementationOnce(() => {
           throw new Error()
         })
-      const response = await sutLoadTenantConnectionService.load(tenantName)
+      const response = await sutLoadTenantConnectionService.load(
+        tenantName,
+        'any_user',
+        'any_pass'
+      )
       expect(response).toBe(null)
     })
 
     it('should returns a Connection when succeds', async () => {
-      const response = await sutLoadTenantConnectionService.load(tenantName)
+      const response = await sutLoadTenantConnectionService.load(
+        tenantName,
+        'any_user',
+        'any_pass'
+      )
       expect(response).toEqual({})
     })
   })

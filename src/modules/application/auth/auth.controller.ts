@@ -18,6 +18,7 @@ import { appPrefix } from '../app/application.prefixes'
 import { UserCreatePasswordDto } from './dto/user-create-password.dto'
 import { TokenServiceAdapter } from '@infra/plugins/token/token-service.adapter'
 import { InfoMessageInterceptor } from '@/adapters/interceptors/info-message-interceptor'
+import { SecretsService } from '@/modules/infra/secrets/secrets-service'
 
 type GrantType = {
   read: boolean
@@ -55,7 +56,8 @@ export class AuthController {
     private readonly userService: UserServiceLazy,
     private readonly hashService: HashService,
     private readonly loadTenantConnectionService: LoadTenantConnectionService,
-    private readonly tokenServiceAdapter: TokenServiceAdapter
+    private readonly tokenServiceAdapter: TokenServiceAdapter,
+    private readonly secretsService: SecretsService
   ) {}
 
   @Post('/login')
@@ -70,9 +72,22 @@ export class AuthController {
       throw userUnauthorized()
     }
 
+    let credentials = null
+
+    try {
+      credentials = JSON.parse(
+        await this.secretsService.get(company.companyIdentifier)
+      )
+    } catch (error) {
+      throw userUnauthorized()
+    }
+
     const connection = await this.loadTenantConnectionService.load(
-      company.companyIdentifier
+      company.companyIdentifier,
+      credentials.dbUser,
+      credentials.dbPass
     )
+
     if (!connection) {
       throw userUnauthorized()
     }
@@ -96,7 +111,11 @@ export class AuthController {
     request.session.auth = {
       tenant: {
         identifier: company.companyIdentifier,
-        id: company.id
+        id: company.id,
+        credentials: {
+          user: credentials.dbUser,
+          password: credentials.dbPass
+        }
       },
       user: {
         id: user.id,
@@ -136,8 +155,20 @@ export class AuthController {
     const { companyId, userId } = this.tokenServiceAdapter.verify(query.token)
     const company = await this.tenantService.findById(companyId)
 
+    let credentials = null
+
+    try {
+      credentials = JSON.parse(
+        await this.secretsService.get(company.companyIdentifier)
+      )
+    } catch (error) {
+      throw userUnauthorized()
+    }
+
     const connection = await this.loadTenantConnectionService.load(
-      company.companyIdentifier
+      company.companyIdentifier,
+      credentials.dbUser,
+      credentials.dbPass
     )
 
     const hashPassword = await this.hashService.hash(
@@ -146,5 +177,13 @@ export class AuthController {
 
     const userService = this.userService.load(connection)
     await userService.savePassword(userId, hashPassword)
+  }
+
+  @Post('/pin')
+  @HttpCode(200)
+  async authPin() {
+    return {
+      isAuth: true
+    }
   }
 }

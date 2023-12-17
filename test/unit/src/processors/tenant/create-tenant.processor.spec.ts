@@ -239,6 +239,8 @@ describe('Processor: CreateTenant', () => {
       expect(loadTenantConnectionService.load).toHaveBeenCalledTimes(1)
       expect(loadTenantConnectionService.load).toHaveBeenCalledWith(
         tenantEntityMock.companyIdentifier,
+        'any_db_user',
+        'any_db_pass',
         30
       )
     })

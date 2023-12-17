@@ -58,6 +58,8 @@ export class CreateTenantProcessor {
 
       const connection = await this.loadTenantConnectionService.load(
         company.companyIdentifier,
+        credentials.dbUser,
+        credentials.dbPass,
         30
       )
 
