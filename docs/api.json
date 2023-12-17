@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "Hanna Api",
-    "dateExported": "2023-12-17T15:55:33.366Z",
+    "dateExported": "2023-12-17T16:00:15.462Z",
     "version": "1.1",
     "folders": [
         {
@@ -50,12 +50,12 @@
             "method": "POST",
             "sortNum": 10000,
             "created": "2023-12-07T17:29:20.183Z",
-            "modified": "2023-12-17T14:46:00.979Z",
+            "modified": "2023-12-17T15:59:58.608Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"name\": \"testing\",\n  \"document\": \"68678354000123\",\n  \"partnerName\": \"Armênia Rodrigues Castro\",\n  \"partnerDocument\": \"43905610060\",\n  \"companyIdentifier\": \"testing\",\n  \"phone\": \"31984536721\",\n  \"email\": \"test@test.com\"\n}",
+                "raw": "{\n  \"name\": \"company\",\n  \"document\": \"07962434000111\",\n  \"partnerName\": \"Armênia Rodrigues Castro\",\n  \"partnerDocument\": \"43905610060\",\n  \"companyIdentifier\": \"company\",\n  \"phone\": \"31984536721\",\n  \"email\": \"test@test.com\"\n}",
                 "form": []
             },
             "tests": []
@@ -69,12 +69,12 @@
             "method": "POST",
             "sortNum": 10000,
             "created": "2023-12-07T17:29:20.184Z",
-            "modified": "2023-12-17T14:47:10.418Z",
+            "modified": "2023-12-17T16:00:04.192Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"document\": \"68678354000123\",\n  \"email\": \"test@test.com\",\n  \"password\": \"S0mePass!\"\n}",
+                "raw": "{\n  \"document\": \"07962434000111\",\n  \"email\": \"test@test.com\",\n  \"password\": \"S0mePass!\"\n}",
                 "form": []
             },
             "tests": []
