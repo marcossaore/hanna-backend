@@ -21,12 +21,13 @@ export const mockCreateProductDto = ({
 export const mockProductEntity = ({
   description = null,
   bulkPrice = null,
+  price = null,
   code = null
 } = {}): Product => {
-  const product: Product = {
+  const product: any = {
     id: faker.number.int(),
     name: faker.company.name(),
-    price: faker.number.int(),
+    price: price || faker.number.int({ max: 1000 }),
     description,
     bulkPrice,
     code,
@@ -34,5 +35,5 @@ export const mockProductEntity = ({
     updatedAt: faker.date.anytime(),
     deletedAt: null
   }
-  return product
+  return product as Product
 }

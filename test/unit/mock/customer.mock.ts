@@ -26,7 +26,7 @@ export const mockCustomerEntity = ({
   email = null,
   complement = null
 } = {}): Customer => {
-  const customer: Customer = {
+  const customer: any = {
     id: faker.string.uuid(),
     name: faker.company.name(),
     phone: faker.phone.number(),
@@ -49,5 +49,5 @@ export const mockCustomerEntity = ({
     customer.complement = complement
   }
 
-  return customer
+  return customer as Customer
 }
