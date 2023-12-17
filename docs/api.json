@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "Hanna Api",
-    "dateExported": "2023-12-14T02:23:54.941Z",
+    "dateExported": "2023-12-17T15:55:33.366Z",
     "version": "1.1",
     "folders": [
         {
@@ -26,6 +26,13 @@
             "sortNum": 17500
         },
         {
+            "_id": "0409fc4d-de00-4958-93e3-26e4e91f849e",
+            "name": "Sales",
+            "containerId": "",
+            "created": "2023-12-14T02:24:50.280Z",
+            "sortNum": 18750
+        },
+        {
             "_id": "50315b51-c14d-43d9-b0cd-75d091ea3c4f",
             "name": "Auth",
             "containerId": "",
@@ -43,12 +50,12 @@
             "method": "POST",
             "sortNum": 10000,
             "created": "2023-12-07T17:29:20.183Z",
-            "modified": "2023-12-07T17:29:20.183Z",
+            "modified": "2023-12-17T14:46:00.979Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"name\": \"Company\",\n  \"document\": \"07962434000111\",\n  \"partnerName\": \"Armênia Rodrigues Castro\",\n  \"partnerDocument\": \"43905610060\",\n  \"companyIdentifier\": \"company\",\n  \"phone\": \"31984536721\",\n  \"email\": \"test@test.com\"\n}",
+                "raw": "{\n  \"name\": \"testing\",\n  \"document\": \"68678354000123\",\n  \"partnerName\": \"Armênia Rodrigues Castro\",\n  \"partnerDocument\": \"43905610060\",\n  \"companyIdentifier\": \"testing\",\n  \"phone\": \"31984536721\",\n  \"email\": \"test@test.com\"\n}",
                 "form": []
             },
             "tests": []
@@ -62,12 +69,12 @@
             "method": "POST",
             "sortNum": 10000,
             "created": "2023-12-07T17:29:20.184Z",
-            "modified": "2023-12-07T17:29:20.184Z",
+            "modified": "2023-12-17T14:47:10.418Z",
             "headers": [],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"document\": \"07962434000111\",\n  \"email\": \"test@test.com\",\n  \"password\": \"S0mePass!\"\n}",
+                "raw": "{\n  \"document\": \"68678354000123\",\n  \"email\": \"test@test.com\",\n  \"password\": \"S0mePass!\"\n}",
                 "form": []
             },
             "tests": []
@@ -125,6 +132,25 @@
             "body": {
                 "type": "json",
                 "raw": "{\n  \"name\": \"Brinquedo de Puxar p/ Cachorro Kong Jaxx Triple Barrel G\",\n  \"price\": 14000\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "5dfdd8cd-acd0-4adc-974a-cda60ce623a6",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "0409fc4d-de00-4958-93e3-26e4e91f849e",
+            "name": "Create",
+            "url": "http://localhost:3000/api/sales",
+            "method": "POST",
+            "sortNum": 12500,
+            "created": "2023-12-14T02:24:50.281Z",
+            "modified": "2023-12-17T00:15:44.341Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"paymentMethod\": \"money\",\n  \"times\": 20,\n  \"orders\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 2\n    },\n    {\n      \"productId\": 2,\n      \"quantity\": 1\n    }\n  ]\n}",
                 "form": []
             },
             "tests": []
@@ -318,6 +344,25 @@
                     "isPath": false
                 }
             ],
+            "tests": []
+        },
+        {
+            "_id": "1e4f38fd-9d7c-4cbc-a83c-59ee7a84a9ca",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "0409fc4d-de00-4958-93e3-26e4e91f849e",
+            "name": "Create with customer id",
+            "url": "http://localhost:3000/api/sales",
+            "method": "POST",
+            "sortNum": 22500,
+            "created": "2023-12-15T16:23:10.004Z",
+            "modified": "2023-12-15T21:19:15.857Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"paymentMethod\": \"bill\",\n  \"times\": 1,\n  \"orders\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 2\n    },\n    {\n      \"productId\": 2,\n      \"quantity\": 1\n    }\n  ],\n  \"customerId\": \"70b61fe0-a34a-4c26-868c-7aa1a2679f6e\"\n}",
+                "form": []
+            },
             "tests": []
         },
         {
