@@ -31,7 +31,8 @@ describe('CustomerService', () => {
         .fn()
         .mockResolvedValue([[customerMock, customerMock], 2]),
       findOneBy: jest.fn().mockResolvedValue(customerMock),
-      save: jest.fn().mockResolvedValue(customerMock)
+      save: jest.fn().mockResolvedValue(customerMock),
+      findOne: jest.fn().mockResolvedValue(true)
     }
   })
 
@@ -69,6 +70,42 @@ describe('CustomerService', () => {
     it('should return a customer on success', async () => {
       const response = await sutCustomerService.findByPhone('any_phone')
       expect(response).toEqual(customerMock)
+    })
+  })
+
+  describe('exists', () => {
+    it('should call CustomerRepository.findOne with correct id', async () => {
+      await sutCustomerService.exists('any_id')
+      expect(customerRepository.findOne).toHaveBeenCalledWith({
+        where: {
+          id: 'any_id'
+        },
+        select: {
+          id: true
+        }
+      })
+      expect(customerRepository.findOne).toHaveBeenCalledTimes(1)
+    })
+
+    it('should throws if CustomerRepository.findOne throws', async () => {
+      jest
+        .spyOn(customerRepository, 'findOne')
+        .mockImplementationOnce(async () => {
+          throw new Error()
+        })
+      const promise = sutCustomerService.exists('any_id')
+      await expect(promise).rejects.toThrow()
+    })
+
+    it('should return true if customer exists', async () => {
+      const response = await sutCustomerService.exists('any_id')
+      expect(response).toEqual(true)
+    })
+
+    it('should return false if customer no exists', async () => {
+      jest.spyOn(customerRepository, 'findOne').mockResolvedValueOnce(null)
+      const response = await sutCustomerService.exists('any_id')
+      expect(response).toEqual(false)
     })
   })
 
