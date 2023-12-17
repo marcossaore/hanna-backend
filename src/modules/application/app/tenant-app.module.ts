@@ -7,6 +7,7 @@ import { LoadTenantConnectionService } from '../tenant-connection/load-tenant-co
 import { Request } from 'express'
 import { AuthModule } from '../auth/auth.module'
 import { ProductModule } from '../product/product.module'
+import { SaleModule } from '../sale/sale.module'
 
 const injectConnectionProvider = () => {
   return {
@@ -42,6 +43,12 @@ const injectConnectionProvider = () => {
     {
       imports: [LoadTenantConnectionModule],
       module: ProductModule,
+      providers: [injectConnectionProvider()],
+      exports: ['CONNECTION']
+    },
+    {
+      imports: [LoadTenantConnectionModule],
+      module: SaleModule,
       providers: [injectConnectionProvider()],
       exports: ['CONNECTION']
     },
