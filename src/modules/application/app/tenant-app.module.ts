@@ -19,12 +19,16 @@ const injectConnectionProvider = () => {
     ) => {
       const tenantName = request?.session?.auth?.tenant?.identifier
       if (!tenantName) {
-        throw new UnauthorizedException()
+        throw new UnauthorizedException(
+          'Você não está autenticado para acessar este recurso!'
+        )
       }
       try {
         return await loadTenantConnectionService.load(tenantName)
       } catch (error) {
-        throw new UnauthorizedException()
+        throw new UnauthorizedException(
+          'Você não está autenticado para acessar este recurso!'
+        )
       }
     },
     inject: [REQUEST, LoadTenantConnectionService]
