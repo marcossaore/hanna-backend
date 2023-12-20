@@ -103,6 +103,30 @@ describe('Controller: Product', () => {
     it('should call ProductService.create with correct values', async () => {
       const data = mockCreateProductDto()
       await sutProductController.create(sessionSpy, data)
+      expect(productService.create).toHaveBeenCalledWith({
+        ...data,
+        quantityKgActual: 0
+      })
+      expect(productService.create).toHaveBeenCalledTimes(1)
+    })
+
+    it('should call ProductService.create with correct values when quantityKgActual is provided without bulkPrice', async () => {
+      const data = mockCreateProductDto({ quantityKgActual: 32 })
+      await sutProductController.create(sessionSpy, data)
+      expect(productService.create).toHaveBeenCalledWith({
+        ...data,
+        quantityKgActual: 0
+      })
+      expect(productService.create).toHaveBeenCalledTimes(1)
+    })
+
+    it('should call ProductService.create with correct values when product is bulk', async () => {
+      const data = mockCreateProductDto({
+        bulkPrice: 10000,
+        quantityKg: 1000,
+        quantityKgActual: 10
+      })
+      await sutProductController.create(sessionSpy, data)
       expect(productService.create).toHaveBeenCalledWith(data)
       expect(productService.create).toHaveBeenCalledTimes(1)
     })
@@ -149,7 +173,31 @@ describe('Controller: Product', () => {
       await sutProductController.list(sessionSpy)
       expect(productService.find).toHaveBeenCalledWith({
         limit: 10,
-        page: 1
+        page: 1,
+        code: '',
+        name: ''
+      })
+      expect(productService.find).toHaveBeenCalledTimes(1)
+    })
+
+    it('should call ProductService.findAll with name', async () => {
+      await sutProductController.list(sessionSpy, 10, 1, 'any_name')
+      expect(productService.find).toHaveBeenCalledWith({
+        limit: 10,
+        page: 1,
+        code: '',
+        name: 'any_name'
+      })
+      expect(productService.find).toHaveBeenCalledTimes(1)
+    })
+
+    it('should call ProductService.findAll with code', async () => {
+      await sutProductController.list(sessionSpy, 10, 1, '', 'any_code')
+      expect(productService.find).toHaveBeenCalledWith({
+        limit: 10,
+        page: 1,
+        name: '',
+        code: 'any_code'
       })
       expect(productService.find).toHaveBeenCalledTimes(1)
     })

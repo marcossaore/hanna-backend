@@ -1,4 +1,11 @@
-import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator'
+import {
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateIf
+} from 'class-validator'
 import { HasMimeType, IsFile, MemoryStoredFile } from 'nestjs-form-data'
 export class CreateProductDto {
   @IsString({
@@ -40,7 +47,21 @@ export class CreateProductDto {
 
   @IsInt({
     message: JSON.stringify({
-      message: 'O preço a granel do produto deve ser "number"!',
+      message: 'A quantidade em estoque do produto deve ser "int"!',
+      field: 'quantity'
+    })
+  })
+  @IsNotEmpty({
+    message: JSON.stringify({
+      message: 'A quantidade em estoque do produto deve ser informada!',
+      field: 'quantity'
+    })
+  })
+  readonly quantity: number
+
+  @IsInt({
+    message: JSON.stringify({
+      message: 'O preço a granel do produto deve ser "int"!',
       field: 'bulkPrice'
     })
   })
@@ -52,6 +73,42 @@ export class CreateProductDto {
   })
   @IsOptional()
   readonly bulkPrice: number
+
+  @IsInt({
+    message: JSON.stringify({
+      message: 'A quantidade de quilos(KG) do produto  deve "number"!',
+      field: 'quantityKg'
+    })
+  })
+  @IsNotEmpty({
+    message: JSON.stringify({
+      message: 'A quantidade de quilos(KG) do produto deve ser informada!',
+      field: 'quantityKg'
+    })
+  })
+  @ValidateIf((object) => object.bulkPrice)
+  readonly quantityKg: number
+
+  @IsNumber(
+    {},
+    {
+      message: JSON.stringify({
+        message:
+          'A quantidade de quilos(KG) remanescente do produto deve ser "number"!',
+        field: 'quantityKgActual'
+      })
+    }
+  )
+  @IsNotEmpty({
+    message: JSON.stringify({
+      message:
+        'A quantidade de quilos(KG) remanescente do produto deve ser informada!',
+      field: 'quantityKgActual'
+    })
+  })
+  @IsOptional()
+  @ValidateIf((object) => object.bulkPrice)
+  readonly quantityKgActual: number
 
   @IsString({
     message: JSON.stringify({

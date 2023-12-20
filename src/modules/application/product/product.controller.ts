@@ -50,7 +50,17 @@ export class ProductController {
       }
     }
 
-    const product = await this.productService.create(createProductDto)
+    const { ...productDto } = createProductDto
+
+    if (!productDto.bulkPrice) {
+      productDto.quantityKgActual = 0
+    } else {
+      if (!productDto.quantityKgActual) {
+        productDto.quantityKgActual = productDto.quantityKg
+      }
+    }
+
+    const product = await this.productService.create(productDto)
 
     let thumb = null
 
@@ -71,9 +81,16 @@ export class ProductController {
   async list(
     @Session() session,
     @Query('limit') limit: number = 10,
-    @Query('page') page: number = 1
+    @Query('page') page: number = 1,
+    @Query('name') name: string = '',
+    @Query('code') code: string = ''
   ): Promise<{ page: number; totalPage: number; items: ProductDto[] }> {
-    const [products, count] = await this.productService.find({ limit, page })
+    const [products, count] = await this.productService.find({
+      limit,
+      page,
+      name,
+      code
+    })
 
     let totalPage = 1
     if (count > limit) {

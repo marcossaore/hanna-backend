@@ -22,8 +22,17 @@ export class Product extends AddDateColumns {
   @Column({ nullable: false })
   price: number
 
+  @Column({ nullable: false })
+  quantity: number
+
   @Column({ nullable: true })
   bulkPrice?: number
+
+  @Column({ nullable: true })
+  quantityKg?: number
+
+  @Column({ default: 0, type: 'float' })
+  quantityKgActual?: number
 
   @Column({ nullable: true })
   code?: string

@@ -4,7 +4,8 @@ import {
   mockCreateProductDto,
   mockProductEntity
 } from '../../../../test/unit/mock/product.mock'
-const pageOptions = { limit: 1, page: 1 }
+import { Like } from 'typeorm'
+const pageOptions = { limit: 1, page: 1, name: null, code: null }
 
 describe('Service: Product', () => {
   let sutProductService: ProductService
@@ -92,13 +93,63 @@ describe('Service: Product', () => {
   })
 
   describe('find', () => {
-    it('should call ProductRepository.findAndCount with values', async () => {
+    it('should call ProductRepository.findAndCount with default values', async () => {
       await sutProductService.find(pageOptions)
       expect(productRepository.findAndCount).toHaveBeenCalledWith({
         take: pageOptions.limit,
         skip: pageOptions.page - 1,
         order: {
           createdAt: 'DESC'
+        },
+        where: {}
+      })
+      expect(productRepository.findAndCount).toHaveBeenCalledTimes(1)
+    })
+
+    it('should call ProductRepository.findAndCount with where when name is provided', async () => {
+      await sutProductService.find({ ...pageOptions, name: 'any_name' })
+      expect(productRepository.findAndCount).toHaveBeenCalledWith({
+        take: pageOptions.limit,
+        skip: pageOptions.page - 1,
+        order: {
+          createdAt: 'DESC'
+        },
+        where: {
+          name: Like(`%any_name%`)
+        }
+      })
+      expect(productRepository.findAndCount).toHaveBeenCalledTimes(1)
+    })
+
+    it('should call ProductRepository.findAndCount with where when code is provided', async () => {
+      await sutProductService.find({ ...pageOptions, code: 'any_code' })
+      expect(productRepository.findAndCount).toHaveBeenCalledWith({
+        take: pageOptions.limit,
+        skip: pageOptions.page - 1,
+        order: {
+          createdAt: 'DESC'
+        },
+        where: {
+          code: 'any_code'
+        }
+      })
+      expect(productRepository.findAndCount).toHaveBeenCalledTimes(1)
+    })
+
+    it('should call ProductRepository.findAndCount with where with only code if name and code are provided', async () => {
+      await sutProductService.find({
+        ...pageOptions,
+        name: 'any_name',
+        code: 'any_code'
+      })
+      expect(productRepository.findAndCount).toHaveBeenCalledWith({
+        take: pageOptions.limit,
+        skip: pageOptions.page - 1,
+        order: {
+          createdAt: 'DESC'
+        },
+        where: {
+          code: 'any_code'
         }
       })
       expect(productRepository.findAndCount).toHaveBeenCalledTimes(1)

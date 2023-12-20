@@ -6,7 +6,8 @@ import {
   UseGuards,
   Session,
   BadRequestException,
-  UnauthorizedException
+  UnauthorizedException,
+  UnprocessableEntityException
 } from '@nestjs/common'
 import {
   convertFloatToInt,
@@ -55,11 +56,76 @@ export class SaleController {
           id: product.id
         }
       })
-      amount += convertToFloatWithTwoDecimals(
-        (product.bulkPrice || product.price) * order.quantity
-      )
+
+      if (product.bulkPrice) {
+        if (order.quantity < 100) {
+          throw new BadRequestException(
+            `A quantidade mínima de compra deve ser 100 gramas!`
+          )
+        }
+        const bulkQuantity = order.quantity / 1000
+        if (product.quantityKgActual >= bulkQuantity) {
+          product.quantityKgActual -= bulkQuantity
+          if (product.quantityKgActual === 0) {
+            if (product.quantity > 0) {
+              product.quantityKgActual = product.quantityKg
+              product.quantity--
+            } else {
+              product.quantityKgActual = 0
+            }
+          }
+        } else {
+          if (product.quantity === 0 && product.quantityKgActual > 0) {
+            throw new NotFoundException(
+              `A quantidade máxima de "${product.name}" no estoque é ${product.quantityKgActual} KG!`
+            )
+          }
+
+          if (product.quantity === 0 && product.quantityKgActual === 0) {
+            throw new UnprocessableEntityException(
+              `Não há "${product.name}" no estoque!`
+            )
+          }
+
+          if (bulkQuantity > product.quantityKg) {
+            throw new UnprocessableEntityException(
+              `A quantidade máxima de compra de ${product.name} é ${product.quantityKg}!`
+            )
+          }
+
+          const bulkQuantityDiff = bulkQuantity - product.quantityKgActual
+          product.quantityKgActual = product.quantityKg - bulkQuantityDiff
+          product.quantity--
+        }
+
+        amount += convertToFloatWithTwoDecimals(
+          product.bulkPrice * bulkQuantity
+        )
+      } else {
+        if (product.quantity === 0) {
+          throw new UnprocessableEntityException(
+            `Não há "${product.name}" no estoque!`
+          )
+        }
+        if (product.quantity < order.quantity) {
+          throw new UnprocessableEntityException(
+            `A quantidade máxima de "${product.name}" no estoque é ${product.quantity}`
+          )
+        }
+        product.quantity -= order.quantity
+        amount += convertToFloatWithTwoDecimals(product.price * order.quantity)
+      }
+
+      product.quantityKgActual = Number(product.quantityKgActual.toPrecision(4))
+
+      await this.productService.save(product.id, product)
     }
 
+    const originalAmount = convertFloatToInt(amount)
+
+    amount = Number(amount)
+    amount -= ((createSaleDto.discount || 0) * amount) / 100
+    amount += ((createSaleDto.fee || 0) * amount) / 100
     amount = convertFloatToInt(amount)
 
     if (createSaleDto.customerId) {
@@ -85,7 +151,7 @@ export class SaleController {
       }
       if (!createSaleDto.customerId) {
         throw new BadRequestException(
-          'Para o método de pagamento conta é necenessário informar o cliente!'
+          'Para o método de pagamento "conta", é necessário informar o cliente!'
         )
       }
       this.billService.create({
@@ -101,6 +167,7 @@ export class SaleController {
           createSaleDto.paymentMethod != 'credit'
             ? 1
             : createSaleDto.times || 1,
+        originalAmount,
         amount
       })
     }

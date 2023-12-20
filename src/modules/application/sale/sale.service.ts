@@ -11,7 +11,9 @@ export class SaleService {
     this.saleRepository = this.connection.getRepository(Sale)
   }
 
-  create(createSaleDto: CreateSaleDto & { amount: number }) {
+  create(
+    createSaleDto: CreateSaleDto & { amount: number; originalAmount: number }
+  ) {
     return this.saleRepository.save(createSaleDto)
   }
 }

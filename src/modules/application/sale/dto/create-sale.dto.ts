@@ -6,7 +6,9 @@ import {
   IsEnum,
   IsInt,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
+  IsPositive,
   IsString,
   Max,
   Min,
@@ -66,28 +68,38 @@ export class CreateSaleDto {
   @IsOptional()
   readonly times: number
 
-  @IsInt({
+  @IsNumber(
+    {
+      maxDecimalPlaces: 2
+    },
+    {
+      message: JSON.stringify({
+        message: 'A taxa do juros deve ser "number"!',
+        field: 'fee'
+      })
+    }
+  )
+  @IsPositive({
     message: JSON.stringify({
-      message: 'A taxa do juros deve ser "int"!',
+      message: 'A taxa do juros deve ser maior que 0',
       field: 'fee'
-    })
-  })
-  @Min(1, {
-    message: JSON.stringify({
-      message: 'A taxa deve ser maior que 0',
-      field: 'times'
     })
   })
   @IsOptional()
   readonly fee: number
 
-  @IsInt({
-    message: JSON.stringify({
-      message: 'O desconto deve ser "int"!',
-      field: 'discount'
-    })
-  })
-  @Min(1, {
+  @IsNumber(
+    {
+      maxDecimalPlaces: 2
+    },
+    {
+      message: JSON.stringify({
+        message: 'O desconto deve ser "number"!',
+        field: 'discount'
+      })
+    }
+  )
+  @IsPositive({
     message: JSON.stringify({
       message: 'O desconto deve ser maior que 0',
       field: 'discount'

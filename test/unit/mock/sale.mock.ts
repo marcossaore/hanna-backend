@@ -19,6 +19,7 @@ export const mockCreateSaleDto = ({
 
 export const mockCreateSaleWithAmount = (): CreateSaleDto & {
   amount: number
+  originalAmount: number
 } => {
   const orders = [
     {
@@ -37,7 +38,8 @@ export const mockCreateSaleWithAmount = (): CreateSaleDto & {
   const data = mockCreateSaleDto({ paymentMethod: 'money', orders })
   return {
     ...data,
-    amount: 20744
+    amount: 20744,
+    originalAmount: 21040
   }
 }
 

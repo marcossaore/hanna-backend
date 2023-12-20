@@ -17,13 +17,13 @@ export class OrderDto {
 
   @IsInt({
     message: JSON.stringify({
-      message: 'A quantidade deve ser "string"!',
+      message: 'A quantidade deve ser "int"!',
       field: 'quantity'
     })
   })
   @IsNotEmpty({
     message: JSON.stringify({
-      message: 'O quantidade deve ser informada!',
+      message: 'A quantidade deve ser informada!',
       field: 'quantity'
     })
   })

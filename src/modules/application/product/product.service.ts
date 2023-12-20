@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { Connection, Repository } from 'typeorm'
+import { Connection, Like, Repository } from 'typeorm'
 import { Product } from '@infra/db/companies/entities/product/product.entity'
 import { CreateProductDto } from './dto/create-product.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
@@ -25,18 +25,33 @@ export class ProductService {
 
   async find({
     limit,
-    page
+    page,
+    name = null,
+    code = null
   }: {
     limit: number
     page: number
+    name: string | null
+    code: string | null
   }): Promise<[Product[], number]> {
     const skip = (page - 1) * limit
+    const where = {}
+
+    if (code) {
+      where['code'] = code
+    }
+
+    if (name && !code) {
+      where['name'] = Like(`%${name}%`)
+    }
+
     return this.productRepository.findAndCount({
       take: limit,
       skip,
       order: {
         createdAt: 'DESC'
-      }
+      },
+      where
     })
   }
 

@@ -22,14 +22,17 @@ export class Sale extends AddDateColumns {
   @Column({ nullable: true })
   times: number
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'float' })
   fee: number
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'float' })
   discount: number
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   amount: number
+
+  @Column({ nullable: false })
+  originalAmount: number
 
   @ManyToOne(() => Customer, (customer: Customer) => customer.sales, {
     nullable: true,

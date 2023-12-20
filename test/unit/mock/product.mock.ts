@@ -7,13 +7,19 @@ export const mockCreateProductDto = ({
   price = null,
   description = null,
   bulkPrice = null,
+  quantity = null,
   code = null,
+  quantityKg = null,
+  quantityKgActual = null,
   thumb = null
 } = {}): CreateProductDto => ({
   name: name || faker.string.sample(),
   price: price || faker.number.int(),
   description,
   bulkPrice,
+  quantity: quantity || faker.number.int({ max: 10 }),
+  quantityKg,
+  quantityKgActual,
   code,
   thumb
 })
@@ -21,6 +27,9 @@ export const mockCreateProductDto = ({
 export const mockProductEntity = ({
   description = null,
   bulkPrice = null,
+  quantity = 10,
+  quantityKg = null,
+  quantityKgActual = 0,
   price = null,
   code = null
 } = {}): Product => {
@@ -30,6 +39,9 @@ export const mockProductEntity = ({
     price: price || faker.number.int({ max: 1000 }),
     description,
     bulkPrice,
+    quantity,
+    quantityKg,
+    quantityKgActual,
     code,
     createdAt: faker.date.anytime(),
     updatedAt: faker.date.anytime(),

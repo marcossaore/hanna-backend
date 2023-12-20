@@ -122,20 +122,20 @@ describe('Dto:  CreateSaleDto', () => {
       fee: 'invalid'
     })
     const errors = await validate(validation)
-    expect(errors[0].constraints.isInt).toEqual(
-      '{"message":"A taxa do juros deve ser \\"int\\"!","field":"fee"}'
+    expect(errors[0].constraints.isNumber).toEqual(
+      '{"message":"A taxa do juros deve ser \\"number\\"!","field":"fee"}'
     )
     expect(errors.length).toEqual(1)
   })
 
-  it('should return when fee is less than 1', async () => {
+  it('should return when fee is less than 0', async () => {
     const validation = plainToInstance(CreateSaleDto, {
       ...data,
-      fee: 0.1
+      fee: -2
     })
     const errors = await validate(validation)
-    expect(errors[0].constraints.min).toEqual(
-      '{"message":"A taxa deve ser maior que 0","field":"times"}'
+    expect(errors[0].constraints.isPositive).toEqual(
+      '{"message":"A taxa do juros deve ser maior que 0","field":"fee"}'
     )
     expect(errors.length).toEqual(1)
   })
@@ -146,19 +146,19 @@ describe('Dto:  CreateSaleDto', () => {
       discount: 'invalid'
     })
     const errors = await validate(validation)
-    expect(errors[0].constraints.isInt).toEqual(
-      '{"message":"O desconto deve ser \\"int\\"!","field":"discount"}'
+    expect(errors[0].constraints.isNumber).toEqual(
+      '{"message":"O desconto deve ser \\"number\\"!","field":"discount"}'
     )
     expect(errors.length).toEqual(1)
   })
 
-  it('should return when discount is less thant 1', async () => {
+  it('should return when discount is less thant 0', async () => {
     const validation = plainToInstance(CreateSaleDto, {
       ...data,
-      discount: 0.1
+      discount: -2
     })
     const errors = await validate(validation)
-    expect(errors[0].constraints.min).toEqual(
+    expect(errors[0].constraints.isPositive).toEqual(
       '{"message":"O desconto deve ser maior que 0","field":"discount"}'
     )
     expect(errors.length).toEqual(1)
