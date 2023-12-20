@@ -48,7 +48,8 @@ describe('ProductController (e2e)', () => {
     it('Create (POST)', async () => {
       const data = {
         name: faker.person.fullName(),
-        price: 3640
+        price: 3640,
+        quantity: 3
       }
       const response = await agent.post('/api/products').send(data)
       expect(response.statusCode).toBe(201)
@@ -62,15 +63,15 @@ describe('ProductController (e2e)', () => {
       expect(responseBody.thumb).toBeNull()
     })
 
-    it('Create (POST) with thumb ', async () => {
+    it('Create with thumb (POST)', async () => {
       const relativeFilePath = './test.png'
       const absoluteFilePath = resolve(__dirname, relativeFilePath)
       const response = await agent
         .post('/api/products')
         .field('name', faker.person.fullName())
         .field('price', 25000)
-        .field('bulkPrice', 3299)
         .field('code', 'any_code')
+        .field('quantity', 3)
         .attach('thumb', absoluteFilePath)
 
       expect(response.statusCode).toBe(201)
@@ -80,6 +81,22 @@ describe('ProductController (e2e)', () => {
 
       expect(response.body.id).toBeTruthy()
       expect(response.body.thumb).toBeTruthy()
+    })
+
+    it('Create bulk (POST)', async () => {
+      const response = await agent
+        .post('/api/products')
+        .field('name', faker.person.fullName())
+        .field('price', 34000)
+        .field('bulkPrice', 3890)
+        .field('quantity', 3)
+        .field('quantityKg', 12)
+        .field('quantityKgActual', 5.6)
+      const responseBody = response.body
+
+      expect(responseBody.id).toBeTruthy()
+      expect(responseBody.quantityKg).toEqual('12')
+      expect(responseBody.quantityKgActual).toBe(5.6)
     })
 
     it('Get One (GET)', async () => {
@@ -110,7 +127,7 @@ describe('ProductController (e2e)', () => {
       const responseBody = response.body
       expect(responseBody.page).toBe(1)
       expect(responseBody.totalPage).toBe(1)
-      expect(responseBody.items.length).toBe(2)
+      expect(responseBody.items.length).toBe(3)
     })
 
     it('Update (PATCH)', async () => {
