@@ -138,13 +138,9 @@ export class ProductController {
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto
   ): Promise<ProductDto> {
-    const product = await this.productService.findById(+id)
-    if (!product) {
-      throw new NotFoundException('Produto não encontrado!')
-    }
-
     if (updateProductDto.code) {
-      const existsProductCode = await this.productService.existsCode(
+      const existsProductCode = await this.productService.verifyByCode(
+        +id,
         updateProductDto.code
       )
       if (existsProductCode) {
@@ -152,6 +148,11 @@ export class ProductController {
           'O produto com o código de barras informado já está cadastrado!'
         )
       }
+    }
+
+    const product = await this.productService.findById(+id)
+    if (!product) {
+      throw new NotFoundException('Produto não encontrado!')
     }
 
     const { ...data } = updateProductDto

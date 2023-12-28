@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer'
 import {
   IsInt,
   IsNotEmpty,
@@ -37,6 +38,7 @@ export class CreateProductDto {
       field: 'price'
     })
   })
+  @Transform(({ value }) => parseInt(value, 10))
   @IsNotEmpty({
     message: JSON.stringify({
       message: 'O preço do produto deve ser informado!',
@@ -51,6 +53,7 @@ export class CreateProductDto {
       field: 'quantity'
     })
   })
+  @Transform(({ value }) => parseInt(value, 10))
   @IsNotEmpty({
     message: JSON.stringify({
       message: 'A quantidade em estoque do produto deve ser informada!',
@@ -65,6 +68,7 @@ export class CreateProductDto {
       field: 'bulkPrice'
     })
   })
+  @Transform(({ value }) => parseInt(value, 10))
   @IsNotEmpty({
     message: JSON.stringify({
       message: 'O preço a granel do produto deve ser informado!',
@@ -80,6 +84,7 @@ export class CreateProductDto {
       field: 'quantityKg'
     })
   })
+  @Transform(({ value }) => parseInt(value, 10))
   @IsNotEmpty({
     message: JSON.stringify({
       message: 'A quantidade de quilos(KG) do produto deve ser informada!',
@@ -99,6 +104,7 @@ export class CreateProductDto {
       })
     }
   )
+  @Transform(({ value }) => parseFloat(value))
   @IsNotEmpty({
     message: JSON.stringify({
       message:

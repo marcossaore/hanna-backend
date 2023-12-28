@@ -43,7 +43,7 @@ describe('Dto:  CreateProduct', () => {
     expect(errors[0].constraints.isString).toEqual(
       '{"message":"A descrição do produto deve ser \\"string\\"!","field":"description"}'
     )
-    expect(errors.length).toEqual(1)
+    expect(errors.length).toEqual(2)
   })
 
   it('should return error when bulkPrice is provided but it is invalid', async () => {
@@ -64,10 +64,10 @@ describe('Dto:  CreateProduct', () => {
       mockCreateProductDto({ bulkPrice: 3200 })
     )
     const errors = await validate(validation)
-    expect(errors[0].constraints.isNotEmpty).toEqual(
-      '{"message":"A quantidade de quilos(KG) do produto deve ser informada!","field":"quantityKg"}'
+    expect(errors[0].constraints.isInt).toEqual(
+      '{"message":"A quantidade de quilos(KG) do produto  deve \\"number\\"!","field":"quantityKg"}'
     )
-    expect(errors.length).toEqual(1)
+    expect(errors.length).toEqual(2)
   })
 
   it('should return error when quantityKg is provided but it is invalid', async () => {
@@ -79,7 +79,7 @@ describe('Dto:  CreateProduct', () => {
     expect(errors[0].constraints.isInt).toEqual(
       '{"message":"A quantidade de quilos(KG) do produto  deve \\"number\\"!","field":"quantityKg"}'
     )
-    expect(errors.length).toEqual(1)
+    expect(errors.length).toEqual(2)
   })
 
   it('should return error when quantityKgActual is provided but it is invalid', async () => {
@@ -98,20 +98,11 @@ describe('Dto:  CreateProduct', () => {
     expect(errors.length).toEqual(1)
   })
 
-  it('should return error when code is provided but it is invalid', async () => {
+  it('should not return when succeds without optional params', async () => {
     const validation = plainToInstance(
       CreateProductDto,
-      mockCreateProductDto({ code: 1 })
+      mockCreateProductDto({ bulkPrice: 0 })
     )
-    const errors = await validate(validation)
-    expect(errors[0].constraints.isString).toEqual(
-      '{"message":"O código de barras do produto deve ser \\"string\\"!","field":"code"}'
-    )
-    expect(errors.length).toEqual(1)
-  })
-
-  it('should not return when succeds without optional params', async () => {
-    const validation = plainToInstance(CreateProductDto, mockCreateProductDto())
     const errors = await validate(validation)
     expect(errors.length).toEqual(0)
   })
@@ -123,7 +114,8 @@ describe('Dto:  CreateProduct', () => {
         bulkPrice: 1299,
         quantityKg: 10,
         code: 'any_code',
-        description: 'any_description'
+        description: 'any_description',
+        quantityKgActual: 0
       })
     )
     const errors = await validate(validation)

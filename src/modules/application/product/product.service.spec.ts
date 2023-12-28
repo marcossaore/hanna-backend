@@ -4,7 +4,7 @@ import {
   mockCreateProductDto,
   mockProductEntity
 } from '../../../../test/unit/mock/product.mock'
-import { Like } from 'typeorm'
+import { Like, Not } from 'typeorm'
 const pageOptions = { limit: 1, page: 1, name: null, code: null }
 
 describe('Service: Product', () => {
@@ -27,11 +27,11 @@ describe('Service: Product', () => {
     sutProductService = module.get<ProductService>(ProductService)
     productRepository = (sutProductService as any).productRepository = {
       create: jest.fn().mockResolvedValue(productEntityMock),
-      existsCode: jest.fn().mockResolvedValue(false),
       findAndCount: jest
         .fn()
         .mockResolvedValue([[productEntityMock, productEntityMock], 2]),
       findOneBy: jest.fn().mockResolvedValue(productEntityMock),
+      findOne: jest.fn().mockResolvedValue(productEntityMock),
       save: jest.fn().mockResolvedValue(productEntityMock),
       remove: jest.fn().mockResolvedValue(productEntityMock)
     }
@@ -42,14 +42,14 @@ describe('Service: Product', () => {
   })
 
   describe('create', () => {
-    it('should call CustomerRepository.save with correct values', async () => {
+    it('should call ProductRepository.save with correct values', async () => {
       const data = mockCreateProductDto()
       await sutProductService.create(data)
       expect(productRepository.save).toHaveBeenCalledWith(data)
       expect(productRepository.save).toHaveBeenCalledTimes(1)
     })
 
-    it('should throws if CustomerRepository.save throws', async () => {
+    it('should throws if ProductRepository.save throws', async () => {
       const data = mockCreateProductDto()
       jest.spyOn(productRepository, 'save').mockImplementationOnce(async () => {
         throw new Error()
@@ -60,7 +60,7 @@ describe('Service: Product', () => {
   })
 
   describe('existsCode', () => {
-    it('should call CustomerRepository.findOneBy with correct email', async () => {
+    it('should call ProductRepository.findOneBy with correct email', async () => {
       await sutProductService.existsCode('any_code')
       expect(productRepository.findOneBy).toHaveBeenCalledWith({
         code: 'any_code'
@@ -68,7 +68,7 @@ describe('Service: Product', () => {
       expect(productRepository.findOneBy).toHaveBeenCalledTimes(1)
     })
 
-    it('should throws if CustomerRepository.findOneBy throws', async () => {
+    it('should throws if ProductRepository.findOneBy throws', async () => {
       jest
         .spyOn(productRepository, 'findOneBy')
         .mockImplementationOnce(async () => {
@@ -89,6 +89,42 @@ describe('Service: Product', () => {
         .mockResolvedValueOnce(Promise.resolve(null))
       const response = await sutProductService.existsCode('any_code')
       expect(response).toEqual(false)
+    })
+  })
+
+  describe('verifyByCode', () => {
+    it('should call ProductRepository.findOne with correct values', async () => {
+      await sutProductService.verifyByCode(2, 'any_code')
+      expect(productRepository.findOne).toHaveBeenCalledWith({
+        where: {
+          code: 'any_code',
+          id: Not(2)
+        }
+      })
+      expect(productRepository.findOne).toHaveBeenCalledTimes(1)
+    })
+
+    it('should throws if ProductRepository.findOne throws', async () => {
+      jest
+        .spyOn(productRepository, 'findOne')
+        .mockImplementationOnce(async () => {
+          throw new Error()
+        })
+      const promise = sutProductService.verifyByCode(2, 'any_code')
+      await expect(promise).rejects.toThrow()
+    })
+
+    it('should return a product if code exists', async () => {
+      const response = await sutProductService.verifyByCode(2, 'any_code')
+      expect(response).toEqual(productEntityMock)
+    })
+
+    it('should return null if code not exists', async () => {
+      jest
+        .spyOn(productRepository, 'findOne')
+        .mockResolvedValueOnce(Promise.resolve(null))
+      const response = await sutProductService.verifyByCode(2, 'any_code')
+      expect(response).toEqual(null)
     })
   })
 

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { Connection, Like, Repository } from 'typeorm'
+import { Connection, Like, Not, Repository } from 'typeorm'
 import { Product } from '@infra/db/companies/entities/product/product.entity'
 import { CreateProductDto } from './dto/create-product.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
@@ -16,11 +16,20 @@ export class ProductService {
     return this.productRepository.save(createProductDto)
   }
 
-  async existsCode(code: string) {
+  async existsCode(code: string): Promise<boolean> {
     const exists = await this.productRepository.findOneBy({
       code
     })
     return exists ? true : false
+  }
+
+  async verifyByCode(id: number, code: string): Promise<Product> {
+    return this.productRepository.findOne({
+      where: {
+        code,
+        id: Not(id)
+      }
+    })
   }
 
   async find({

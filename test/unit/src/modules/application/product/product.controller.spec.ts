@@ -38,6 +38,7 @@ describe('Controller: Product', () => {
           useValue: {
             create: jest.fn().mockResolvedValue(productEntityMock),
             existsCode: jest.fn().mockResolvedValue(false),
+            verifyByCode: jest.fn(),
             find: jest
               .fn()
               .mockResolvedValue([
@@ -278,6 +279,30 @@ describe('Controller: Product', () => {
   })
 
   describe('update', () => {
+    it('should call ProductService.verifyByCode if code is provided', async () => {
+      const data = mockCreateProductDto({ code: 'any_code' })
+      await sutProductController.update(sessionSpy, '4', data)
+      expect(productService.verifyByCode).toHaveBeenCalledWith(4, data.code)
+      expect(productService.verifyByCode).toHaveBeenCalledTimes(1)
+    })
+
+    it('should not call ProductService.verifyByCode if code is not provided', async () => {
+      const data = mockCreateProductDto()
+      await sutProductController.update(sessionSpy, '4', data)
+      expect(productService.verifyByCode).toHaveBeenCalledTimes(0)
+    })
+
+    it('should throw if ProductService.verifyByCode returns product', async () => {
+      jest
+        .spyOn(productService, 'verifyByCode')
+        .mockResolvedValueOnce(productEntityMock)
+      const data = mockCreateProductDto({ code: 'any_code' })
+      const promise = sutProductController.update(sessionSpy, '4', data)
+      await expect(promise).rejects.toThrow(
+        'O produto com o código de barras informado já está cadastrado!'
+      )
+    })
+
     it('should call ProductService.findById with correct value', async () => {
       const data = mockCreateProductDto()
       await sutProductController.update(sessionSpy, '4', data)
@@ -297,37 +322,6 @@ describe('Controller: Product', () => {
         throw new Error()
       })
       const data = mockCreateProductDto()
-      const promise = sutProductController.update(sessionSpy, '4', data)
-      await expect(promise).rejects.toThrow()
-    })
-
-    it('should call ProductService.existsCode if code is provided', async () => {
-      const data = mockCreateProductDto({ code: 'any_code' })
-      await sutProductController.update(sessionSpy, '4', data)
-      expect(productService.existsCode).toHaveBeenCalledWith(data.code)
-      expect(productService.existsCode).toHaveBeenCalledTimes(1)
-    })
-
-    it('should not call ProductService.existsCode if code is not provided', async () => {
-      const data = mockCreateProductDto()
-      await sutProductController.update(sessionSpy, '4', data)
-      expect(productService.existsCode).toHaveBeenCalledTimes(0)
-    })
-
-    it('should throw if ProductService.existsCode returns true', async () => {
-      jest.spyOn(productService, 'existsCode').mockResolvedValueOnce(true)
-      const data = mockCreateProductDto({ code: 'any_code' })
-      const promise = sutProductController.update(sessionSpy, '4', data)
-      await expect(promise).rejects.toThrow(
-        'O produto com o código de barras informado já está cadastrado!'
-      )
-    })
-
-    it('should throw if ProductService.existsCode throws', async () => {
-      jest.spyOn(productService, 'existsCode').mockImplementationOnce(() => {
-        throw new Error()
-      })
-      const data = mockCreateProductDto({ code: 'any_code' })
       const promise = sutProductController.update(sessionSpy, '4', data)
       await expect(promise).rejects.toThrow()
     })
