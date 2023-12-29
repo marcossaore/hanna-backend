@@ -4,10 +4,10 @@ import {
   Body,
   NotFoundException,
   UseGuards,
-  Session,
   BadRequestException,
   UnauthorizedException,
-  UnprocessableEntityException
+  UnprocessableEntityException,
+  Req
 } from '@nestjs/common'
 import {
   convertFloatToInt,
@@ -38,7 +38,7 @@ export class SaleController {
   @UseGuards(AuthenticatedGuard)
   @UseGuards(PermissionsGuard)
   async create(
-    @Session() session,
+    @Req() request,
     @Body() createSaleDto: CreateSaleDto
   ): Promise<void> {
     let amount = 0
@@ -141,10 +141,9 @@ export class SaleController {
     }
 
     if (createSaleDto.paymentMethod === PaymentMethodStatus.BILL) {
-      const { options } = session.auth.user.permissions.filter(
-        ({ name }) => name === 'sales'
-      )[0]
-      if (!options.billMode) {
+      const options = request.locals.permission.options;
+
+      if (!options.includes('billMode')) {
         throw new UnauthorizedException(
           'Você não possui permissão para o módulo de venda em conta!'
         )

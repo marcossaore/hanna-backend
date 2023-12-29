@@ -19,6 +19,8 @@ import { UserCreatePasswordDto } from './dto/user-create-password.dto'
 import { TokenServiceAdapter } from '@infra/plugins/token/token-service.adapter'
 import { InfoMessageInterceptor } from '@/adapters/interceptors/info-message-interceptor'
 import { SecretsService } from '@/modules/infra/secrets/secrets-service'
+import { ConfigService } from '@nestjs/config'
+import { now } from '@/adapters/helpers/date'
 
 type GrantType = {
   read: boolean
@@ -52,6 +54,7 @@ type PermissionType = {
 @Controller(`${appPrefix}/auth`)
 export class AuthController {
   constructor(
+    private readonly configService: ConfigService,
     private readonly tenantService: TenantService,
     private readonly userService: UserServiceLazy,
     private readonly hashService: HashService,
@@ -65,27 +68,29 @@ export class AuthController {
   async login(
     @Body() loginDto: LoginDto,
     @Req() request
-  ): Promise<PermissionType> {
+  ): Promise<any> {
     const company = await this.tenantService.findByDocument(loginDto.document)
 
     if (!company) {
       throw userUnauthorized()
     }
 
-    let credentials = null
+    // let credentials = null
 
-    try {
-      credentials = JSON.parse(
-        await this.secretsService.get(company.companyIdentifier)
-      )
-    } catch (error) {
-      throw userUnauthorized()
-    }
+    // try {
+    //   credentials = JSON.parse(
+    //     await this.secretsService.get(company.companyIdentifier)
+    //   )
+    // } catch (error) {
+    //   throw userUnauthorized()
+    // }
+
+    const credentials = this.configService.get('database');
 
     const connection = await this.loadTenantConnectionService.load(
       company.companyIdentifier,
-      credentials.dbUser,
-      credentials.dbPass
+      credentials.user,
+      credentials.password
     )
 
     if (!connection) {
@@ -108,38 +113,27 @@ export class AuthController {
 
     const permissions = await userService.getRolesGrouped(user.id)
 
-    request.session.auth = {
-      tenant: {
-        identifier: company.companyIdentifier,
-        id: company.id,
-        credentials: {
-          user: credentials.dbUser,
-          password: credentials.dbPass
-        }
+    const expiresIn1Day =  1 * 24 * 60 * 60
+
+    const currentDate = now()
+    const expiresIn = new Date(currentDate.getTime() + expiresIn1Day * 1000);
+    const token = this.tokenServiceAdapter.sign(
+      {
+        userId: user.id,
+        companyIdentifier: company.companyIdentifier
       },
-      user: {
-        id: user.id,
-        name: user.name,
-        permissions
-      }
-    }
+      expiresIn1Day
+    )
 
     return {
       id: user.id,
       name: user.name,
-      expiresIn: request.session.cookie._expires,
-      permissions
+      permissions,
+      token,
+      expiresIn
     }
   }
-
-  @Post('/logout')
-  @HttpCode(204)
-  async logout(@Req() request): Promise<void> {
-    if (request.session.auth) {
-      request.session.destroy()
-    }
-  }
-
+  
   @UseInterceptors(
     new InfoMessageInterceptor(
       'Senha criada com sucesso, agora você pode acessar a plataforma Hanna!'
@@ -155,20 +149,22 @@ export class AuthController {
     const { companyId, userId } = this.tokenServiceAdapter.verify(query.token)
     const company = await this.tenantService.findById(companyId)
 
-    let credentials = null
+    // let credentials = null
 
-    try {
-      credentials = JSON.parse(
-        await this.secretsService.get(company.companyIdentifier)
-      )
-    } catch (error) {
-      throw userUnauthorized()
-    }
+    // try {
+    //   credentials = JSON.parse(
+    //     await this.secretsService.get(company.companyIdentifier)
+    //   )
+    // } catch (error) {
+    //   throw userUnauthorized()
+    // }
+
+    const credentials = this.configService.get('database');
 
     const connection = await this.loadTenantConnectionService.load(
       company.companyIdentifier,
-      credentials.dbUser,
-      credentials.dbPass
+      credentials.user,
+      credentials.password
     )
 
     const hashPassword = await this.hashService.hash(

@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { Connection, Like, Not, Repository } from 'typeorm'
+import { now } from '@/adapters/helpers/date'
 import { UpdateCustomerDto } from './dto/update-customer.dto'
 import { Customer } from '@infra/db/companies/entities/customer/customer.entity'
 import { CreateCustomerDto } from './dto/create-customer.dto'
@@ -37,6 +38,15 @@ export class CustomerService {
       where: {
         email,
         id: Not(id)
+      }
+    })
+  }
+
+  async verifyByPhone (id: string, phone: string): Promise<Customer> {
+    return this.customerRepository.findOne({
+      where: {
+        phone,
+        id: Not(id),
       }
     })
   }
@@ -97,7 +107,7 @@ export class CustomerService {
 
   async remove(id: string) {
     const customer = await this.customerRepository.findOneBy({ id })
-    customer.deletedAt = new Date()
+    customer.deletedAt = now()
     return this.customerRepository.save(customer)
   }
 }

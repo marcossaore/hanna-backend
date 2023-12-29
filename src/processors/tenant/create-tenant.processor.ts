@@ -41,25 +41,25 @@ export class CreateTenantProcessor {
   async handleJob(job: Job) {
     try {
       const company = await this.tenantService.findById(job.data.id)
-      const credentials = this.generateDbCredentialsService.generate(
-        company.name
-      )
+      // const credentials = this.generateDbCredentialsService.generate(
+      //   company.name
+      // )
 
-      await this.createDatabaseService.create({
-        db: company.companyIdentifier,
-        ...credentials
-      })
-      await this.secretsService.save(
-        company.companyIdentifier,
-        JSON.stringify({
-          ...credentials
-        })
-      )
+      await this.createDatabaseService.create(company.companyIdentifier)
+
+      // await this.secretsService.save(
+      //   company.companyIdentifier,
+      //   JSON.stringify({
+      //     ...credentials
+      //   })
+      // )
+
+      const credentials = this.configService.get('database');
 
       const connection = await this.loadTenantConnectionService.load(
         company.companyIdentifier,
-        credentials.dbUser,
-        credentials.dbPass,
+        credentials.user,
+        credentials.password,
         30
       )
 

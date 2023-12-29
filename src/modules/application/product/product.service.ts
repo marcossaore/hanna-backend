@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { Connection, Like, Not, Repository } from 'typeorm'
+import { now } from '@/adapters/helpers/date'
 import { Product } from '@infra/db/companies/entities/product/product.entity'
 import { CreateProductDto } from './dto/create-product.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
@@ -77,7 +78,7 @@ export class ProductService {
 
   async remove(id: number) {
     const product = await this.productRepository.findOneBy({ id })
-    product.deletedAt = new Date()
+    product.deletedAt = now()
     return this.productRepository.save(product)
   }
 }
