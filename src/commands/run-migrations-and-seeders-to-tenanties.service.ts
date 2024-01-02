@@ -4,11 +4,13 @@ import { SecretsService } from '@/modules/infra/secrets/secrets-service'
 import { SeedRunnerService } from '@infra/db/companies/seeds/seed-runner.service.'
 import { MigrationsCompanyService } from '@infra/plugins/database/migrations-company.service'
 import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { Command } from 'nestjs-command'
 
 @Injectable()
 export class RunMigrationsAndSeedersToTenantiesService {
   constructor(
+    private readonly configService: ConfigService,
     private readonly tenantService: TenantService,
     private readonly migrationsCompanyService: MigrationsCompanyService,
     private readonly loadTenantConnectionService: LoadTenantConnectionService,
@@ -29,14 +31,13 @@ export class RunMigrationsAndSeedersToTenantiesService {
     console.log('tenant :', tenant.companyIdentifier)
     console.log('run migrations')
     await this.migrationsCompanyService.run(tenant.companyIdentifier)
-    const credentials = JSON.parse(
-      await this.secretsService.get(tenant.companyIdentifier)
-    )
+
+    const credentials = this.configService.get('database')
 
     const connection = await this.loadTenantConnectionService.load(
       tenant.companyIdentifier,
-      credentials.dbUser,
-      credentials.dbPass,
+      credentials.user,
+      credentials.password,
       5
     )
 

@@ -8,6 +8,7 @@ import {
 } from 'typeorm'
 import { Sale } from '../sale/sale.entity'
 import { Bill } from '../sale/bill.entity'
+import { Pet } from '../pet/pet.entity'
 
 @Entity('customer')
 export class Customer extends AddDateColumns {
@@ -49,6 +50,9 @@ export class Customer extends AddDateColumns {
 
   @OneToMany(() => Bill, (bill) => bill.customer)
   bills: Bill[]
+
+  @OneToMany(() => Pet, (pet: Pet) => pet.customer)
+  pet: Pet[]
 
   @DeleteDateColumn({ type: 'timestamp', default: null, nullable: true })
   deletedAt: Date

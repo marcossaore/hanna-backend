@@ -10,6 +10,7 @@ import { SaleModule } from '../sale/sale.module'
 import { TokenServiceAdapter } from '@infra/plugins/token/token-service.adapter'
 import { ConfigService } from '@nestjs/config'
 import { UserService } from '../user/user.service'
+import { PetModule } from '../pet/pet.module'
 
 const injectConnectionProvider = () => {
   return {
@@ -70,6 +71,12 @@ const injectConnectionProvider = () => {
     {
       imports: [LoadTenantConnectionModule],
       module: ProductModule,
+      providers: [UserService, ConfigService, TokenServiceAdapter, injectConnectionProvider()],
+      exports: ['CONNECTION']
+    },
+    {
+      imports: [LoadTenantConnectionModule],
+      module: PetModule,
       providers: [UserService, ConfigService, TokenServiceAdapter, injectConnectionProvider()],
       exports: ['CONNECTION']
     },
