@@ -7,10 +7,10 @@ import {
   Param,
   Delete,
   ConflictException,
-  Session,
   UseGuards,
   Query,
-  NotFoundException
+  NotFoundException,
+  Req
 } from '@nestjs/common'
 import { FormDataRequest } from 'nestjs-form-data'
 import { StorageService } from '@/modules/infra/storage.service'
@@ -36,7 +36,7 @@ export class ProductController {
   @UseGuards(AuthenticatedGuard)
   @UseGuards(PermissionsGuard)
   async create(
-    @Session() session,
+    @Req() request,
     @Body() createProductDto: CreateProductDto
   ): Promise<ProductDto> {
     if (createProductDto.code) {
@@ -67,7 +67,7 @@ export class ProductController {
     if (createProductDto.thumb) {
       thumb = await this.storageService.upload(
         createProductDto.thumb.buffer,
-        `${session.auth.tenant.identifier}/products/${product.id}`
+        `${request.locals.companyIdentifier}/products/${product.id}`
       )
     }
 
@@ -79,7 +79,7 @@ export class ProductController {
   @UseGuards(AuthenticatedGuard)
   @UseGuards(PermissionsGuard)
   async list(
-    @Session() session,
+    @Req() request,
     @Query('limit') limit: number = 10,
     @Query('page') page: number = 1,
     @Query('name') name: string = '',
@@ -101,7 +101,7 @@ export class ProductController {
 
     for await (const product of products) {
       const thumb = await this.storageService.getUrl(
-        `${session.auth.tenant.identifier}/products/${product.id}`
+        `${request.locals.companyIdentifier}/products/${product.id}`
       )
       productsWithThumb.push(new ProductDto({ ...product, thumb }))
     }
@@ -117,13 +117,13 @@ export class ProductController {
   @Permissions('products', 'read')
   @UseGuards(AuthenticatedGuard)
   @UseGuards(PermissionsGuard)
-  async get(@Session() session, @Param('id') id: string): Promise<ProductDto> {
+  async get(@Req() request, @Param('id') id: string): Promise<ProductDto> {
     const product = await this.productService.findById(+id)
     if (!product) {
       throw new NotFoundException('Produto não encontrado!')
     }
     const thumb = await this.storageService.getUrl(
-      `${session.auth.tenant.identifier}/products/${product.id}`
+      `${request.locals.companyIdentifier}/products/${product.id}`
     )
     return new ProductDto({ ...product, thumb })
   }
@@ -134,7 +134,7 @@ export class ProductController {
   @UseGuards(AuthenticatedGuard)
   @UseGuards(PermissionsGuard)
   async update(
-    @Session() session,
+    @Req() request,
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto
   ): Promise<ProductDto> {
@@ -174,14 +174,14 @@ export class ProductController {
     if (updateProductDto.thumb) {
       thumb = await this.storageService.upload(
         updateProductDto.thumb.buffer,
-        `${session.auth.tenant.identifier}/products/${id}`
+        `${request.locals.companyIdentifier}/products/${id}`
       )
     } else {
       thumb = await this.storageService.getUrl(
-        `${session.auth.tenant.identifier}/products/${id}`
+        `${request.locals.companyIdentifier}/products/${id}`
       )
     }
-    const customerUpdated = await this.productService.save(+id, data)
+    const customerUpdated = await this.productService.save(+id, {...product, ...data })
     return new ProductDto({ ...customerUpdated, thumb })
   }
 

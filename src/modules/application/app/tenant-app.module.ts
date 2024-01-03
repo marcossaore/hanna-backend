@@ -1,6 +1,5 @@
 import { Module, Scope, UnauthorizedException } from '@nestjs/common'
 import { REQUEST } from '@nestjs/core'
-import { SessionModule } from '@/modules/infra/session/session.module'
 import { CustomerModule } from '../customer/customer.module'
 import { LoadTenantConnectionModule } from '../tenant-connection/tenant-load-connection.module'
 import { LoadTenantConnectionService } from '../tenant-connection/load-tenant-connection.service'
@@ -8,6 +7,10 @@ import { Request } from 'express'
 import { AuthModule } from '../auth/auth.module'
 import { ProductModule } from '../product/product.module'
 import { SaleModule } from '../sale/sale.module'
+import { TokenServiceAdapter } from '@infra/plugins/token/token-service.adapter'
+import { ConfigService } from '@nestjs/config'
+import { UserService } from '../user/user.service'
+import { PetModule } from '../pet/pet.module'
 
 const injectConnectionProvider = () => {
   return {
@@ -15,20 +18,37 @@ const injectConnectionProvider = () => {
     scope: Scope.REQUEST,
     useFactory: async (
       request: Request,
+      configService: ConfigService,
+      tokenServiceAdapter: TokenServiceAdapter,
       loadTenantConnectionService: LoadTenantConnectionService
     ) => {
-      const tenant = request?.session?.auth?.tenant
+      const token = request?.headers['x-token'] as string;
 
-      if (!tenant?.identifier) {
+      if (!token) {
         throw new UnauthorizedException(
           'Você não está autenticado para acessar este recurso!'
         )
       }
+
+      let decoded = null;
+
+      try {
+        decoded = tokenServiceAdapter.verify(token)
+      } catch (error) {
+        throw new UnauthorizedException(
+          'Você não está autenticado para acessar este recurso!'
+        )
+      }
+
+      const credentials = configService.get('database');
+
+      request.locals = decoded;
+
       try {
         return await loadTenantConnectionService.load(
-          tenant.identifier,
-          tenant.credentials.user,
-          tenant.credentials.password
+          decoded.companyIdentifier,
+          credentials.user,
+          credentials.password
         )
       } catch (error) {
         throw new UnauthorizedException(
@@ -36,29 +56,34 @@ const injectConnectionProvider = () => {
         )
       }
     },
-    inject: [REQUEST, LoadTenantConnectionService]
+    inject: [REQUEST, ConfigService, TokenServiceAdapter, LoadTenantConnectionService]
   }
 }
 
 @Module({
   imports: [
-    SessionModule,
     {
       imports: [LoadTenantConnectionModule],
       module: CustomerModule,
-      providers: [injectConnectionProvider()],
+      providers: [UserService, ConfigService, TokenServiceAdapter, injectConnectionProvider()],
       exports: ['CONNECTION']
     },
     {
       imports: [LoadTenantConnectionModule],
       module: ProductModule,
-      providers: [injectConnectionProvider()],
+      providers: [UserService, ConfigService, TokenServiceAdapter, injectConnectionProvider()],
+      exports: ['CONNECTION']
+    },
+    {
+      imports: [LoadTenantConnectionModule],
+      module: PetModule,
+      providers: [UserService, ConfigService, TokenServiceAdapter, injectConnectionProvider()],
       exports: ['CONNECTION']
     },
     {
       imports: [LoadTenantConnectionModule],
       module: SaleModule,
-      providers: [injectConnectionProvider()],
+      providers: [UserService, ConfigService, TokenServiceAdapter, injectConnectionProvider()],
       exports: ['CONNECTION']
     },
     {

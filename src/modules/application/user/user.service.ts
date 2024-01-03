@@ -28,6 +28,52 @@ export class UserService {
     await this.userRepository.save(userWithRoles)
   }
 
+  async hasRole (userId: string, module: string, grant: string): Promise<any> {
+    const roleForUser = await this.userRepository.findOne({
+      relations: [
+        'role.permissions.grants',
+        'role.permissions.module',
+        'role.permissions.roleOptions.option'
+      ],
+      where: {
+        id: userId,
+        role: {
+          permissions: {
+            grants: {
+              name: grant
+            },
+            module: {
+              name: module
+            }
+          }
+        }
+      },
+    })
+
+    if (!roleForUser) {
+      return {
+        module,
+        [grant]: false,
+        options: []
+      }
+    }
+
+    let options = []
+
+    const permission = roleForUser.role.permissions[0];
+    const activeOptions = permission.roleOptions.filter(({ isActive }) => isActive )
+    
+    if (activeOptions.length > 0) {
+      options = activeOptions.map(({ option }) => option.name )
+    }
+
+    return {
+      module,
+      [grant]: true,
+      options
+    }
+  }
+
   async getRoles(id: string): Promise<User> {
     const user = await this.userRepository.findOne({
       relations: [

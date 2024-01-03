@@ -11,7 +11,7 @@ import {
   Patch,
   Delete,
   UseGuards,
-  Session
+  Req
 } from '@nestjs/common'
 import { CreateCustomerDto } from './dto/create-customer.dto'
 import { UpdateCustomerDto } from './dto/update-customer.dto'
@@ -37,7 +37,7 @@ export class CustomerController {
   @UseGuards(PermissionsGuard)
   async create(
     @Body() createCustomerDto: CreateCustomerDto,
-    @Session() session
+    @Req() request
   ) {
     let existsCustomer = await this.customerService.findByPhone(
       createCustomerDto.phone
@@ -63,7 +63,7 @@ export class CustomerController {
     if (createCustomerDto.thumb) {
       thumb = await this.storageService.upload(
         createCustomerDto.thumb.buffer,
-        `${session.auth.tenant.identifier}/customers/${customerCreated.id}`
+        `${request.locals.companyIdentifier}/customers/${customerCreated.id}`
       )
     }
 
@@ -75,7 +75,7 @@ export class CustomerController {
   @UseGuards(AuthenticatedGuard)
   @UseGuards(PermissionsGuard)
   async list(
-    @Session() session,
+    @Req() request,
     @Query('limit') limit: number = 10,
     @Query('page') page: number = 1,
     @Query('name') name: string = '',
@@ -101,10 +101,10 @@ export class CustomerController {
     }
 
     const customerWithThumb: CreatedCustomerDto[] = []
-
+    
     for await (const customer of customers) {
       const thumb = await this.storageService.getUrl(
-        `${session.auth.tenant.identifier}/customers/${customer.id}`
+        `${request.locals.companyIdentifier}/customers/${customer.id}`
       )
       customerWithThumb.push(new CreatedCustomerDto({ ...customer, thumb }))
     }
@@ -120,13 +120,13 @@ export class CustomerController {
   @Permissions('customers', 'read')
   @UseGuards(AuthenticatedGuard)
   @UseGuards(PermissionsGuard)
-  async get(@Param('id') id: string, @Session() session) {
+  async get(@Param('id') id: string, @Req() request) {
     const customer = await this.customerService.findById(id)
     if (!customer) {
       throw new NotFoundException('Cliente não encontrado!')
     }
     const thumb = await this.storageService.getUrl(
-      `${session.auth.tenant.identifier}/customers/${customer.id}`
+      `${request.locals.companyIdentifier}/customers/${customer.id}`
     )
     return new CreatedCustomerDto({ ...customer, thumb })
   }
@@ -139,7 +139,7 @@ export class CustomerController {
   async update(
     @Param('id') id: string,
     @Body() updateCustomerDto: UpdateCustomerDto,
-    @Session() session
+    @Req() request
   ): Promise<CreatedCustomerDto> {
     const customer = await this.customerService.findById(id)
     if (!customer) {
@@ -149,9 +149,15 @@ export class CustomerController {
     if (updateCustomerDto.email) {
       const existsCustomerWithSameEmail =
         await this.customerService.verifyByEmail(id, updateCustomerDto.email)
-
       if (existsCustomerWithSameEmail) {
         throw new NotFoundException('Email já cadastrado!')
+      }
+    }
+
+    if (updateCustomerDto.phone) {
+      const existsCustomerWithSamePhone = await this.customerService.verifyByPhone(id, updateCustomerDto.phone)
+      if (existsCustomerWithSamePhone) {
+        throw new NotFoundException('Celular já cadastrado!')
       }
     }
 
@@ -186,7 +192,7 @@ export class CustomerController {
     if (updateCustomerDto.thumb) {
       thumb = await this.storageService.upload(
         updateCustomerDto.thumb.buffer,
-        `${session.auth.tenant.identifier}/customers/${id}`
+        `${request.locals.companyIdentifier}/customers/${id}`
       )
     }
 

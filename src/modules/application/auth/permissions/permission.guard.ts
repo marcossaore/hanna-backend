@@ -1,19 +1,23 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { DefaultHttpException } from '@/shared/errors/default-http-exception'
+import { UserService } from '../../user/user.service'
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
-  private readonly convertActions = [
-    { read: 'leitura' },
-    { create: 'criação' },
-    { edit: 'edição' },
-    { delete: 'deleção' }
-  ]
+  private readonly convertActions = { 
+    read: 'leitura',
+    create: 'criação',
+    edit: 'edição',
+    delete: 'deleção'
+  }
 
-  constructor(private reflector: Reflector) {}
+  constructor(
+    private reflector: Reflector,
+    private userService: UserService
+  ) {}
 
-  canActivate(context: ExecutionContext): boolean {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const metadata = this.reflector.get<{ module: string; action: string }>(
       'permission',
       context.getHandler()
@@ -21,34 +25,24 @@ export class PermissionsGuard implements CanActivate {
 
     if (!metadata) {
       throw new DefaultHttpException(
-        `Você não possui permissão de ${this.convertAction(
-          metadata.action
-        )} ao módulo: "${module}" `,
+        `Você não possui permissão de ${this.convertActions[metadata.action]} ao módulo: "${metadata.module}" `,
         403
       )
     }
 
     const request = context.switchToHttp().getRequest()
 
-    const moduleIsAllowed = request.session.auth.user.permissions.filter(
-      ({ name, grants }) => {
-        return metadata.module === name && grants[metadata.action]
-      }
-    )
+    const hasPermission = await this.userService.hasRole(request.locals.userId, metadata.module, metadata.action)
 
-    if (moduleIsAllowed.length === 0) {
+    if (!hasPermission[metadata.action]) {
       throw new DefaultHttpException(
-        `Você não possui permissão de ${this.convertAction(
-          metadata.action
-        )} ao módulo: "${module}" `,
+        `Você não possui permissão de ${this.convertActions[metadata.action]} ao módulo: "${metadata.module}" `,
         403
       )
     }
 
-    return true
-  }
+    request.locals.permission = hasPermission;
 
-  private convertAction(action: string) {
-    this.convertActions[action]
+    return true
   }
 }

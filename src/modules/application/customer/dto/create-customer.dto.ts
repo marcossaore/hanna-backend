@@ -8,18 +8,19 @@ import {
 } from 'class-validator'
 import { IsPhone } from '@/validations/phone.validator'
 import { CreateAddressDto } from '@/modules/application/address/dto/create-address.dto'
-import { HasMimeType, IsFile, MemoryStoredFile } from 'nestjs-form-data'
+import { HasMimeType, IsFile, MaxFileSize, MemoryStoredFile } from 'nestjs-form-data'
 
 export class CreateCustomerDto {
   @IsString({
     message: JSON.stringify({
-      message: 'O nome do cliente deve ser "string"!',
-      field: 'name'
+      message: 'Nome inválido!',
+      field: 'name',
+      fieldAccepts: "string"
     })
   })
   @IsNotEmpty({
     message: JSON.stringify({
-      message: 'O nome do cliente deve ser informado!',
+      message: 'O nome deve ser informado!',
       field: 'name'
     })
   })
@@ -42,18 +43,22 @@ export class CreateCustomerDto {
       })
     }
   )
-  @IsString({
-    message: JSON.stringify({
-      message: 'O email do cliente deve ser "string"!',
-      field: 'email'
-    })
-  })
   @IsOptional()
   readonly email: string
 
   @IsFile()
-  // @MaxFileSize(1e6)
-  @HasMimeType(['image/jpeg', 'image/png'])
+  @MaxFileSize(5e6, {
+    message: JSON.stringify({
+        message: 'A imagem deve ter o tamanho máximo de 5MB!',
+        field: 'thumb'
+    })
+  })
+  @HasMimeType(['image/jpeg', 'image/png'], {
+    message: JSON.stringify({
+      message: 'A imagem deve ter extensão jpg ou png!',
+      field: 'thumb'
+    })
+  })
   @IsOptional()
   readonly thumb: MemoryStoredFile
 

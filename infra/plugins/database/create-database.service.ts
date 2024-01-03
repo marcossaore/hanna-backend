@@ -14,7 +14,7 @@ export class CreateDatabaseService {
         this.dbConfig = this.configService.get('database');
     }
 
-    async create (credentials: {db: string, dbUser: string, dbPass: string}): Promise<void> {
+    async create (db: string): Promise<void> {
         const connection = await this.dbManagerService.createConnection({
             host: this.dbConfig.host,
             user: this.dbConfig.user,
@@ -23,26 +23,26 @@ export class CreateDatabaseService {
         });
         
         try {
-            await connection.query(`CREATE DATABASE IF NOT EXISTS \`${credentials.db}\``);
+            await connection.query(`CREATE DATABASE IF NOT EXISTS \`${db}\``);
       
-            await connection.query(
-              `CREATE USER IF NOT EXISTS ?@'%' IDENTIFIED BY ?`,
-              [credentials.dbUser, credentials.dbPass]
-            );
+            // await connection.query(
+            //   `CREATE USER IF NOT EXISTS ?@'%' IDENTIFIED BY ?`,
+            //   [credentials.dbUser, credentials.dbPass]
+            // );
       
-            await connection.query(
-              `GRANT SELECT, INSERT, UPDATE, DELETE ON \`${credentials.db}\`.* TO ?@'%'`,
-              [credentials.dbUser]
-            );
+            // await connection.query(
+            //   `GRANT SELECT, INSERT, UPDATE, DELETE ON \`${credentials.db}\`.* TO ?@'%'`,
+            //   [credentials.dbUser]
+            // );
       
             await connection.query('FLUSH PRIVILEGES');
         } catch(error) {
             try {
-                await connection.query(`DROP DATABASE IF EXISTS \`${credentials.db}\``);
+                await connection.query(`DROP DATABASE IF EXISTS \`${db}\``);
             } catch (dbError) { }
 
             try {
-                await connection.query(`DROP USER IF EXISTS ?@'%'`, [credentials.dbUser]);
+                // await connection.query(`DROP USER IF EXISTS ?@'%'`, [credentials.dbUser]);
             } catch (userError) {}
 
             throw error;

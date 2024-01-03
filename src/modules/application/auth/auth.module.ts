@@ -31,7 +31,7 @@ import { SecretsModule } from '@/modules/infra/secrets/secrets.module'
     TypeOrmModule.forFeature([Tenant]),
     SecretsModule
   ],
-  providers: [TenantService, UserServiceLazy, HashService, TokenServiceAdapter],
+  providers: [ConfigService, TenantService, UserServiceLazy, HashService, TokenServiceAdapter],
   controllers: [AuthController]
 })
 export class AuthModule {}

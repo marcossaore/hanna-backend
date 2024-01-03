@@ -21,15 +21,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if (exception instanceof DefaultHttpException) {
       error = exceptionResponse
     } else if (Array.isArray(exceptionResponse.message)) {
-      const captureErrror = (exceptionResponse as any).message[0]
+      const captureError = (exceptionResponse as any).message[0]
       try {
         if (
-          typeof captureErrror === 'string' &&
-          captureErrror.includes('{') &&
-          captureErrror.includes('}')
+          typeof captureError === 'string' &&
+          captureError.includes('{') &&
+          captureError.includes('}')
         ) {
           const parsedMessage = JSON.parse(
-            captureErrror.match(/{(.*?)}/g)[0] || null
+            captureError.match(/{(.*?)}/g)[0] || null
           )
           error = {
             type: exceptionResponse.error,
@@ -38,12 +38,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
           }
         } else {
           error = {
-            captureErrror
+            captureError
           }
         }
       } catch (error) {
         error = {
-          captureErrror
+          captureError
         }
       }
     } else {
