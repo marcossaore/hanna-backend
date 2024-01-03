@@ -3,13 +3,14 @@ import { IsInt, IsNotEmpty } from 'class-validator'
 export class OrderDto {
   @IsInt({
     message: JSON.stringify({
-      message: 'O id do produto deve ser "int"!',
-      field: 'productId'
+      message: 'Identificador do produto inválido!',
+      field: 'productId',
+      fieldAccepts: "int"
     })
   })
   @IsNotEmpty({
     message: JSON.stringify({
-      message: 'O id do produto deve ser informado!',
+      message: 'O identificador do produto deve ser informado!',
       field: 'productId'
     })
   })
@@ -17,8 +18,9 @@ export class OrderDto {
 
   @IsInt({
     message: JSON.stringify({
-      message: 'A quantidade deve ser "int"!',
-      field: 'quantity'
+      message: 'Quantidade inválida!',
+      field: 'quantity',
+      fieldAccepts: "int"
     })
   })
   @IsNotEmpty({

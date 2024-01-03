@@ -33,8 +33,9 @@ export class CreateSaleDto {
   })
   @IsArray({
     message: JSON.stringify({
-      message: 'A lista de compras deve ser "array"!',
-      field: 'orders'
+      message: 'Lista de compras inválida!',
+      field: 'orders',
+      fieldAccepts: "array"
     })
   })
   @ValidateNested()
@@ -49,8 +50,9 @@ export class CreateSaleDto {
 
   @IsInt({
     message: JSON.stringify({
-      message: 'A quantidade de parcelas deve ser "int"!',
-      field: 'times'
+      message: 'Quantidade de parcelas inválida!',
+      field: 'times',
+      fieldAccepts: "int"
     })
   })
   @Min(1, {
@@ -74,8 +76,9 @@ export class CreateSaleDto {
     },
     {
       message: JSON.stringify({
-        message: 'A taxa do juros deve ser "number"!',
-        field: 'fee'
+        message: 'Taxa de juros inválida!',
+        field: 'fee',
+        fieldAccepts: "number"
       })
     }
   )
@@ -94,8 +97,9 @@ export class CreateSaleDto {
     },
     {
       message: JSON.stringify({
-        message: 'O desconto deve ser "number"!',
-        field: 'discount'
+        message: 'Desconto inválido!',
+        field: 'discount',
+        fieldAccepts: "number"
       })
     }
   )
@@ -110,8 +114,9 @@ export class CreateSaleDto {
 
   @IsString({
     message: JSON.stringify({
-      message: 'O id do cliente deve ser "string"!',
-      field: 'customerId'
+      message: 'Identificador do cliente inválido!',
+      field: 'customerId',
+      fieldAccepts: "number"
     })
   })
   @IsOptional()

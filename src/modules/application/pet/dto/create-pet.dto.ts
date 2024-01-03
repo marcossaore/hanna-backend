@@ -1,7 +1,5 @@
-import { Transform, Type } from 'class-transformer'
+import { Type } from 'class-transformer'
 import {
-  IsDate,
-  IsDateString,
   IsEnum,
   IsNotEmpty,
   IsOptional,
@@ -17,8 +15,9 @@ import { CreateCustomerDto } from '../../customer/dto/create-customer.dto'
 export class CreatePetDto {
   @IsString({
     message: JSON.stringify({
-      message: 'O nome do pet deve ser "string"!',
-      field: 'name'
+      message: 'Nome inválido!',
+      field: 'name',
+      fieldAccepts: "string"
     })
   })
   @IsNotEmpty({
@@ -40,8 +39,9 @@ export class CreatePetDto {
 
   @IsString({
     message: JSON.stringify({
-      message: 'A raça do pet deve ser "string"!',
-      field: 'breed'
+      message: 'Raça inválida!',
+      field: 'breed',
+      fieldAccepts: "string"
     })
   })
   @IsNotEmpty({
@@ -78,8 +78,9 @@ export class CreatePetDto {
 
   @IsString({
     message: JSON.stringify({
-      message: 'O identificador do cliente deve ser "string"!',
-      field: 'tutorId'
+      message: 'Tutor inválido!',
+      field: 'tutorId',
+      fieldAccepts: "string"
     })
   })
   @IsOptional()

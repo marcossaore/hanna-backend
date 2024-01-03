@@ -3,13 +3,14 @@ import { IsNotEmpty, IsOptional, IsString } from 'class-validator'
 export class CreateAddressDto {
   @IsString({
     message: JSON.stringify({
-      message: 'A rua deve ser "string"!',
-      field: 'street'
+      message: 'Logradouro inválido!',
+      field: 'street',
+      fieldAccepts: "string"
     })
   })
   @IsNotEmpty({
     message: JSON.stringify({
-      message: 'A rua deve ser informada!',
+      message: 'O Logradouro deve ser informada!',
       field: 'street'
     })
   })
@@ -17,14 +18,9 @@ export class CreateAddressDto {
 
   @IsString({
     message: JSON.stringify({
-      message: 'O número deve ser "string"!',
-      field: 'number'
-    })
-  })
-  @IsNotEmpty({
-    message: JSON.stringify({
-      message: 'O número deve ser informado!',
-      field: 'number'
+      message: 'Número inválido!',
+      field: 'number',
+      fieldAccepts: "string"
     })
   })
   @IsOptional()
@@ -32,14 +28,9 @@ export class CreateAddressDto {
 
   @IsString({
     message: JSON.stringify({
-      message: 'O complemento deve ser "string"!',
-      field: 'complement'
-    })
-  })
-  @IsNotEmpty({
-    message: JSON.stringify({
-      message: 'O complemento deve ser informado!',
-      field: 'complement'
+      message: 'Complemento inválido!',
+      field: 'complement',
+      fieldAccepts: "string"
     })
   })
   @IsOptional()
@@ -47,8 +38,9 @@ export class CreateAddressDto {
 
   @IsString({
     message: JSON.stringify({
-      message: 'O bairro deve ser "string"!',
-      field: 'neighborhood'
+      message: 'Bairro inválido!',
+      field: 'neighborhood',
+      fieldAccepts: "string"
     })
   })
   @IsNotEmpty({
@@ -61,8 +53,9 @@ export class CreateAddressDto {
 
   @IsString({
     message: JSON.stringify({
-      message: 'A cidade deve ser "string"!',
-      field: 'city'
+      message: 'Cidade inválida!',
+      field: 'city',
+      fieldAccepts: "string"
     })
   })
   @IsNotEmpty({
@@ -75,8 +68,9 @@ export class CreateAddressDto {
 
   @IsString({
     message: JSON.stringify({
-      message: 'O estado deve ser "string"!',
-      field: 'state'
+      message: 'Estado inválido!',
+      field: 'state',
+      fieldAccepts: "string"
     })
   })
   @IsNotEmpty({
@@ -89,8 +83,9 @@ export class CreateAddressDto {
 
   @IsString({
     message: JSON.stringify({
-      message: 'O país deve ser "string"!',
-      field: 'country'
+      message: 'País inválido!',
+      field: 'country',
+      fieldAccepts: "string"
     })
   })
   @IsNotEmpty({

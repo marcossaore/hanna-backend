@@ -7,8 +7,9 @@ import { IsPhone } from '@/validations/phone.validator'
 export class CreateTenantDto {
   @IsString({
     message: JSON.stringify({
-      message: 'O nome da empresa deve ser "string"!',
-      field: 'name'
+      message: 'Nome inválido!',
+      field: 'name',
+      fieldAccepts: "string"
     })
   })
   @IsNotEmpty({
@@ -21,21 +22,22 @@ export class CreateTenantDto {
 
   @IsCnpj({
     message: JSON.stringify({
-      message: 'O CNPJ não é válido!',
+      message: 'CNPJ inválido!',
       field: 'document'
     })
   })
   readonly document: string
 
+  @IsString({
+    message: JSON.stringify({
+      message: 'Nome do sócio inválido!',
+      field: 'partnerName',
+      fieldAccepts: "string"
+    })
+  })
   @IsNotEmpty({
     message: JSON.stringify({
       message: 'O nome do sócio deve ser informado!',
-      field: 'partnerName'
-    })
-  })
-  @IsString({
-    message: JSON.stringify({
-      message: 'O nome do sócio deve ser "string"!',
       field: 'partnerName'
     })
   })
@@ -43,7 +45,7 @@ export class CreateTenantDto {
 
   @IsCpf({
     message: JSON.stringify({
-      message: 'O CPF do sócio não é valido!',
+      message: 'CPF inválido!',
       field: 'partnerDocument'
     })
   })

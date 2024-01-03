@@ -11,13 +11,14 @@ import { HasMimeType, IsFile, MaxFileSize, MemoryStoredFile } from 'nestjs-form-
 export class CreateProductDto {
   @IsString({
     message: JSON.stringify({
-      message: 'O nome do produto deve ser "string"!',
-      field: 'name'
+      message: 'Nome inválido!',
+      field: 'name',
+      fieldAccepts: "string"
     })
   })
   @IsNotEmpty({
     message: JSON.stringify({
-      message: 'O nome do produto deve ser informado!',
+      message: 'O Nome deve ser informado!',
       field: 'name'
     })
   })
@@ -25,8 +26,9 @@ export class CreateProductDto {
 
   @IsString({
     message: JSON.stringify({
-      message: 'A descrição do produto deve ser "string"!',
-      field: 'description'
+      message: 'Descrição inválida!',
+      field: 'description',
+      fieldAccepts: "string"
     })
   })
   @IsOptional()
@@ -34,8 +36,9 @@ export class CreateProductDto {
 
   @IsInt({
     message: JSON.stringify({
-      message: 'O preço do produto deve ser "int"!',
-      field: 'price'
+      message: 'Preço inválido!',
+      field: 'price',
+      fieldAccepts: "int"
     })
   })
   @Transform(({ value }) => parseInt(value, 10))
@@ -49,8 +52,9 @@ export class CreateProductDto {
 
   @IsInt({
     message: JSON.stringify({
-      message: 'A quantidade em estoque do produto deve ser "int"!',
-      field: 'quantity'
+      message: 'Quantidade em estoque inválida!',
+      field: 'quantity',
+      fieldAccepts: "int"
     })
   })
   @Transform(({ value }) => parseInt(value, 10))
@@ -64,24 +68,20 @@ export class CreateProductDto {
 
   @IsInt({
     message: JSON.stringify({
-      message: 'O preço a granel do produto deve ser "int"!',
-      field: 'bulkPrice'
+      message: 'Preço a granel inválido!',
+      field: 'bulkPrice',
+      fieldAccepts: "int"
     })
   })
   @Transform(({ value }) => parseInt(value, 10))
-  @IsNotEmpty({
-    message: JSON.stringify({
-      message: 'O preço a granel do produto deve ser informado!',
-      field: 'bulkPrice'
-    })
-  })
   @IsOptional()
   readonly bulkPrice: number
 
   @IsInt({
     message: JSON.stringify({
-      message: 'A quantidade de quilos(KG) do produto  deve "number"!',
-      field: 'quantityKg'
+      message: 'Quantidade de quilos(KG) do produto inválida!',
+      field: 'quantityKg',
+      fieldAccepts: "int"
     })
   })
   @Transform(({ value }) => parseInt(value, 10))
@@ -98,9 +98,9 @@ export class CreateProductDto {
     {},
     {
       message: JSON.stringify({
-        message:
-          'A quantidade de quilos(KG) remanescente do produto deve ser "number"!',
-        field: 'quantityKgActual'
+        message: 'Quantidade de quilos(KG) avulsos do produto inválida!',
+        field: 'quantityKgActual',
+        fieldAccepts: "number"
       })
     }
   )
@@ -108,7 +108,7 @@ export class CreateProductDto {
   @IsNotEmpty({
     message: JSON.stringify({
       message:
-        'A quantidade de quilos(KG) remanescente do produto deve ser informada!',
+        'A quantidade de quilos(KG) avulsos do produto deve ser informada!',
       field: 'quantityKgActual'
     })
   })
@@ -118,8 +118,9 @@ export class CreateProductDto {
 
   @IsString({
     message: JSON.stringify({
-      message: 'O código de barras do produto deve ser "string"!',
-      field: 'code'
+      message: 'Código de barras inválido!',
+      field: 'code',
+      fieldAccepts: "string"
     })
   })
   @IsOptional()

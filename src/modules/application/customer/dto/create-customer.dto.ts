@@ -13,13 +13,14 @@ import { HasMimeType, IsFile, MaxFileSize, MemoryStoredFile } from 'nestjs-form-
 export class CreateCustomerDto {
   @IsString({
     message: JSON.stringify({
-      message: 'O nome do cliente deve ser "string"!',
-      field: 'name'
+      message: 'Nome inválido!',
+      field: 'name',
+      fieldAccepts: "string"
     })
   })
   @IsNotEmpty({
     message: JSON.stringify({
-      message: 'O nome do cliente deve ser informado!',
+      message: 'O nome deve ser informado!',
       field: 'name'
     })
   })
@@ -42,12 +43,6 @@ export class CreateCustomerDto {
       })
     }
   )
-  @IsString({
-    message: JSON.stringify({
-      message: 'O email do cliente deve ser "string"!',
-      field: 'email'
-    })
-  })
   @IsOptional()
   readonly email: string
 

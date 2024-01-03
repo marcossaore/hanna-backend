@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator'
+import { IsEmail, IsNotEmpty } from 'class-validator'
 import { IsCnpj } from '@/validations/cnpj.validator'
 import { IsStrongPass } from '@/validations/password.validator'
 
@@ -20,12 +20,6 @@ export class LoginDto {
       })
     }
   )
-  @IsString({
-    message: JSON.stringify({
-      message: 'O email deve ser "string"!',
-      field: 'email'
-    })
-  })
   @IsNotEmpty({
     message: JSON.stringify({
       message: 'O email deve ser informado!',
@@ -35,12 +29,6 @@ export class LoginDto {
   readonly email: string
 
   @IsStrongPass()
-  @IsString({
-    message: JSON.stringify({
-      message: 'A senha deve ser "string"!',
-      field: 'password'
-    })
-  })
   @IsNotEmpty({
     message: JSON.stringify({
       message: 'A senha deve ser informado!',
