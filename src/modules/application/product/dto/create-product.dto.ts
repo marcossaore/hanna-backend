@@ -7,7 +7,7 @@ import {
   IsString,
   ValidateIf
 } from 'class-validator'
-import { HasMimeType, IsFile, MemoryStoredFile } from 'nestjs-form-data'
+import { HasMimeType, IsFile, MaxFileSize, MemoryStoredFile } from 'nestjs-form-data'
 export class CreateProductDto {
   @IsString({
     message: JSON.stringify({
@@ -126,8 +126,18 @@ export class CreateProductDto {
   readonly code: string
 
   @IsFile()
-  // @MaxFileSize(1e6)
-  @HasMimeType(['image/jpeg', 'image/png'])
+  @MaxFileSize(5e6, {
+    message: JSON.stringify({
+        message: 'A imagem deve ter o tamanho máximo de 5MB!',
+        field: 'thumb'
+    })
+  })
+  @HasMimeType(['image/jpeg', 'image/png'], {
+    message: JSON.stringify({
+      message: 'A imagem deve ter extensão jpg ou png!',
+      field: 'thumb'
+    })
+  })
   @IsOptional()
   readonly thumb: MemoryStoredFile
 }

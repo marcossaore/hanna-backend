@@ -10,7 +10,7 @@ import {
   ValidateIf,
   ValidateNested
 } from 'class-validator'
-import { HasMimeType, IsFile, MemoryStoredFile } from 'nestjs-form-data'
+import { HasMimeType, IsFile, MaxFileSize, MemoryStoredFile } from 'nestjs-form-data'
 import { PetCarries } from '@/shared/enums/pet-carries.enum'
 import { CreateCustomerDto } from '../../customer/dto/create-customer.dto'
 
@@ -61,8 +61,18 @@ export class CreatePetDto {
   readonly birthday: Date
 
   @IsFile()
-  // @MaxFileSize(1e6)
-  @HasMimeType(['image/jpeg', 'image/png'])
+  @MaxFileSize(5e6, {
+    message: JSON.stringify({
+        message: 'A imagem deve ter o tamanho máximo de 5MB!',
+        field: 'thumb'
+    })
+  })
+  @HasMimeType(['image/jpeg', 'image/png'], {
+    message: JSON.stringify({
+      message: 'A imagem deve ter extensão jpg ou png!',
+      field: 'thumb'
+    })
+  })
   @IsOptional()
   readonly thumb: MemoryStoredFile
 
