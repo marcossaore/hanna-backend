@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "Hanna Api",
-    "dateExported": "2023-12-17T16:00:15.462Z",
+    "dateExported": "2024-01-03T21:46:03.087Z",
     "version": "1.1",
     "folders": [
         {
@@ -24,6 +24,13 @@
             "containerId": "",
             "created": "2023-12-13T17:37:40.544Z",
             "sortNum": 17500
+        },
+        {
+            "_id": "4f0d665f-5e85-4621-a6f0-a08601e269fb",
+            "name": "Pets",
+            "containerId": "",
+            "created": "2023-12-31T17:32:34.075Z",
+            "sortNum": 18125
         },
         {
             "_id": "0409fc4d-de00-4958-93e3-26e4e91f849e",
@@ -69,7 +76,7 @@
             "method": "POST",
             "sortNum": 10000,
             "created": "2023-12-07T17:29:20.184Z",
-            "modified": "2023-12-17T16:00:04.192Z",
+            "modified": "2024-01-03T20:11:41.069Z",
             "headers": [],
             "params": [],
             "body": {
@@ -77,7 +84,14 @@
                 "raw": "{\n  \"document\": \"07962434000111\",\n  \"email\": \"test@test.com\",\n  \"password\": \"S0mePass!\"\n}",
                 "form": []
             },
-            "tests": []
+            "tests": [
+                {
+                    "type": "set-env-var",
+                    "custom": "json.data.token",
+                    "action": "setto",
+                    "value": "{{token}}"
+                }
+            ]
         },
         {
             "_id": "26b040f5-90ea-4593-bcc2-f9928ac43e8c",
@@ -88,8 +102,13 @@
             "method": "POST",
             "sortNum": 10000,
             "created": "2023-12-07T17:29:20.185Z",
-            "modified": "2023-12-07T17:29:20.185Z",
-            "headers": [],
+            "modified": "2023-12-29T19:30:28.165Z",
+            "headers": [
+                {
+                    "name": "x-token",
+                    "value": "{{token}}"
+                }
+            ],
             "params": [],
             "body": {
                 "type": "json",
@@ -107,12 +126,17 @@
             "method": "POST",
             "sortNum": 10000,
             "created": "2023-12-13T17:37:40.544Z",
-            "modified": "2023-12-13T17:45:19.537Z",
-            "headers": [],
+            "modified": "2023-12-29T19:31:34.606Z",
+            "headers": [
+                {
+                    "name": "x-token",
+                    "value": "{{token}}"
+                }
+            ],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"name\": \"Raçao Quatree Supreme\",\n  \"description\": \"Ração Seca Quatree Supreme Frango e Batata Doce Cães Filhotes Raças Médias e Grandes\",\n  \"price\": 24561,\n  \"bulkPrice\": 3250,\n  \"code\": \"1234567890123\"\n}",
+                "raw": "{\n  \"name\": \"Raçao Quatree Supreme\",\n  \"description\": \"Ração Seca Quatree Supreme Frango e Batata Doce Cães Filhotes Raças Médias e Grandes\",\n  \"price\": 24561,\n  \"bulkPrice\": 3250,\n  \"quantity\": 12,\n  \"quantityKg\": 10,\n  \"quantityKgActual\": 2\n}",
                 "form": []
             },
             "tests": []
@@ -126,12 +150,17 @@
             "method": "POST",
             "sortNum": 12500,
             "created": "2023-12-13T17:45:47.770Z",
-            "modified": "2023-12-13T17:47:57.776Z",
-            "headers": [],
+            "modified": "2023-12-29T19:31:41.999Z",
+            "headers": [
+                {
+                    "name": "x-token",
+                    "value": "{{token}}"
+                }
+            ],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"name\": \"Brinquedo de Puxar p/ Cachorro Kong Jaxx Triple Barrel G\",\n  \"price\": 14000\n}",
+                "raw": "{\n  \"name\": \"Brinquedo de Puxar p/ Cachorro Kong Jaxx Triple Barrel G\",\n  \"price\": 22,\n  \"quantity\": 100\n}",
                 "form": []
             },
             "tests": []
@@ -145,12 +174,65 @@
             "method": "POST",
             "sortNum": 12500,
             "created": "2023-12-14T02:24:50.281Z",
-            "modified": "2023-12-17T00:15:44.341Z",
-            "headers": [],
+            "modified": "2024-01-03T03:50:23.422Z",
+            "headers": [
+                {
+                    "name": "x-token",
+                    "value": "{{token}}"
+                }
+            ],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"paymentMethod\": \"money\",\n  \"times\": 20,\n  \"orders\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 2\n    },\n    {\n      \"productId\": 2,\n      \"quantity\": 1\n    }\n  ]\n}",
+                "raw": "{\n  \"paymentMethod\": \"bill\",\n  \"orders\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 1000\n    }\n  ]\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "f67ff176-8979-45f8-9402-1567cb3129c9",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "4f0d665f-5e85-4621-a6f0-a08601e269fb",
+            "name": "Create",
+            "url": "http://localhost:3000/api/pets",
+            "method": "POST",
+            "sortNum": 12500,
+            "created": "2023-12-31T17:32:34.076Z",
+            "modified": "2023-12-31T21:19:36.314Z",
+            "headers": [
+                {
+                    "name": "x-token",
+                    "value": "{{token}}"
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Lara\",\n  \"carry\": \"small\",\n  \"breed\": \"pinscher\",\n  \"birthday\": \"2023-01-01\",\n  \"customerId\": \"1274942b-953c-4088-af01-d88c73a4ca81\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "f95a87f4-525d-401f-8948-00be8a7f52da",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "4f0d665f-5e85-4621-a6f0-a08601e269fb",
+            "name": "Create with new Customer",
+            "url": "http://localhost:3000/api/pets",
+            "method": "POST",
+            "sortNum": 13750,
+            "created": "2023-12-31T20:10:08.454Z",
+            "modified": "2023-12-31T20:18:05.204Z",
+            "headers": [
+                {
+                    "name": "x-token",
+                    "value": "{{token}}"
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Teresa\",\n  \"carry\": \"medium\",\n  \"breed\": \"poodle\",\n  \"birthday\": \"2023-04-22\",\n  \"customer\": {\n    \"name\": \"Mirian Leite Alves\",\n    \"phone\": \"31982636266\",\n    \"address\": {\n      \"street\": \"Rua Mesquita Dourada\",\n      \"neighborhood\": \"São Gariel\",\n      \"city\": \"Belo Horizonte\",\n      \"state\": \"MG\",\n      \"country\": \"Brasil\"\n    }\n  }\n}",
                 "form": []
             },
             "tests": []
@@ -178,12 +260,16 @@
             "method": "POST",
             "sortNum": 15000,
             "created": "2023-12-11T19:42:19.647Z",
-            "modified": "2023-12-12T18:07:43.621Z",
+            "modified": "2023-12-29T19:30:44.872Z",
             "headers": [
                 {
                     "name": "Content-Type",
                     "value": "multipart/form-data; boundary:{}",
                     "isDisabled": true
+                },
+                {
+                    "name": "x-token",
+                    "value": "{{token}}"
                 }
             ],
             "params": [],
@@ -246,12 +332,16 @@
             "method": "POST",
             "sortNum": 15000,
             "created": "2023-12-13T17:37:40.545Z",
-            "modified": "2023-12-13T17:55:16.339Z",
+            "modified": "2023-12-29T19:32:03.806Z",
             "headers": [
                 {
                     "name": "Content-Type",
                     "value": "multipart/form-data; boundary:{}",
                     "isDisabled": true
+                },
+                {
+                    "name": "x-token",
+                    "value": "{{token}}"
                 }
             ],
             "params": [],
@@ -271,9 +361,33 @@
                 "files": [
                     {
                         "name": "thumb",
-                        "value": "/home/ubuntu/projects/hanna-backend/test2.jpeg"
+                        "value": "/home/ubuntu/projects/hanna/static/bg.jpg"
                     }
                 ]
+            },
+            "tests": []
+        },
+        {
+            "_id": "bd5a3962-a665-4d7b-9b70-44cdd0b5f01c",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "0409fc4d-de00-4958-93e3-26e4e91f849e",
+            "name": "Create Copy",
+            "url": "http://localhost:3000/api/sales",
+            "method": "POST",
+            "sortNum": 17500,
+            "created": "2023-12-29T19:39:21.934Z",
+            "modified": "2023-12-29T19:40:02.158Z",
+            "headers": [
+                {
+                    "name": "x-token",
+                    "value": "{{token}}"
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"paymentMethod\": \"bill\",\n  \"customerId\": \"1274942b-953c-4088-af01-d88c73a4ca81\",\n  \"orders\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 1000\n    }\n  ]\n}",
+                "form": []
             },
             "tests": []
         },
@@ -286,8 +400,13 @@
             "method": "GET",
             "sortNum": 20000,
             "created": "2023-12-07T17:29:20.186Z",
-            "modified": "2023-12-07T17:29:20.186Z",
-            "headers": [],
+            "modified": "2023-12-29T19:30:51.264Z",
+            "headers": [
+                {
+                    "name": "x-token",
+                    "value": "{{token}}"
+                }
+            ],
             "params": [
                 {
                     "name": "limit",
@@ -308,20 +427,6 @@
             "tests": []
         },
         {
-            "_id": "86660df7-bfb9-4eb1-a660-4f202d1f9c40",
-            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
-            "containerId": "50315b51-c14d-43d9-b0cd-75d091ea3c4f",
-            "name": "Logout",
-            "url": "http://localhost:3000/api/auth/logout",
-            "method": "POST",
-            "sortNum": 20000,
-            "created": "2023-12-07T17:29:20.190Z",
-            "modified": "2023-12-07T17:29:20.190Z",
-            "headers": [],
-            "params": [],
-            "tests": []
-        },
-        {
             "_id": "6cb874ee-7313-4a2c-a665-77e7d9bd4541",
             "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
             "containerId": "bb42a8d4-70c6-4c47-af1e-929409733853",
@@ -330,8 +435,43 @@
             "method": "GET",
             "sortNum": 20000,
             "created": "2023-12-13T17:37:40.546Z",
-            "modified": "2023-12-13T17:55:56.690Z",
-            "headers": [],
+            "modified": "2023-12-29T19:32:12.521Z",
+            "headers": [
+                {
+                    "name": "x-token",
+                    "value": "{{token}}"
+                }
+            ],
+            "params": [
+                {
+                    "name": "limit",
+                    "value": "10",
+                    "isPath": false
+                },
+                {
+                    "name": "page",
+                    "value": "1",
+                    "isPath": false
+                }
+            ],
+            "tests": []
+        },
+        {
+            "_id": "5e81097b-104a-4466-a860-7d78077f387c",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "4f0d665f-5e85-4621-a6f0-a08601e269fb",
+            "name": "Get All ",
+            "url": "http://localhost:3000/api/pets?limit=10&page=1",
+            "method": "GET",
+            "sortNum": 20000,
+            "created": "2023-12-31T17:32:34.078Z",
+            "modified": "2023-12-31T21:52:09.705Z",
+            "headers": [
+                {
+                    "name": "x-token",
+                    "value": "{{token}}"
+                }
+            ],
             "params": [
                 {
                     "name": "limit",
@@ -355,8 +495,13 @@
             "method": "POST",
             "sortNum": 22500,
             "created": "2023-12-15T16:23:10.004Z",
-            "modified": "2023-12-15T21:19:15.857Z",
-            "headers": [],
+            "modified": "2023-12-29T19:32:48.587Z",
+            "headers": [
+                {
+                    "name": "x-token",
+                    "value": "{{token}}"
+                }
+            ],
             "params": [],
             "body": {
                 "type": "json",
@@ -370,12 +515,17 @@
             "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
             "containerId": "2a55e229-c987-47d2-9950-d7ad5901eaf6",
             "name": "Get One",
-            "url": "http://localhost:3000/api/customers/01HFW9GPSH5T2Z094H5Y08CTSG",
+            "url": "http://localhost:3000/api/customers/783dd4c1-72a6-4bf8-8c74-fb0124ccbcb5",
             "method": "GET",
             "sortNum": 25000,
             "created": "2023-12-07T17:29:20.188Z",
-            "modified": "2023-12-13T17:56:40.748Z",
-            "headers": [],
+            "modified": "2023-12-29T19:40:38.283Z",
+            "headers": [
+                {
+                    "name": "x-token",
+                    "value": "{{token}}"
+                }
+            ],
             "params": [],
             "tests": []
         },
@@ -384,12 +534,37 @@
             "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
             "containerId": "bb42a8d4-70c6-4c47-af1e-929409733853",
             "name": "Get One",
-            "url": "http://localhost:3000/api/products/1",
+            "url": "http://localhost:3000/api/products/9",
             "method": "GET",
             "sortNum": 25000,
             "created": "2023-12-13T17:37:40.547Z",
-            "modified": "2023-12-13T17:56:31.258Z",
-            "headers": [],
+            "modified": "2024-01-03T03:47:38.376Z",
+            "headers": [
+                {
+                    "name": "x-token",
+                    "value": "{{token}}",
+                    "isDisabled": true
+                }
+            ],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "9efdd044-924c-49eb-987a-de1dd0cf671f",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "4f0d665f-5e85-4621-a6f0-a08601e269fb",
+            "name": "Get One",
+            "url": "http://localhost:3000/api/pets/96c82ea8-b42e-4176-8d99-fbadbe6b17ca/c9840cee-111f-487d-9548-54dd35b02eb2",
+            "method": "GET",
+            "sortNum": 25000,
+            "created": "2023-12-31T17:32:34.079Z",
+            "modified": "2023-12-31T20:34:49.297Z",
+            "headers": [
+                {
+                    "name": "x-token",
+                    "value": "{{token}}"
+                }
+            ],
             "params": [],
             "tests": []
         },
@@ -398,16 +573,21 @@
             "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
             "containerId": "2a55e229-c987-47d2-9950-d7ad5901eaf6",
             "name": "Update",
-            "url": "http://localhost:3000/api/customers/01HHDMHNMET95H5KSFAQGB68SK",
+            "url": "http://localhost:3000/api/customers/1274942b-953c-4088-af01-d88c73a4ca81",
             "method": "PATCH",
             "sortNum": 30000,
             "created": "2023-12-07T17:29:20.187Z",
-            "modified": "2023-12-12T01:30:32.764Z",
-            "headers": [],
+            "modified": "2023-12-29T20:22:18.582Z",
+            "headers": [
+                {
+                    "name": "x-token",
+                    "value": "{{token}}"
+                }
+            ],
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"name\": \"Maria Rita de Souza\",\n  \"phone\": \"31984536728\"\n}",
+                "raw": "{\n  \"name\": \"Alessandro Mota Machado\",\n  \"phone\": \"31984536721\"\n}",
                 "form": []
             },
             "tests": []
@@ -417,12 +597,17 @@
             "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
             "containerId": "bb42a8d4-70c6-4c47-af1e-929409733853",
             "name": "Update",
-            "url": "http://localhost:3000/api/products/1",
+            "url": "http://localhost:3000/api/products/12",
             "method": "PATCH",
             "sortNum": 30000,
             "created": "2023-12-13T17:37:40.548Z",
-            "modified": "2023-12-13T17:58:19.619Z",
-            "headers": [],
+            "modified": "2023-12-29T20:25:18.193Z",
+            "headers": [
+                {
+                    "name": "x-token",
+                    "value": "{{token}}"
+                }
+            ],
             "params": [],
             "body": {
                 "type": "json",
@@ -432,16 +617,45 @@
             "tests": []
         },
         {
+            "_id": "5530d3a1-b1b1-4acd-ab3c-fd54fe74d39e",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "4f0d665f-5e85-4621-a6f0-a08601e269fb",
+            "name": "Update",
+            "url": "http://localhost:3000/api/pets/96c82ea8-b42e-4176-8d99-fbadbe6b17ca/c9840cee-111f-487d-9548-54dd35b02eb2",
+            "method": "PATCH",
+            "sortNum": 30000,
+            "created": "2023-12-31T17:32:34.080Z",
+            "modified": "2023-12-31T21:15:49.453Z",
+            "headers": [
+                {
+                    "name": "x-token",
+                    "value": "{{token}}"
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Nina\",\n  \"carry\": \"small\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
             "_id": "c197dd15-1b3a-46df-89cf-2b7f51e66f30",
             "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
             "containerId": "2a55e229-c987-47d2-9950-d7ad5901eaf6",
             "name": "Delete",
-            "url": "http://localhost:3000/api/customers/01HFW9GPSH5T2Z094H5Y08CTSG",
+            "url": "http://localhost:3000/api/customers/783dd4c1-72a6-4bf8-8c74-fb0124ccbcb5",
             "method": "DELETE",
             "sortNum": 40000,
             "created": "2023-12-07T17:29:20.189Z",
-            "modified": "2023-12-07T17:29:20.189Z",
-            "headers": [],
+            "modified": "2023-12-29T19:41:10.496Z",
+            "headers": [
+                {
+                    "name": "x-token",
+                    "value": "{{token}}"
+                }
+            ],
             "params": [],
             "tests": []
         },
@@ -450,12 +664,36 @@
             "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
             "containerId": "bb42a8d4-70c6-4c47-af1e-929409733853",
             "name": "Delete",
-            "url": "http://localhost:3000/api/products/1",
+            "url": "http://localhost:3000/api/products/4",
             "method": "DELETE",
             "sortNum": 40000,
             "created": "2023-12-13T17:37:40.549Z",
-            "modified": "2023-12-13T17:58:52.046Z",
-            "headers": [],
+            "modified": "2023-12-29T20:26:12.795Z",
+            "headers": [
+                {
+                    "name": "x-token",
+                    "value": "{{token}}"
+                }
+            ],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "6fc797dc-4f8c-4172-aa06-b0e553ccf945",
+            "colId": "67f167a3-1615-40e8-8283-28ace2fe14b6",
+            "containerId": "4f0d665f-5e85-4621-a6f0-a08601e269fb",
+            "name": "Delete",
+            "url": "http://localhost:3000/api/pets/b5e27bf9-af71-4acb-8c6c-b5c2b0d6922d/d8d234da-a91f-4250-a0cb-966124e6337c",
+            "method": "DELETE",
+            "sortNum": 40000,
+            "created": "2023-12-31T17:32:34.081Z",
+            "modified": "2023-12-31T21:18:29.153Z",
+            "headers": [
+                {
+                    "name": "x-token",
+                    "value": "{{token}}"
+                }
+            ],
             "params": [],
             "tests": []
         }
