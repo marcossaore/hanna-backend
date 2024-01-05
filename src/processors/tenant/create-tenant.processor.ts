@@ -71,7 +71,8 @@ export class CreateTenantProcessor {
           companyId: company.id,
           companyName: company.name,
           userId: user.id,
-          userName: company.partnerName
+          userName: company.partnerName,
+          isRecovery: false
         },
         expiresIn10Minutes
       )

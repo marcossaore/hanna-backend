@@ -1,0 +1,25 @@
+.flash-message {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 1rem;
+  min-width: 20rem;
+  position: fixed;
+  z-index: 1;
+  font-size: 1.2rem;
+  box-shadow: 0.2rem 0.2rem 0.4rem rgba(0, 0, 0, 0.2);
+  gap: 1rem;
+  font-weight: bold;
+  top: 5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.flash-message-text {
+  flex: 1;
+}
+
+.flash-message-title {
+  flex: 1;
+  font-size: 2.4rem
+}

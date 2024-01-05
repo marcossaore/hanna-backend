@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/public/css/root.css">
+  <link rel="stylesheet" href="/public/css/flash-message/style.css">
+  <link rel="stylesheet" href="/public/css/hanna/user-new-password.css">
+  <script src="/public/js/flash-message.js"></script>
+  <script src="/public/js/cnpj-mask.js"></script>
+  <script src="/public/js/on-key-press.js"></script> 
+  <title>Reenvio de link para criação de senha na plataforma Hanna</title>
+</head>
+<body>
+  <div class="box-grid">
+    <div class="left-box-column"></div>
+      <div class="center-box">
+        <p class="fs-text text-subdued mb32">
+          {{#unless isRecovery }}
+            O tempo para criar sua nova senha de acesso expirou, mas não se preocupe! <br>
+          {{/unless}}
+          Insira os dados da sua conta para receber um novo email com as instruçoes para criar sua nova senha.
+        </p>
+        <div class="new-pass-box">
+           <input type="hidden" name="send-token-endpoint" id="send-token-endpoint" value="{{ sendTokenEndpoint }}">
+           <input type="hidden" name="success-endpoint" id="success-endpoint" value="{{ successEndpoint }}">
+            <form class="login-form" id="password-form">
+              <label for="companyDocument">CNPJ:</label>
+              <input type="text" id="companyDocument" name="companyDocument" maxlength="18" placeholder="00.000.000/0000-00" onkeypress="handleKeyPress(event, 13, submitForm)" required/>
+              <label for="email">Email:</label>
+              <input type="email" id="email" name="email" onkeypress="handleKeyPress(event, 13, submitForm)" required>
+              <button type="button" onclick="submitForm()">Enviar</button>
+          </form>
+        </div>
+      </div>
+    <div class="right-box-column"></div>
+  </div>
+  <script>
+    const cnpjInput = document.getElementById('companyDocument');
+    if (cnpjInput) {
+      cnpjMask(cnpjInput);
+    }
+
+    function submitForm() {
+          const companyDocument = document.getElementById('companyDocument').value;
+          const email = document.getElementById('email').value;
+
+          if (!companyDocument) {
+            showFlashMessage({ content: 'Insira o CNPJ.'})
+            return;
+          }
+
+          if (!email) {
+            showFlashMessage({ content: 'Insira o email.'})
+            return;
+          }
+
+          const jsonData = JSON.stringify({
+              document: companyDocument.replace(/[\./-]/g, ''),
+              email
+          })
+
+          const sendTokenEndpoint = document.getElementById('send-token-endpoint').value;
+
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', sendTokenEndpoint, true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.setRequestHeader('Accept', 'application/json');
+          xhr.onload = function () {
+              if (xhr.status > 200 && xhr.status < 300) {
+                  const responseData = JSON.parse(xhr.responseText);
+                  const successEndpoint = document.getElementById('success-endpoint').value;
+                  window.location.replace(`${successEndpoint}?userName=${responseData.data.userName}`)
+              } 
+              else if (xhr.status > 400 && xhr.status < 500 ) {
+                  const responseData = JSON.parse(xhr.responseText);
+                  showFlashMessage({ content: responseData.error?.message || responseData.error, delay: 6000 })
+              }
+              else {
+                  showFlashMessage({ content: 'Houve algum erro. Tente novamente!' })
+              }
+          };
+          xhr.onerror = function () {
+              showFlashMessage({ content: 'Houve algum erro. Tente novamente!' })
+          };
+          xhr.send(jsonData);
+      }
+  </script>
+</body>
+</html>

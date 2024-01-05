@@ -17,7 +17,7 @@ async function bootstrap() {
   app.use(new AddRequestTimeMiddleware().use)
   app.useGlobalFilters(new HttpExceptionFilter())
   app.useGlobalInterceptors(new CalculateRequestTimeInterceptor())
-  // app.useStaticAssets(join(__dirname, 'public'));
+  app.useStaticAssets(join(__dirname, './public'), { prefix: '/public/'});
   app.setBaseViewsDir(join(__dirname, 'templates'))
   app.setViewEngine('hbs')
   await app.listen(3000)

@@ -6,7 +6,8 @@ import {
   Query,
   UseInterceptors,
   ClassSerializerInterceptor,
-  UnauthorizedException
+  UnauthorizedException,
+  ForbiddenException
 } from '@nestjs/common'
 import { LoginDto } from './dto/login.dto'
 import { TenantService } from '@/modules/application/tenant/tenant.service'
@@ -132,7 +133,9 @@ export class AuthController {
     @Query() query
   ): Promise<void> {
     const tokenDecrypted = this.tokenServiceAdapter.verify(query.token);
-    // está quebrando quando expira o tempo
+    if (!tokenDecrypted) {
+      throw new ForbiddenException('Tempo para criação de senha expirado!')
+    }
     const { companyId, userId } = tokenDecrypted
     const company = await this.tenantService.findById(companyId)
     const credentials = this.configService.get('database');
