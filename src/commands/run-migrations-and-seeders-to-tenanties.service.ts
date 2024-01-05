@@ -1,6 +1,5 @@
 import { LoadTenantConnectionService } from '@/modules/application/tenant-connection/load-tenant-connection.service'
 import { TenantService } from '@/modules/application/tenant/tenant.service'
-import { SecretsService } from '@/modules/infra/secrets/secrets-service'
 import { SeedRunnerService } from '@infra/db/companies/seeds/seed-runner.service.'
 import { MigrationsCompanyService } from '@infra/plugins/database/migrations-company.service'
 import { Injectable } from '@nestjs/common'
@@ -14,8 +13,7 @@ export class RunMigrationsAndSeedersToTenantiesService {
     private readonly tenantService: TenantService,
     private readonly migrationsCompanyService: MigrationsCompanyService,
     private readonly loadTenantConnectionService: LoadTenantConnectionService,
-    private readonly seedRunnerService: SeedRunnerService,
-    private readonly secretsService: SecretsService
+    private readonly seedRunnerService: SeedRunnerService
   ) {}
 
   @Command({

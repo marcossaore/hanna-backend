@@ -4,7 +4,6 @@ import {
   ArgumentsHost,
   HttpException
 } from '@nestjs/common'
-import { DefaultHttpException } from '@/shared/errors/default-http-exception'
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -13,13 +12,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse()
     const request = ctx.getRequest()
     const status = exception.getStatus()
-
     const exceptionResponse = exception.getResponse() as any
 
     let error = null
 
-    if (exception instanceof DefaultHttpException) {
-      error = exceptionResponse
+    if (exception instanceof HttpException) {
+      error = {
+        type: exceptionResponse.error,
+        message: exceptionResponse.message
+      }
     } else if (Array.isArray(exceptionResponse.message)) {
       const captureError = (exceptionResponse as any).message[0]
       try {
@@ -36,6 +37,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
             field: parsedMessage.field,
             message: parsedMessage.message
           }
+
+          if (parsedMessage.fieldAccepts) {
+            error['fieldAccepts'] = parsedMessage.fieldAccepts;
+          }
+
         } else {
           error = {
             captureError

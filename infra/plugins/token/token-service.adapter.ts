@@ -20,6 +20,10 @@ export class TokenServiceAdapter {
     }
 
     verify(token: string) {
+      try {
         return jsonwebtoken.verify(token, this.options.secret);
+      } catch (error) {
+        return null;
+      } 
     }
 }

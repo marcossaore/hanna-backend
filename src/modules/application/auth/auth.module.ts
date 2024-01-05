@@ -7,7 +7,6 @@ import { UserServiceLazy } from '@/modules/application/user/user.service.lazy'
 import { AuthController } from './auth.controller'
 import { TenantService } from '@/modules/application/tenant/tenant.service'
 import { TokenServiceAdapter } from '@infra/plugins/token/token-service.adapter'
-import { SecretsModule } from '@/modules/infra/secrets/secrets.module'
 
 @Module({
   imports: [
@@ -28,8 +27,7 @@ import { SecretsModule } from '@/modules/infra/secrets/secrets.module'
       },
       inject: [ConfigService]
     }),
-    TypeOrmModule.forFeature([Tenant]),
-    SecretsModule
+    TypeOrmModule.forFeature([Tenant])
   ],
   providers: [ConfigService, TenantService, UserServiceLazy, HashService, TokenServiceAdapter],
   controllers: [AuthController]

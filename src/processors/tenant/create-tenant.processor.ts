@@ -7,14 +7,12 @@ import {
   Processor
 } from '@nestjs/bull'
 import { SeedRunnerService } from '@infra/db/companies/seeds/seed-runner.service.'
-import { GenerateDbCredentialsService } from '@infra/plugins/database/generate-db-credentials.service'
 import { CreateDatabaseService } from '@infra/plugins/database/create-database.service'
 import { MigrationsCompanyService } from '@infra/plugins/database/migrations-company.service'
 import { TokenServiceAdapter } from '@infra/plugins/token/token-service.adapter'
 import { AddAdminRoleServiceLazy } from '@/modules/application/role/add-admin-role.service'
 import { TenantService } from '@/modules/application/tenant/tenant.service'
 import { UserServiceLazy } from '@/modules/application/user/user.service.lazy'
-import { SecretsService } from '@/modules/infra/secrets/secrets-service'
 import { LoadTenantConnectionService } from '@/modules/application/tenant-connection/load-tenant-connection.service'
 import { MailService } from '@/modules/infra/mail/mail.service'
 import { ConfigService } from '@nestjs/config'
@@ -25,9 +23,7 @@ export class CreateTenantProcessor {
   constructor(
     private readonly configService: ConfigService,
     private readonly tenantService: TenantService,
-    private readonly generateDbCredentialsService: GenerateDbCredentialsService,
     private readonly createDatabaseService: CreateDatabaseService,
-    private readonly secretsService: SecretsService,
     private readonly loadTenantConnectionService: LoadTenantConnectionService,
     private readonly migrationsCompanyService: MigrationsCompanyService,
     private readonly seedRunnerService: SeedRunnerService,
@@ -41,21 +37,8 @@ export class CreateTenantProcessor {
   async handleJob(job: Job) {
     try {
       const company = await this.tenantService.findById(job.data.id)
-      // const credentials = this.generateDbCredentialsService.generate(
-      //   company.name
-      // )
-
       await this.createDatabaseService.create(company.companyIdentifier)
-
-      // await this.secretsService.save(
-      //   company.companyIdentifier,
-      //   JSON.stringify({
-      //     ...credentials
-      //   })
-      // )
-
       const credentials = this.configService.get('database');
-
       const connection = await this.loadTenantConnectionService.load(
         company.companyIdentifier,
         credentials.user,

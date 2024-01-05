@@ -18,9 +18,10 @@ export class UserAppController {
   @Get('/new-password')
   newPassword(@Res() res: Response, @Query() query) {
     const userData = this.tokenServiceAdapter.verify(query.token)
+    // está quebrando quando expira o tempo
     return res.render('user-new-password', {
-      name: userData.userName,
-      companyName: userData.companyName,
+      name: userData?.userName,
+      companyName: userData?.companyName,
       postUrl: `${this.postUrl}/api/auth/new-password?token=${query.token}`
     })
   }

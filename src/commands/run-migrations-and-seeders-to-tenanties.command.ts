@@ -3,12 +3,11 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { Module } from '@nestjs/common'
 import { Tenant } from '@infra/db/app/entities/tenant/tenant.entity'
 import { TenantService } from '@/modules/application/tenant/tenant.service'
-import { join } from 'path'
 import { RunMigrationsAndSeedersToTenantiesService } from './run-migrations-and-seeders-to-tenanties.service'
 import { SeedRunnerModule } from '@infra/db/companies/seeds/seed-runner.module'
 import { MigrationsCompanyModule } from '@infra/plugins/database/migrations-company.module'
 import { LoadTenantConnectionModule } from '@/modules/application/tenant-connection/tenant-load-connection.module'
-import { SecretsModule } from '@/modules/infra/secrets/secrets.module'
+import { join } from 'path'
 
 @Module({
   imports: [
@@ -50,8 +49,7 @@ import { SecretsModule } from '@/modules/infra/secrets/secrets.module'
     TypeOrmModule.forFeature([Tenant]),
     SeedRunnerModule,
     MigrationsCompanyModule,
-    LoadTenantConnectionModule,
-    SecretsModule
+    LoadTenantConnectionModule
   ],
   providers: [TenantService, RunMigrationsAndSeedersToTenantiesService]
 })
